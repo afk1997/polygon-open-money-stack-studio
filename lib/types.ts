@@ -1,6 +1,7 @@
 export type StudioMode = "launch" | "migration";
 
 export type PricingType = "published" | "public-signal" | "custom";
+export type CostConfidence = PricingType | "modeled";
 
 export type Provider = {
   id: string;
@@ -72,6 +73,12 @@ export type StudioInput = {
 export type CostModel = {
   currentAnnualCost: number;
   modeledOmsAnnualCost: number;
+  selectedProviderAnnualCost: number;
+  selectedProviderFixedCost: number;
+  selectedProviderVariableCost: number;
+  selectedProviderCount: number;
+  providerCostLines: ProviderCostLine[];
+  operationalOverheadAnnualCost: number;
   feeDelta: number;
   fixedVendorSavings: number;
   workingCapitalRelease: number;
@@ -84,6 +91,19 @@ export type CostModel = {
   lowCaseSavings: number;
   highCaseSavings: number;
   assumptions: string[];
+};
+
+export type ProviderCostLine = {
+  providerId: string;
+  providerName: string;
+  moduleId: string;
+  moduleLabel: string;
+  pricingBasis: string;
+  confidence: CostConfidence;
+  annualFixedCost: number;
+  annualVariableCost: number;
+  annualCost: number;
+  calculationNote: string;
 };
 
 export type ArchitectureNode = {

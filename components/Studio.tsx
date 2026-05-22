@@ -383,6 +383,10 @@ function CommandPanel({
             );
           })}
         </div>
+        <div className="selectedStackNote">
+          <strong>{input.selectedProviderIds.length} providers modeled</strong>
+          <span>Selected vendors now drive the current-stack cost calculation.</span>
+        </div>
         <div className="providerList">
           {activeModule.providers.slice(0, 7).map((provider) => (
             <button
@@ -443,11 +447,13 @@ function MigrationMap({
   activeModuleId: string;
   onModuleClick: (moduleId: string) => void;
 }) {
+  const modeledProviderCount =
+    recommendation.costModel.selectedProviderCount || input.vendorCount;
   const currentCards =
     input.mode === "migration"
       ? [
           {
-            title: `${input.vendorCount} vendors`,
+            title: `${modeledProviderCount} providers modeled`,
             detail: `${input.apiSurfaceCount} APIs, ${input.reconciliationFeeds} recon feeds`,
           },
           {
@@ -465,7 +471,7 @@ function MigrationMap({
             detail: "Customer UX, policy model, corridors, and launch constraints.",
           },
           {
-            title: `${input.vendorCount} vendors avoided`,
+            title: `${modeledProviderCount} providers avoided`,
             detail: "Wallets, ramps, chain infra, settlement, and risk discovery.",
           },
           {
@@ -679,6 +685,8 @@ function BusinessCasePanel({
 }) {
   const reducedApis = Math.max(4, Math.ceil(input.apiSurfaceCount * 0.32));
   const reducedFeeds = Math.max(2, Math.ceil(input.reconciliationFeeds * 0.34));
+  const modeledProviderCount =
+    recommendation.costModel.selectedProviderCount || input.vendorCount;
 
   return (
     <aside className="businessPanel panel">
@@ -694,7 +702,7 @@ function BusinessCasePanel({
       </button>
 
       <div className="signalGrid">
-        <SignalCard label="Vendors" value={`${input.vendorCount} to 1`} detail="OMS layer plus retained regulated partners" />
+        <SignalCard label="Providers" value={`${modeledProviderCount} to 1`} detail="OMS layer plus retained regulated partners" />
         <SignalCard label="APIs" value={`${input.apiSurfaceCount} to ${reducedApis}`} detail="fewer surfaces to secure and reconcile" />
         <SignalCard label="Recon feeds" value={`${input.reconciliationFeeds} to ${reducedFeeds}`} detail="single settlement event model" />
         <SignalCard
@@ -703,6 +711,8 @@ function BusinessCasePanel({
           detail="non-salary integration reduction"
         />
       </div>
+
+      <ProviderCostBreakdown recommendation={recommendation} />
 
       <div className="waterfall">
         <WaterfallBar
@@ -978,6 +988,51 @@ function SignalCard({ label, value, detail }: { label: string; value: string; de
   );
 }
 
+function ProviderCostBreakdown({ recommendation }: { recommendation: Recommendation }) {
+  const lines = recommendation.costModel.providerCostLines
+    .slice()
+    .sort((a, b) => b.annualCost - a.annualCost)
+    .slice(0, 6);
+
+  if (lines.length === 0) {
+    return (
+      <div className="providerCostPanel">
+        <div className="providerCostHeader">
+          <span>Provider model</span>
+          <strong>Blended scenario</strong>
+        </div>
+        <p>No providers selected. The model is using blended current-stack assumptions.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="providerCostPanel">
+      <div className="providerCostHeader">
+        <span>Selected provider model</span>
+        <strong>{formatMoney(recommendation.costModel.selectedProviderAnnualCost)}</strong>
+      </div>
+      <div className="providerCostRows">
+        {lines.map((line) => (
+          <div key={line.providerId} className="providerCostRow">
+            <div>
+              <strong>{line.providerName}</strong>
+              <span>
+                {line.pricingBasis} / {line.confidence}
+              </span>
+            </div>
+            <b>{formatMoney(line.annualCost)}</b>
+          </div>
+        ))}
+      </div>
+      <p>
+        Plus {formatMoney(recommendation.costModel.operationalOverheadAnnualCost)} modeled
+        API, reconciliation, and compliance handoff overhead.
+      </p>
+    </div>
+  );
+}
+
 function WaterfallBar({ label, value, max }: { label: string; value: number; max: number }) {
   const width = Math.max(5, Math.min(100, (value / Math.max(max, 1)) * 100));
   return (
@@ -1015,9 +1070,13 @@ function buildPacketSections(
   activeModule: OMSModule,
 ): PacketSections {
   const modulesList = recommendation.modules.map((module) => module.label).join(", ");
-  const currentComplexity = `${input.vendorCount} vendors, ${input.apiSurfaceCount} APIs, ${input.reconciliationFeeds} reconciliation feeds`;
+  const modeledProviderCount =
+    recommendation.costModel.selectedProviderCount || input.vendorCount;
+  const currentComplexity = `${modeledProviderCount} modeled providers, ${input.apiSurfaceCount} APIs, ${input.reconciliationFeeds} reconciliation feeds`;
   const savings = formatMoney(recommendation.costModel.firstYearNetSavings);
   const steadyState = formatMoney(recommendation.costModel.steadyStateAnnualSavings);
+  const providerCost = formatMoney(recommendation.costModel.selectedProviderAnnualCost);
+  const overheadCost = formatMoney(recommendation.costModel.operationalOverheadAnnualCost);
   const sourceProviders = recommendation.modules
     .flatMap((module) => module.providers.slice(0, 2))
     .map((provider) => {
@@ -1048,7 +1107,10 @@ function buildPacketSections(
       {
         kicker: "Economic proof",
         title: `${savings} modeled first-year impact with ${steadyState} steady-state annual savings.`,
-        body: "The model excludes salary and headcount assumptions by default, then shows integration complexity separately so the pitch stays credible across hiring markets.",
+        body:
+          recommendation.costModel.selectedProviderCount > 0
+            ? `The current stack is computed from selected providers: ${providerCost} provider cost plus ${overheadCost} API/reconciliation/compliance overhead. Salary and headcount savings stay excluded.`
+            : "The model excludes salary and headcount assumptions by default, then shows integration complexity separately so the pitch stays credible across hiring markets.",
       },
       {
         kicker: "PMM angle",
