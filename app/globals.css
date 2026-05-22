@@ -1,13 +1,46 @@
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/satoshi-400.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/satoshi-500.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/satoshi-700.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/satoshi-900.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 900;
+}
+
 :root {
-  --bg: #f8faff;
+  --font-sans: "Satoshi", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bg: #f9fbff;
   --paper: #ffffff;
-  --ink: #090b13;
-  --muted: #5f6b84;
-  --faint: #9aa5ba;
-  --line: #dbe3f1;
-  --line-strong: #cbd7ea;
-  --purple: #6338f5;
-  --purple-2: #7d5cff;
+  --ink: #080b16;
+  --muted: #5f6980;
+  --faint: #9fa9bc;
+  --line: #dce4f1;
+  --line-strong: #ccd8ea;
+  --purple: #6840f2;
+  --purple-2: #7a5cff;
   --purple-soft: #f0ebff;
   --green: #07936c;
   --green-soft: #e6f7f2;
@@ -27,15 +60,9 @@ body {
   margin: 0;
   color: var(--ink);
   background: var(--bg);
-  font-family:
-    Satoshi,
-    Geist,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
 }
 
 button,
@@ -124,12 +151,14 @@ a {
 
 .brandCluster strong {
   font-size: 21px;
+  font-weight: 700;
   line-height: 0.95;
 }
 
 .brandCluster span:not(.brandMark) {
   color: #3d465a;
   font-size: 21px;
+  font-weight: 400;
   line-height: 0.95;
 }
 
@@ -191,7 +220,7 @@ a {
   padding: 0 18px;
   color: #1b2436;
   background: #fff;
-  font-weight: 750;
+  font-weight: 700;
   box-shadow: 0 8px 18px rgba(31, 45, 82, 0.04);
 }
 
@@ -200,6 +229,7 @@ a {
   gap: 8px;
   padding: 0 13px;
   font-size: 13px;
+  font-weight: 500;
 }
 
 .topbarActions .iconButton {
@@ -296,7 +326,7 @@ a {
   padding: 0 16px;
   color: var(--ink);
   background: #fff;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .modeStack button span {
@@ -337,6 +367,7 @@ a {
 .modeExplainer strong {
   color: var(--purple);
   font-size: 14px;
+  font-weight: 700;
 }
 
 .modeExplainer p,
@@ -373,6 +404,7 @@ a {
 .intakeStep h1 {
   margin: 0;
   font-size: 29px;
+  font-weight: 900;
   line-height: 1.08;
   letter-spacing: 0;
 }
@@ -380,6 +412,7 @@ a {
 .stepCopy {
   margin: 9px 0 27px;
   font-size: 13px;
+  font-weight: 400;
 }
 
 .productGrid {
@@ -401,9 +434,9 @@ a {
 .textInput span,
 .textAreaInput span,
 .numberInput span {
-  color: #182033;
+  color: #151b2d;
   font-size: 12px;
-  font-weight: 760;
+  font-weight: 700;
   line-height: 1.08;
 }
 
@@ -445,14 +478,18 @@ a {
 .textInput input {
   min-height: 48px;
   padding: 0 16px;
+  color: #172036;
   font-size: 14px;
+  font-weight: 400;
 }
 
 .textAreaInput textarea {
   min-height: 120px;
   resize: vertical;
   padding: 16px;
+  color: #172036;
   font-size: 14px;
+  font-weight: 400;
   line-height: 1.45;
 }
 
@@ -477,6 +514,7 @@ a {
 .providerSelector h3 {
   margin: 0;
   font-size: 14px;
+  font-weight: 700;
   letter-spacing: 0;
 }
 
@@ -502,7 +540,7 @@ a {
   color: var(--ink);
   background: transparent;
   font-size: 13px;
-  font-weight: 620;
+  font-weight: 500;
 }
 
 .numberInput small {
@@ -524,7 +562,7 @@ a {
   color: var(--ink);
   background: transparent;
   font-size: 13px;
-  font-weight: 620;
+  font-weight: 500;
 }
 
 .corridorSelect svg {
@@ -553,6 +591,7 @@ a {
 .sectionHeader p {
   margin: 6px 0 0;
   font-size: 13px;
+  font-weight: 400;
 }
 
 .flowCardGrid {
@@ -610,12 +649,14 @@ a {
 .flowCard h4 {
   margin: -34px 0 0 54px;
   font-size: 14px;
+  font-weight: 700;
 }
 
 .flowCard p {
   min-height: 34px;
   margin: 6px 0 14px 54px;
   font-size: 12px;
+  font-weight: 400;
 }
 
 .flowChecks {
@@ -634,6 +675,7 @@ a {
   color: #566177;
   background: transparent;
   font-size: 13px;
+  font-weight: 500;
   text-align: left;
 }
 
@@ -662,7 +704,7 @@ a {
   justify-content: flex-start;
   padding: 0 12px;
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 500;
   color: #4b5570;
   white-space: nowrap;
 }
@@ -711,7 +753,7 @@ a {
   color: var(--purple);
   background: var(--purple-soft);
   font-size: 11px;
-  font-weight: 750;
+  font-weight: 700;
 }
 
 .providerAccordion {
@@ -734,7 +776,7 @@ a {
   list-style: none;
   color: #111827;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .providerAccordion summary::-webkit-details-marker {
@@ -757,6 +799,7 @@ a {
   color: var(--purple);
   background: var(--purple-soft);
   font-size: 12px;
+  font-weight: 700;
 }
 
 .providerSummaryMeta {
@@ -796,11 +839,13 @@ a {
 
 .providerRows button strong {
   font-size: 13px;
+  font-weight: 700;
 }
 
 .providerRows button small {
   color: var(--muted);
   font-size: 11px;
+  font-weight: 400;
   line-height: 1.25;
 }
 
@@ -835,6 +880,7 @@ a {
   margin: 0;
   color: var(--muted);
   font-size: 12px;
+  font-weight: 400;
 }
 
 .intakeFooter > div {
