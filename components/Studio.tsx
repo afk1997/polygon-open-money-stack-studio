@@ -1,7 +1,5 @@
 "use client";
 
-import "@xyflow/react/dist/style.css";
-
 import {
   ArrowRight,
   Banknote,
@@ -13,8 +11,10 @@ import {
   ClipboardList,
   Download,
   Factory,
+  FileText,
   GitBranch,
   Globe2,
+  Landmark,
   Layers3,
   LockKeyhole,
   Network,
@@ -25,14 +25,7 @@ import {
   WalletCards,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  Background,
-  Controls,
-  MiniMap,
-  ReactFlow,
-  type Edge,
-  type Node,
-} from "@xyflow/react";
+import type React from "react";
 import { useMemo, useState } from "react";
 import { modules, pricing, templates } from "@/lib/data";
 import {
@@ -42,9 +35,10 @@ import {
   generateRecommendation,
   normalizeInput,
 } from "@/lib/engine";
-import type { OMSModule, StudioInput, StudioMode } from "@/lib/types";
+import type { OMSModule, Provider, Recommendation, StudioInput, StudioMode } from "@/lib/types";
 
-type RightTab = "economics" | "competitors" | "controls" | "export";
+type InsightTab = "evidence" | "controls" | "packet";
+type PacketTab = "memo" | "slides" | "battlecard" | "sources";
 
 const moduleIcons: Record<string, React.ComponentType<{ size?: number }>> = {
   "wallet-infra": WalletCards,
@@ -58,23 +52,31 @@ const moduleIcons: Record<string, React.ComponentType<{ size?: number }>> = {
 };
 
 const panelMotion = {
-  initial: { opacity: 0, y: 10 },
+  initial: { opacity: 0, y: 8 },
   animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
-  transition: { duration: 0.22 },
+  exit: { opacity: 0, y: -6 },
+  transition: { duration: 0.18 },
 };
 
 export function Studio() {
   const [input, setInput] = useState<StudioInput>(normalizeInput(defaultInput));
-  const [activeTab, setActiveTab] = useState<RightTab>("economics");
-  const [activeModuleId, setActiveModuleId] = useState("wallet-infra");
+  const [activeModuleId, setActiveModuleId] = useState(modules[0]?.id ?? "wallet-infra");
+  const [activeTab, setActiveTab] = useState<InsightTab>("evidence");
+  const [packetTab, setPacketTab] = useState<PacketTab>("memo");
   const [exportedPitch, setExportedPitch] = useState("");
   const [isExporting, setIsExporting] = useState(false);
+  const [generatedLabel, setGeneratedLabel] = useState("Ready");
 
   const recommendation = useMemo(() => generateRecommendation(input), [input]);
-  const activeModule = modules.find((module) => module.id === activeModuleId) ?? modules[0];
-  const useCase = templates.find((template) => template.id === input.useCaseId) ?? templates[0];
-  const flow = useMemo(() => toFlowElements(recommendation), [recommendation]);
+  const useCase = templates.find((template) => template.id === input.useCaseId) ?? templates[0]!;
+  const activeModule =
+    modules.find((module) => module.id === activeModuleId) ??
+    recommendation.modules[0] ??
+    modules[0]!;
+  const packet = useMemo(
+    () => buildPacketSections(input, recommendation, activeModule),
+    [input, recommendation, activeModule],
+  );
 
   function patchInput(patch: Partial<StudioInput>) {
     setInput((current) => normalizeInput({ ...current, ...patch }));
@@ -92,7 +94,7 @@ export function Studio() {
   }
 
   function setUseCase(useCaseId: string) {
-    const selected = templates.find((template) => template.id === useCaseId) ?? templates[0];
+    const selected = templates.find((template) => template.id === useCaseId) ?? templates[0]!;
     patchInput({
       useCaseId,
       monthlyVolume: selected.defaultVolume,
@@ -100,6 +102,7 @@ export function Studio() {
       activeWallets: selected.defaultWallets,
       corridors: selected.defaultCorridors,
     });
+    setActiveModuleId(selected.requiredModules[0] ?? "wallet-infra");
   }
 
   function toggleProvider(providerId: string) {
@@ -111,9 +114,15 @@ export function Studio() {
     });
   }
 
-  async function exportPitch() {
+  function generateStrategy() {
+    setGeneratedLabel(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+    setActiveTab("evidence");
+  }
+
+  async function generatePacket() {
     setIsExporting(true);
-    setActiveTab("export");
+    setActiveTab("packet");
+    setPacketTab("memo");
     try {
       const response = await fetch("/api/export-pitch", {
         method: "POST",
@@ -121,422 +130,772 @@ export function Studio() {
         body: JSON.stringify(input),
       });
       const payload = (await response.json()) as { markdown?: string };
-      setExportedPitch(payload.markdown ?? buildExportPitch(input));
+      setExportedPitch(payload.markdown ?? packet.markdown);
     } catch {
-      setExportedPitch(buildExportPitch(input));
+      setExportedPitch(packet.markdown);
     } finally {
       setIsExporting(false);
     }
   }
 
   return (
-    <main className="studio">
-      <div className="noise" aria-hidden="true" />
-      <header className="topbar">
+    <main className="lab">
+      <div className="gridBackdrop" aria-hidden="true" />
+      <header className="labTopbar">
         <div className="brandLockup">
           <div className="brandMark">
-            <Boxes size={19} />
+            <Boxes size={18} />
           </div>
           <div>
             <p className="eyebrow">Polygon Open Money Stack</p>
-            <h1>OMS Studio</h1>
+            <h1>OMS Migration Lab</h1>
           </div>
         </div>
-        <div className="topbarMeta">
-          <span>Public-price evidence</span>
-          <span>Migration lab</span>
-          <span>PMM export</span>
+        <div className="topbarMeta" aria-label="Studio capabilities">
+          <span>Stack autopsy</span>
+          <span>Competitor evidence</span>
+          <span>PMM packet</span>
         </div>
+        <button className="topbarAction" type="button" onClick={generatePacket}>
+          <ClipboardList size={16} />
+          Generate PMM Packet
+        </button>
       </header>
 
-      <section className="workspace">
-        <aside className="leftPanel panel">
-          <div className="panelHeader">
-            <div>
-              <p className="eyebrow">Scenario Builder</p>
-              <h2>{input.mode === "launch" ? "Launch New" : "Modernize Existing"}</h2>
-            </div>
-            <SlidersHorizontal size={18} />
-          </div>
+      <section className="labWorkspace">
+        <CommandPanel
+          input={input}
+          useCaseHeadline={useCase.headline}
+          activeModule={activeModule}
+          onModeChange={setMode}
+          onUseCaseChange={setUseCase}
+          onPatchInput={patchInput}
+          onModuleChange={(moduleId) => {
+            setActiveModuleId(moduleId);
+            setActiveTab("evidence");
+          }}
+          onProviderToggle={toggleProvider}
+        />
 
-          <div className="modeSwitch" role="group" aria-label="Studio mode">
-            <button
-              className={input.mode === "launch" ? "active" : ""}
-              type="button"
-              onClick={() => setMode("launch")}
-            >
-              <Sparkles size={16} />
-              Launch New
-            </button>
-            <button
-              className={input.mode === "migration" ? "active" : ""}
-              type="button"
-              onClick={() => setMode("migration")}
-            >
-              <Factory size={16} />
-              Modernize
-            </button>
-          </div>
-
-          <label className="field">
-            <span>Product archetype</span>
-            <select value={input.useCaseId} onChange={(event) => setUseCase(event.target.value)}>
-              {templates.map((template) => (
-                <option key={template.id} value={template.id}>
-                  {template.name}
-                </option>
-              ))}
-            </select>
-            <small>{useCase.headline}</small>
-          </label>
-
-          <div className="metricInputs">
-            <NumberField
-              label="Monthly volume"
-              value={input.monthlyVolume}
-              min={500000}
-              step={500000}
-              prefix="$"
-              onChange={(monthlyVolume) => patchInput({ monthlyVolume })}
-            />
-            <NumberField
-              label="Monthly transactions"
-              value={input.monthlyTransactions}
-              min={1000}
-              step={1000}
-              onChange={(monthlyTransactions) => patchInput({ monthlyTransactions })}
-            />
-            <NumberField
-              label="Active wallets"
-              value={input.activeWallets}
-              min={1000}
-              step={1000}
-              onChange={(activeWallets) => patchInput({ activeWallets })}
-            />
-            <NumberField
-              label="Settlement delay"
-              value={input.settlementDays}
-              min={0}
-              step={0.25}
-              suffix=" days"
-              onChange={(settlementDays) => patchInput({ settlementDays })}
-            />
-          </div>
-
-          <label className="field">
-            <span>Corridors</span>
-            <textarea
-              value={input.corridors}
-              onChange={(event) => patchInput({ corridors: event.target.value })}
-            />
-          </label>
-
-          <div className="stackControls">
-            <div className="miniGrid">
-              <NumberField
-                label={input.mode === "launch" ? "Vendors avoided" : "Current vendors"}
-                value={input.vendorCount}
-                min={1}
-                step={1}
-                onChange={(vendorCount) => patchInput({ vendorCount })}
-              />
-              <NumberField
-                label="API surfaces"
-                value={input.apiSurfaceCount}
-                min={1}
-                step={1}
-                onChange={(apiSurfaceCount) => patchInput({ apiSurfaceCount })}
-              />
-              <NumberField
-                label="Recon feeds"
-                value={input.reconciliationFeeds}
-                min={1}
-                step={1}
-                onChange={(reconciliationFeeds) => patchInput({ reconciliationFeeds })}
-              />
-              <NumberField
-                label="Compliance handoffs"
-                value={input.complianceHandoffs}
-                min={1}
-                step={1}
-                onChange={(complianceHandoffs) => patchInput({ complianceHandoffs })}
-              />
-            </div>
-          </div>
-
-          <div className="modulePicker">
-            <div className="sectionTitle">
-              <span>Point-solution market</span>
-              <ChevronDown size={15} />
-            </div>
-            <div className="moduleChips">
-              {modules.map((module) => {
-                const Icon = moduleIcons[module.id] ?? Boxes;
-                return (
-                  <button
-                    key={module.id}
-                    className={module.id === activeModuleId ? "selected" : ""}
-                    type="button"
-                    onClick={() => setActiveModuleId(module.id)}
-                  >
-                    <Icon size={14} />
-                    {module.label.replace("Blockchain-as-a-service ", "BaaS ")}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="providerList">
-            {activeModule.providers.slice(0, 9).map((provider) => (
-              <button
-                key={provider.id}
-                className={input.selectedProviderIds.includes(provider.id) ? "checked" : ""}
-                type="button"
-                onClick={() => toggleProvider(provider.id)}
-              >
-                <span>{provider.name}</span>
-                <CheckCircle2 size={15} />
-              </button>
-            ))}
-          </div>
-        </aside>
-
-        <section className="canvasColumn">
-          <motion.div className="heroStrip" layout>
-            <div>
-              <p className="eyebrow">Generated Pitch</p>
-              <h2>{recommendation.title}</h2>
-              <p>{recommendation.narrative}</p>
-            </div>
-            <button className="primaryButton" type="button" onClick={exportPitch}>
-              <Download size={17} />
-              Export brief
-            </button>
-          </motion.div>
-
-          <div className="depthMoment">
-            <div className="depthIcon">
-              <LockKeyhole size={18} />
-            </div>
-            <p>{recommendation.depthMoment}</p>
-          </div>
-
-          <div className="canvasShell">
-            <div className="canvasHeader">
-              <div>
-                <p className="eyebrow">Architecture Canvas</p>
-                <h3>Before, controls, OMS core, and outcomes</h3>
-              </div>
-              <div className="canvasLegend">
-                <span className="current">Current</span>
-                <span className="oms">OMS</span>
-                <span className="control">Control</span>
-              </div>
-            </div>
-            <div className="flowWrap">
-              <ReactFlow
-                nodes={flow.nodes}
-                edges={flow.edges}
-                fitView
-                proOptions={{ hideAttribution: true }}
-                nodesDraggable={false}
-                nodesConnectable={false}
-              >
-                <Background color="#d9ded9" gap={22} />
-                <MiniMap zoomable pannable />
-                <Controls showInteractive={false} />
-              </ReactFlow>
-            </div>
-          </div>
-
-          <div className="moduleRunway">
-            {recommendation.modules.map((module, index) => {
-              const Icon = moduleIcons[module.id] ?? Boxes;
-              return (
-                <motion.div
-                  key={module.id}
-                  className="moduleTile"
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.045 }}
-                >
-                  <Icon size={18} />
-                  <span>{module.label}</span>
-                </motion.div>
-              );
-            })}
-          </div>
+        <section className="artifactColumn" aria-label="Generated OMS strategy">
+          <ExecutiveStrip
+            recommendation={recommendation}
+            generatedLabel={generatedLabel}
+            onGenerate={generateStrategy}
+          />
+          <MigrationMap
+            input={input}
+            recommendation={recommendation}
+            activeModuleId={activeModule.id}
+            onModuleClick={(moduleId) => {
+              setActiveModuleId(moduleId);
+              setActiveTab("evidence");
+            }}
+          />
+          <InsightPanel
+            input={input}
+            recommendation={recommendation}
+            activeModule={activeModule}
+            activeTab={activeTab}
+            packetTab={packetTab}
+            exportedPitch={exportedPitch}
+            packet={packet}
+            isExporting={isExporting}
+            onTabChange={setActiveTab}
+            onPacketTabChange={setPacketTab}
+            onGeneratePacket={generatePacket}
+          />
         </section>
 
-        <aside className="rightPanel panel">
-          <div className="tabBar">
-            <TabButton active={activeTab === "economics"} onClick={() => setActiveTab("economics")}>
-              <Banknote size={15} />
-              Economics
-            </TabButton>
-            <TabButton active={activeTab === "competitors"} onClick={() => setActiveTab("competitors")}>
-              <BookOpen size={15} />
-              Competitors
-            </TabButton>
-            <TabButton active={activeTab === "controls"} onClick={() => setActiveTab("controls")}>
-              <ShieldCheck size={15} />
-              Controls
-            </TabButton>
-            <TabButton active={activeTab === "export"} onClick={() => setActiveTab("export")}>
-              <ClipboardList size={15} />
-              Export
-            </TabButton>
-          </div>
-
-          <AnimatePresence mode="wait">
-            {activeTab === "economics" && (
-              <motion.div key="economics" {...panelMotion} className="tabPanel">
-                <div className="savingsHero">
-                  <p>First-year net savings</p>
-                  <strong>{formatMoney(recommendation.costModel.firstYearNetSavings)}</strong>
-                  <span>
-                    Range {formatMoney(recommendation.costModel.lowCaseSavings)} to{" "}
-                    {formatMoney(recommendation.costModel.highCaseSavings)}
-                  </span>
-                </div>
-                <MetricRow
-                  label="Current annual stack"
-                  value={formatMoney(recommendation.costModel.currentAnnualCost)}
-                />
-                <MetricRow
-                  label="Modeled OMS stack"
-                  value={formatMoney(recommendation.costModel.modeledOmsAnnualCost)}
-                />
-                <MetricRow
-                  label="Steady-state annual savings"
-                  value={formatMoney(recommendation.costModel.steadyStateAnnualSavings)}
-                />
-                <MetricRow
-                  label="Integration complexity reduction"
-                  value={`${recommendation.costModel.integrationComplexityReduction}%`}
-                />
-                <div className="waterfall">
-                  <WaterfallBar
-                    label="Fee delta"
-                    value={recommendation.costModel.feeDelta}
-                    max={recommendation.costModel.steadyStateAnnualSavings}
-                  />
-                  <WaterfallBar
-                    label="Vendor consolidation"
-                    value={recommendation.costModel.fixedVendorSavings}
-                    max={recommendation.costModel.steadyStateAnnualSavings}
-                  />
-                  <WaterfallBar
-                    label="Liquidity release"
-                    value={recommendation.costModel.workingCapitalRelease}
-                    max={recommendation.costModel.steadyStateAnnualSavings}
-                  />
-                </div>
-                <div className="assumptionBox">
-                  {recommendation.costModel.assumptions.map((assumption) => (
-                    <p key={assumption}>{assumption}</p>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === "competitors" && (
-              <motion.div key="competitors" {...panelMotion} className="tabPanel">
-                <div className="sourceHeader">
-                  <div>
-                    <p className="eyebrow">Research Coverage</p>
-                    <h3>{activeModule.label}</h3>
-                  </div>
-                  <span>{activeModule.providers.length} providers</span>
-                </div>
-                <p className="moduleRole">{activeModule.polygonRole}</p>
-                <div className="competitorRows">
-                  {activeModule.providers.map((provider) => {
-                    const evidence = pricing.find((item) => item.providerId === provider.id);
-                    return (
-                      <article key={provider.id} className="competitorRow">
-                        <div>
-                          <strong>{provider.name}</strong>
-                          <span>{provider.category}</span>
-                        </div>
-                        <p>{provider.pricingSignal}</p>
-                        <small>{provider.strength}</small>
-                        {evidence && (
-                          <a href={evidence.url} target="_blank" rel="noreferrer">
-                            Source <ArrowRight size={13} />
-                          </a>
-                        )}
-                      </article>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === "controls" && (
-              <motion.div key="controls" {...panelMotion} className="tabPanel">
-                <div className="sourceHeader">
-                  <div>
-                    <p className="eyebrow">Compliance Map</p>
-                    <h3>Secure, compliant money movement</h3>
-                  </div>
-                  <ShieldCheck size={18} />
-                </div>
-                <div className="controlTimeline">
-                  {recommendation.compliance.map((control, index) => (
-                    <div key={control.id} className="controlStep">
-                      <span>{index + 1}</span>
-                      <div>
-                        <strong>{control.label}</strong>
-                        <small>{control.phase}</small>
-                        <p>{control.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="playbook">
-                  <h3>{recommendation.playbook.name}</h3>
-                  <div className="playbookGrid">
-                    <PlaybookList label="Retain" items={recommendation.playbook.retained} />
-                    <PlaybookList label="Replace" items={recommendation.playbook.replaced} />
-                    <PlaybookList label="Wrap" items={recommendation.playbook.wrapped} />
-                  </div>
-                  <ol>
-                    {recommendation.playbook.phases.map((phase) => (
-                      <li key={phase}>{phase}</li>
-                    ))}
-                  </ol>
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === "export" && (
-              <motion.div key="export" {...panelMotion} className="tabPanel">
-                <div className="sourceHeader">
-                  <div>
-                    <p className="eyebrow">PMM Packet</p>
-                    <h3>Pitch-ready narrative</h3>
-                  </div>
-                  <button className="iconButton" type="button" onClick={exportPitch}>
-                    <RefreshCcw size={16} />
-                  </button>
-                </div>
-                <textarea
-                  className="exportBox"
-                  value={exportedPitch || buildExportPitch(input)}
-                  onChange={(event) => setExportedPitch(event.target.value)}
-                />
-                <button className="primaryButton wide" type="button" onClick={exportPitch}>
-                  <Download size={17} />
-                  {isExporting ? "Preparing brief" : "Regenerate from API"}
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </aside>
+        <BusinessCasePanel
+          input={input}
+          recommendation={recommendation}
+          isExporting={isExporting}
+          onGenerateStrategy={generateStrategy}
+          onGeneratePacket={generatePacket}
+        />
       </section>
     </main>
+  );
+}
+
+function CommandPanel({
+  input,
+  useCaseHeadline,
+  activeModule,
+  onModeChange,
+  onUseCaseChange,
+  onPatchInput,
+  onModuleChange,
+  onProviderToggle,
+}: {
+  input: StudioInput;
+  useCaseHeadline: string;
+  activeModule: OMSModule;
+  onModeChange: (mode: StudioMode) => void;
+  onUseCaseChange: (useCaseId: string) => void;
+  onPatchInput: (patch: Partial<StudioInput>) => void;
+  onModuleChange: (moduleId: string) => void;
+  onProviderToggle: (providerId: string) => void;
+}) {
+  return (
+    <aside className="commandPanel panel">
+      <div className="panelHeader">
+        <div>
+          <p className="eyebrow">Command panel</p>
+          <h2>{input.mode === "launch" ? "Launch New" : "Modernize Existing"}</h2>
+        </div>
+        <SlidersHorizontal size={18} />
+      </div>
+
+      <div className="modeSwitch" role="group" aria-label="Studio mode">
+        <button
+          className={input.mode === "launch" ? "active" : ""}
+          type="button"
+          onClick={() => onModeChange("launch")}
+        >
+          <Sparkles size={15} />
+          Launch New
+        </button>
+        <button
+          className={input.mode === "migration" ? "active" : ""}
+          type="button"
+          onClick={() => onModeChange("migration")}
+        >
+          <Factory size={15} />
+          Modernize
+        </button>
+      </div>
+
+      <label className="field">
+        <span>Product archetype</span>
+        <select
+          suppressHydrationWarning
+          value={input.useCaseId}
+          onChange={(event) => onUseCaseChange(event.target.value)}
+        >
+          {templates.map((template) => (
+            <option key={template.id} value={template.id}>
+              {template.name}
+            </option>
+          ))}
+        </select>
+        <small>{useCaseHeadline}</small>
+      </label>
+
+      <div className="primaryInputs">
+        <NumberField
+          label="Monthly volume"
+          value={input.monthlyVolume}
+          min={500000}
+          step={500000}
+          prefix="$"
+          onChange={(monthlyVolume) => onPatchInput({ monthlyVolume })}
+        />
+        <NumberField
+          label="Transactions"
+          value={input.monthlyTransactions}
+          min={1000}
+          step={1000}
+          onChange={(monthlyTransactions) => onPatchInput({ monthlyTransactions })}
+        />
+      </div>
+
+      <label className="field compact">
+        <span>Corridors</span>
+        <textarea
+          suppressHydrationWarning
+          value={input.corridors}
+          onChange={(event) => onPatchInput({ corridors: event.target.value })}
+        />
+      </label>
+
+      <details className="advancedDrawer">
+        <summary>
+          <span>Advanced stack assumptions</span>
+          <ChevronDown size={15} />
+        </summary>
+        <div className="stackInputs">
+          <NumberField
+            label={input.mode === "launch" ? "Vendors avoided" : "Current vendors"}
+            value={input.vendorCount}
+            min={1}
+            step={1}
+            onChange={(vendorCount) => onPatchInput({ vendorCount })}
+          />
+          <NumberField
+            label="API surfaces"
+            value={input.apiSurfaceCount}
+            min={1}
+            step={1}
+            onChange={(apiSurfaceCount) => onPatchInput({ apiSurfaceCount })}
+          />
+          <NumberField
+            label="Recon feeds"
+            value={input.reconciliationFeeds}
+            min={1}
+            step={1}
+            onChange={(reconciliationFeeds) => onPatchInput({ reconciliationFeeds })}
+          />
+          <NumberField
+            label="Compliance handoffs"
+            value={input.complianceHandoffs}
+            min={1}
+            step={1}
+            onChange={(complianceHandoffs) => onPatchInput({ complianceHandoffs })}
+          />
+          <NumberField
+            label="Active wallets"
+            value={input.activeWallets}
+            min={1000}
+            step={1000}
+            onChange={(activeWallets) => onPatchInput({ activeWallets })}
+          />
+          <NumberField
+            label="Settlement delay"
+            value={input.settlementDays}
+            min={0}
+            step={0.25}
+            suffix=" days"
+            onChange={(settlementDays) => onPatchInput({ settlementDays })}
+          />
+        </div>
+      </details>
+
+      <details className="marketDrawer">
+        <summary>
+          <span>Point-solution market</span>
+          <ChevronDown size={15} />
+        </summary>
+        <div className="moduleChips">
+          {modules.map((module) => {
+            const Icon = moduleIcons[module.id] ?? Boxes;
+            return (
+              <button
+                key={module.id}
+                className={module.id === activeModule.id ? "selected" : ""}
+                type="button"
+                onClick={() => onModuleChange(module.id)}
+              >
+                <Icon size={14} />
+                {shortModuleLabel(module.label)}
+              </button>
+            );
+          })}
+        </div>
+        <div className="providerList">
+          {activeModule.providers.slice(0, 7).map((provider) => (
+            <button
+              key={provider.id}
+              className={input.selectedProviderIds.includes(provider.id) ? "checked" : ""}
+              type="button"
+              onClick={() => onProviderToggle(provider.id)}
+            >
+              <span>{provider.name}</span>
+              <CheckCircle2 size={15} />
+            </button>
+          ))}
+        </div>
+      </details>
+    </aside>
+  );
+}
+
+function ExecutiveStrip({
+  recommendation,
+  generatedLabel,
+  onGenerate,
+}: {
+  recommendation: Recommendation;
+  generatedLabel: string;
+  onGenerate: () => void;
+}) {
+  return (
+    <section className="executiveStrip panel">
+      <div className="strategyCopy">
+        <div className="statusLine">
+          <span className="liveDot" />
+          <span>Strategy status: {generatedLabel}</span>
+        </div>
+        <h2>{recommendation.title}</h2>
+        <p>{recommendation.narrative}</p>
+      </div>
+      <button className="primaryAction" type="button" onClick={onGenerate}>
+        <Sparkles size={17} />
+        Generate OMS Strategy
+      </button>
+      <div className="depthCallout">
+        <LockKeyhole size={17} />
+        <p>{recommendation.depthMoment}</p>
+      </div>
+    </section>
+  );
+}
+
+function MigrationMap({
+  input,
+  recommendation,
+  activeModuleId,
+  onModuleClick,
+}: {
+  input: StudioInput;
+  recommendation: Recommendation;
+  activeModuleId: string;
+  onModuleClick: (moduleId: string) => void;
+}) {
+  const currentCards =
+    input.mode === "migration"
+      ? [
+          {
+            title: `${input.vendorCount} vendors`,
+            detail: `${input.apiSurfaceCount} APIs, ${input.reconciliationFeeds} recon feeds`,
+          },
+          {
+            title: "Legacy settlement",
+            detail: `${input.settlementDays} day liquidity drag across ${input.corridors}`,
+          },
+          {
+            title: "Compliance handoffs",
+            detail: `${input.complianceHandoffs} control boundaries before payout`,
+          },
+        ]
+      : [
+          {
+            title: "New product surface",
+            detail: "Customer UX, policy model, corridors, and launch constraints.",
+          },
+          {
+            title: `${input.vendorCount} vendors avoided`,
+            detail: "Wallets, ramps, chain infra, settlement, and risk discovery.",
+          },
+          {
+            title: "Launch liquidity path",
+            detail: input.corridors,
+          },
+        ];
+
+  const retainedCards = [
+    ...recommendation.playbook.retained.slice(0, 2),
+    ...recommendation.playbook.wrapped.slice(0, 2),
+  ].slice(0, 4);
+
+  const outcomeCards = [
+    {
+      title: "One orchestration layer",
+      detail: "Wallets, ramps, stablecoin settlement, chain services, and compliance hooks.",
+    },
+    {
+      title: "Treasury and recon events",
+      detail: `${formatMoney(recommendation.costModel.steadyStateAnnualSavings)} steady-state modeled savings.`,
+    },
+    {
+      title: "PMM-ready proof",
+      detail: "Battlecards, caveats, source evidence, and launch narrative.",
+    },
+  ];
+
+  return (
+    <section className="migrationMap panel">
+      <div className="mapHeader">
+        <div>
+          <p className="eyebrow">Migration canvas</p>
+          <h3>Before stack, OMS core, retained partners, outcomes</h3>
+        </div>
+        <div className="routeLegend">
+          <span className="current">Current</span>
+          <span className="oms">Polygon OMS</span>
+          <span className="partner">Retained</span>
+          <span className="outcome">Outcome</span>
+        </div>
+      </div>
+
+      <div className="routeSpine" aria-hidden="true">
+        <span>Assess</span>
+        <i />
+        <span>Orchestrate</span>
+        <i />
+        <span>Settle</span>
+      </div>
+
+      <div className="mapLanes">
+        <MapLane title="Current Stack" tone="current" kicker={input.mode === "launch" ? "Starting point" : "Fragmented today"}>
+          {currentCards.map((card) => (
+            <MapCard key={card.title} title={card.title} detail={card.detail} tone="current" />
+          ))}
+        </MapLane>
+
+        <MapLane title="Polygon OMS" tone="oms" kicker="One integration">
+          {recommendation.modules.map((module) => {
+            const Icon = moduleIcons[module.id] ?? Boxes;
+            return (
+              <button
+                key={module.id}
+                className={`mapCard moduleCard oms ${module.id === activeModuleId ? "active" : ""}`}
+                type="button"
+                onClick={() => onModuleClick(module.id)}
+              >
+                <Icon size={16} />
+                <strong>{shortModuleLabel(module.label)}</strong>
+                <span>{module.polygonRole}</span>
+              </button>
+            );
+          })}
+        </MapLane>
+
+        <MapLane title="Retained Partners" tone="partner" kicker="Compliant by design">
+          {retainedCards.map((item) => (
+            <MapCard key={item} title={item} detail="Kept, wrapped, or phased with policy and audit controls." tone="partner" />
+          ))}
+        </MapLane>
+
+        <MapLane title="Outcomes" tone="outcome" kicker="PMM proof">
+          {outcomeCards.map((card) => (
+            <MapCard key={card.title} title={card.title} detail={card.detail} tone="outcome" />
+          ))}
+        </MapLane>
+      </div>
+    </section>
+  );
+}
+
+function InsightPanel({
+  input,
+  recommendation,
+  activeModule,
+  activeTab,
+  packetTab,
+  exportedPitch,
+  packet,
+  isExporting,
+  onTabChange,
+  onPacketTabChange,
+  onGeneratePacket,
+}: {
+  input: StudioInput;
+  recommendation: Recommendation;
+  activeModule: OMSModule;
+  activeTab: InsightTab;
+  packetTab: PacketTab;
+  exportedPitch: string;
+  packet: PacketSections;
+  isExporting: boolean;
+  onTabChange: (tab: InsightTab) => void;
+  onPacketTabChange: (tab: PacketTab) => void;
+  onGeneratePacket: () => void;
+}) {
+  return (
+    <section className="insightPanel panel">
+      <div className="sectionTabs">
+        <TabButton active={activeTab === "evidence"} onClick={() => onTabChange("evidence")}>
+          <BookOpen size={15} />
+          Evidence
+        </TabButton>
+        <TabButton active={activeTab === "controls"} onClick={() => onTabChange("controls")}>
+          <ShieldCheck size={15} />
+          Controls
+        </TabButton>
+        <TabButton active={activeTab === "packet"} onClick={() => onTabChange("packet")}>
+          <FileText size={15} />
+          PMM Packet
+        </TabButton>
+      </div>
+
+      <AnimatePresence mode="wait">
+        {activeTab === "evidence" && (
+          <motion.div key="evidence" {...panelMotion} className="evidenceLayout">
+            <div className="evidenceHero">
+              <p className="eyebrow">Selected OMS module</p>
+              <h3>{activeModule.label}</h3>
+              <p>{activeModule.polygonRole}</p>
+              <div className="playbookGrid compactGrid">
+                <PlaybookList label="Retain" items={recommendation.playbook.retained.slice(0, 3)} />
+                <PlaybookList label="Replace" items={recommendation.playbook.replaced.slice(0, 3)} />
+                <PlaybookList label="Wrap" items={recommendation.playbook.wrapped.slice(0, 3)} />
+              </div>
+            </div>
+            <div className="competitorTable">
+              {activeModule.providers.slice(0, 8).map((provider) => (
+                <ProviderRow key={provider.id} provider={provider} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === "controls" && (
+          <motion.div key="controls" {...panelMotion} className="controlsLayout">
+            <div className="controlGrid">
+              {recommendation.compliance.map((control) => (
+                <article key={control.id} className="controlCard">
+                  <span>{control.phase}</span>
+                  <strong>{control.label}</strong>
+                  <p>{control.description}</p>
+                </article>
+              ))}
+            </div>
+            <div className="phaseRail">
+              <p className="eyebrow">Migration phases</p>
+              {recommendation.playbook.phases.map((phase, index) => (
+                <div key={phase} className="phaseStep">
+                  <span>{index + 1}</span>
+                  <p>{phase}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === "packet" && (
+          <motion.div key="packet" {...panelMotion}>
+            <PacketPanel
+              input={input}
+              recommendation={recommendation}
+              activeModule={activeModule}
+              packet={packet}
+              packetTab={packetTab}
+              exportedPitch={exportedPitch}
+              isExporting={isExporting}
+              onPacketTabChange={onPacketTabChange}
+              onGeneratePacket={onGeneratePacket}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+}
+
+function BusinessCasePanel({
+  input,
+  recommendation,
+  isExporting,
+  onGenerateStrategy,
+  onGeneratePacket,
+}: {
+  input: StudioInput;
+  recommendation: Recommendation;
+  isExporting: boolean;
+  onGenerateStrategy: () => void;
+  onGeneratePacket: () => void;
+}) {
+  const reducedApis = Math.max(4, Math.ceil(input.apiSurfaceCount * 0.32));
+  const reducedFeeds = Math.max(2, Math.ceil(input.reconciliationFeeds * 0.34));
+
+  return (
+    <aside className="businessPanel panel">
+      <div className="businessHeader">
+        <p className="eyebrow">Business case</p>
+        <h2>{formatMoney(recommendation.costModel.firstYearNetSavings)}</h2>
+        <span>Modeled first-year net savings</span>
+      </div>
+
+      <button className="strategyShortcut" type="button" onClick={onGenerateStrategy}>
+        <Sparkles size={16} />
+        Generate OMS Strategy
+      </button>
+
+      <div className="signalGrid">
+        <SignalCard label="Vendors" value={`${input.vendorCount} to 1`} detail="OMS layer plus retained regulated partners" />
+        <SignalCard label="APIs" value={`${input.apiSurfaceCount} to ${reducedApis}`} detail="fewer surfaces to secure and reconcile" />
+        <SignalCard label="Recon feeds" value={`${input.reconciliationFeeds} to ${reducedFeeds}`} detail="single settlement event model" />
+        <SignalCard
+          label="Complexity"
+          value={`${recommendation.costModel.integrationComplexityReduction}%`}
+          detail="non-salary integration reduction"
+        />
+      </div>
+
+      <div className="waterfall">
+        <WaterfallBar
+          label="Fee delta"
+          value={recommendation.costModel.feeDelta}
+          max={recommendation.costModel.steadyStateAnnualSavings}
+        />
+        <WaterfallBar
+          label="Vendor and recon consolidation"
+          value={recommendation.costModel.fixedVendorSavings}
+          max={recommendation.costModel.steadyStateAnnualSavings}
+        />
+        <WaterfallBar
+          label="Liquidity release"
+          value={recommendation.costModel.workingCapitalRelease}
+          max={recommendation.costModel.steadyStateAnnualSavings}
+        />
+      </div>
+
+      <div className="pricingNote">
+        <Landmark size={16} />
+        <p>
+          Polygon OMS pricing is early-access/custom. This model uses public competitor pricing
+          signals plus a Polygon network cost signal, not a fake OMS quote.
+        </p>
+      </div>
+
+      <button className="primaryAction wide" type="button" onClick={onGeneratePacket}>
+        <Download size={17} />
+        {isExporting ? "Preparing packet" : "Generate PMM Packet"}
+      </button>
+    </aside>
+  );
+}
+
+function PacketPanel({
+  recommendation,
+  activeModule,
+  packet,
+  packetTab,
+  exportedPitch,
+  isExporting,
+  onPacketTabChange,
+  onGeneratePacket,
+}: {
+  input: StudioInput;
+  recommendation: Recommendation;
+  activeModule: OMSModule;
+  packet: PacketSections;
+  packetTab: PacketTab;
+  exportedPitch: string;
+  isExporting: boolean;
+  onPacketTabChange: (tab: PacketTab) => void;
+  onGeneratePacket: () => void;
+}) {
+  return (
+    <div className="packetPanel">
+      <div className="packetHeader">
+        <div>
+          <p className="eyebrow">PMM packet</p>
+          <h3>Pitch-ready hiring artifact</h3>
+        </div>
+        <button className="secondaryAction" type="button" onClick={onGeneratePacket}>
+          <RefreshCcw size={15} />
+          {isExporting ? "Generating" : "Refresh packet"}
+        </button>
+      </div>
+
+      <div className="packetTabs">
+        <PacketTabButton active={packetTab === "memo"} onClick={() => onPacketTabChange("memo")}>
+          Executive Memo
+        </PacketTabButton>
+        <PacketTabButton active={packetTab === "slides"} onClick={() => onPacketTabChange("slides")}>
+          6-Slide Pitch
+        </PacketTabButton>
+        <PacketTabButton active={packetTab === "battlecard"} onClick={() => onPacketTabChange("battlecard")}>
+          Battlecard
+        </PacketTabButton>
+        <PacketTabButton active={packetTab === "sources"} onClick={() => onPacketTabChange("sources")}>
+          Source Appendix
+        </PacketTabButton>
+      </div>
+
+      {packetTab === "memo" && (
+        <div className="memoStack">
+          {packet.memo.map((item) => (
+            <article key={item.title} className="memoCard">
+              <span>{item.kicker}</span>
+              <strong>{item.title}</strong>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      )}
+
+      {packetTab === "slides" && (
+        <div className="slideGrid">
+          {packet.slides.map((slide, index) => (
+            <article key={slide.title} className="slideCard">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{slide.title}</strong>
+              <p>{slide.body}</p>
+            </article>
+          ))}
+        </div>
+      )}
+
+      {packetTab === "battlecard" && (
+        <div className="battlecard">
+          <div>
+            <p className="eyebrow">Polygon angle</p>
+            <h4>{activeModule.label}</h4>
+            <p>{activeModule.polygonRole}</p>
+          </div>
+          <div className="battleRows">
+            {recommendation.battlecards.slice(0, 4).map((card) => (
+              <article key={card.moduleId}>
+                <strong>{card.moduleLabel}</strong>
+                <p>{card.polygonAngle}</p>
+                <span>{card.competitors.slice(0, 4).map((provider) => provider.name).join(", ")}</span>
+              </article>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {packetTab === "sources" && (
+        <div className="sourceAppendix">
+          {packet.sources.map((source) => (
+            <a key={`${source.label}-${source.url}`} href={source.url} target="_blank" rel="noreferrer">
+              <strong>{source.label}</strong>
+              <span>{source.detail}</span>
+              <ArrowRight size={14} />
+            </a>
+          ))}
+          <details className="markdownPayload">
+            <summary>Markdown payload from export API</summary>
+            <textarea suppressHydrationWarning readOnly value={exportedPitch || packet.markdown} />
+          </details>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MapLane({
+  title,
+  kicker,
+  tone,
+  children,
+}: {
+  title: string;
+  kicker: string;
+  tone: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={`mapLane ${tone}`}>
+      <div className="laneHeader">
+        <span>{kicker}</span>
+        <strong>{title}</strong>
+      </div>
+      <div className="laneStack">{children}</div>
+    </div>
+  );
+}
+
+function MapCard({ title, detail, tone }: { title: string; detail: string; tone: string }) {
+  return (
+    <article className={`mapCard ${tone}`}>
+      <strong>{title}</strong>
+      <span>{detail}</span>
+    </article>
+  );
+}
+
+function ProviderRow({ provider }: { provider: Provider }) {
+  const evidence = pricing.find((item) => item.providerId === provider.id);
+
+  return (
+    <article className="providerRow">
+      <div>
+        <strong>{provider.name}</strong>
+        <span>{provider.category}</span>
+      </div>
+      <p>{provider.pricingSignal}</p>
+      <small>{provider.strength}</small>
+      {evidence && (
+        <a href={evidence.url} target="_blank" rel="noreferrer">
+          Source <ArrowRight size={13} />
+        </a>
+      )}
+    </article>
   );
 }
 
@@ -561,6 +920,7 @@ function NumberField({
     <label className="numberField">
       <span>{label}</span>
       <input
+        suppressHydrationWarning
         min={min}
         step={step}
         type="number"
@@ -592,17 +952,34 @@ function TabButton({
   );
 }
 
-function MetricRow({ label, value }: { label: string; value: string }) {
+function PacketTabButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="metricRow">
+    <button className={active ? "active" : ""} type="button" onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+function SignalCard({ label, value, detail }: { label: string; value: string; detail: string }) {
+  return (
+    <article className="signalCard">
       <span>{label}</span>
       <strong>{value}</strong>
-    </div>
+      <p>{detail}</p>
+    </article>
   );
 }
 
 function WaterfallBar({ label, value, max }: { label: string; value: number; max: number }) {
-  const width = Math.max(6, Math.min(100, (value / Math.max(max, 1)) * 100));
+  const width = Math.max(5, Math.min(100, (value / Math.max(max, 1)) * 100));
   return (
     <div className="waterfallBar">
       <div>
@@ -625,53 +1002,103 @@ function PlaybookList({ label, items }: { label: string; items: string[] }) {
   );
 }
 
-function toFlowElements(recommendation: ReturnType<typeof generateRecommendation>) {
-  const groupY: Record<string, number> = {
-    current: 10,
-    control: 230,
-    oms: 120,
-    outcome: 330,
-  };
-  const groupX: Record<string, number> = {
-    current: 0,
-    control: 290,
-    oms: 560,
-    outcome: 860,
-  };
-  const counters: Record<string, number> = {};
+type PacketSections = {
+  memo: Array<{ kicker: string; title: string; body: string }>;
+  slides: Array<{ title: string; body: string }>;
+  sources: Array<{ label: string; detail: string; url: string }>;
+  markdown: string;
+};
 
-  const nodes: Node[] = recommendation.architecture.nodes.map((node) => {
-    counters[node.group] = (counters[node.group] ?? 0) + 1;
-    const Icon = node.group === "control" ? ShieldCheck : node.group === "outcome" ? Globe2 : Boxes;
-    return {
-      id: node.id,
-      position: {
-        x: groupX[node.group] + ((counters[node.group] - 1) % 2) * 210,
-        y: groupY[node.group] + Math.floor((counters[node.group] - 1) / 2) * 104,
+function buildPacketSections(
+  input: StudioInput,
+  recommendation: Recommendation,
+  activeModule: OMSModule,
+): PacketSections {
+  const modulesList = recommendation.modules.map((module) => module.label).join(", ");
+  const currentComplexity = `${input.vendorCount} vendors, ${input.apiSurfaceCount} APIs, ${input.reconciliationFeeds} reconciliation feeds`;
+  const savings = formatMoney(recommendation.costModel.firstYearNetSavings);
+  const steadyState = formatMoney(recommendation.costModel.steadyStateAnnualSavings);
+  const sourceProviders = recommendation.modules
+    .flatMap((module) => module.providers.slice(0, 2))
+    .map((provider) => {
+      const evidence = pricing.find((item) => item.providerId === provider.id);
+      return evidence
+        ? {
+            label: provider.name,
+            detail: provider.pricingSignal,
+            url: evidence.url,
+          }
+        : null;
+    })
+    .filter((source): source is { label: string; detail: string; url: string } => Boolean(source))
+    .slice(0, 10);
+
+  return {
+    memo: [
+      {
+        kicker: "Thesis",
+        title: "Polygon OMS is a consolidation story, not cheap crypto rails.",
+        body: `${recommendation.title} turns ${currentComplexity} into a single orchestration layer with retained regulated partners and a public-evidence business case.`,
       },
-      data: {
-        label: (
-          <div className={`flowNode ${node.group}`}>
-            <Icon size={15} />
-            <strong>{node.label}</strong>
-            <span>{node.detail}</span>
-          </div>
-        ),
+      {
+        kicker: "Buyer pain",
+        title: input.mode === "migration" ? "Existing fintech stacks are operationally over-fragmented." : "New builders lose time to vendor assembly.",
+        body: recommendation.depthMoment,
       },
-      className: "flowNodeShell",
-      type: "default",
-    };
-  });
+      {
+        kicker: "Economic proof",
+        title: `${savings} modeled first-year impact with ${steadyState} steady-state annual savings.`,
+        body: "The model excludes salary and headcount assumptions by default, then shows integration complexity separately so the pitch stays credible across hiring markets.",
+      },
+      {
+        kicker: "PMM angle",
+        title: "Sell the migration lab as proof of developer velocity and compliance readiness.",
+        body: `The packet maps ${modulesList} to competitors, public pricing signals, compliance controls, migration phases, and source caveats.`,
+      },
+    ],
+    slides: [
+      {
+        title: "Open Money Stack, framed for institutions",
+        body: "Global rails for wallets, ramps, stablecoin settlement, chain services, compliance hooks, and bespoke blockchain infrastructure.",
+      },
+      {
+        title: "The old stack is the risk surface",
+        body: `Current model: ${currentComplexity}, ${input.complianceHandoffs} compliance handoffs, and ${input.settlementDays} day settlement assumptions.`,
+      },
+      {
+        title: "Polygon OMS architecture",
+        body: `One orchestration layer coordinates ${modulesList} while preserving regulated entities and local partners where required.`,
+      },
+      {
+        title: "Business case",
+        body: `${savings} modeled first-year net savings, ${recommendation.costModel.integrationComplexityReduction}% integration complexity reduction, with public pricing caveats visible.`,
+      },
+      {
+        title: "Compliance and security",
+        body: "Sanctions, wallet risk, Travel Rule, velocity limits, MPC policy approvals, audit logs, ledger reconciliation, and incident freeze controls stay explicit.",
+      },
+      {
+        title: "PMM launch motion",
+        body: "Use the lab for sales discovery, launch narratives, battlecards, customer segmentation, and source-backed pricing conversations.",
+      },
+    ],
+    sources: [
+      {
+        label: "Polygon OMS pricing stance",
+        detail: "Early access/custom, modeled here with public competitor evidence and Polygon network cost signals.",
+        url: "https://polygon.technology/open-money-stack",
+      },
+      {
+        label: activeModule.label,
+        detail: activeModule.polygonRole,
+        url: "https://docs.polygon.technology/oms/overview",
+      },
+      ...sourceProviders,
+    ],
+    markdown: buildExportPitch(input),
+  };
+}
 
-  const edges: Edge[] = recommendation.architecture.edges.map((edge) => ({
-    id: edge.id,
-    source: edge.source,
-    target: edge.target,
-    label: edge.label,
-    animated: edge.source === "oms-core",
-    style: { stroke: edge.source === "oms-core" ? "#365c50" : "#aab2ad", strokeWidth: 1.4 },
-    labelStyle: { fill: "#4c5751", fontSize: 11, fontWeight: 600 },
-  }));
-
-  return { nodes, edges };
+function shortModuleLabel(label: string) {
+  return label.replace("Blockchain-as-a-service ", "BaaS ").replace("Stablecoin ", "Stablecoin\n");
 }
