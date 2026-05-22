@@ -8,32 +8,34 @@ export function ProviderSelector({
   mode,
   selectedProviderIds,
   benchmarkProviderIds,
+  showBenchmarkForLaunch = true,
   onToggleProvider,
 }: {
   mode: StudioMode;
   selectedProviderIds: string[];
   benchmarkProviderIds: string[];
+  showBenchmarkForLaunch?: boolean;
   onToggleProvider: (providerId: string) => void;
 }) {
-  const effectiveIds = mode === "launch" ? benchmarkProviderIds : selectedProviderIds;
+  const effectiveIds = mode === "launch" && showBenchmarkForLaunch ? benchmarkProviderIds : selectedProviderIds;
   const selectedSet = new Set(effectiveIds);
+  const isLaunchBenchmark = mode === "launch" && showBenchmarkForLaunch;
 
   return (
     <section className="providerSelector">
       <div className="sectionHeader">
         <div>
-          <span>{mode === "launch" ? "Benchmark stack" : "Current providers"}</span>
-          <h3>{mode === "launch" ? "Point-solution comparison" : "Select the stack you use today"}</h3>
+          <h3>{isLaunchBenchmark ? "Benchmark stack" : "Current providers"}</h3>
+          {!isLaunchBenchmark && <p>Select if you are Modernizing Existing. This helps us calculate savings and create your migration plan.</p>}
         </div>
-        <strong>{effectiveIds.length} providers</strong>
+        {!isLaunchBenchmark && <small>Optional</small>}
       </div>
 
       <div className="providerAccordion">
-        {modules.map((module, index) => {
+        {modules.map((module) => {
           const selectedCount = module.providers.filter((provider) => selectedSet.has(provider.id)).length;
-          const showOpen = selectedCount > 0 || index < 2;
           return (
-            <details key={module.id} open={showOpen}>
+            <details key={module.id}>
               <summary>
                 <span>
                   <Layers3 size={15} />
@@ -66,10 +68,16 @@ export function ProviderSelector({
         })}
       </div>
 
+      {!isLaunchBenchmark && (
+        <button className="addProviderButton" type="button">
+          + Add other provider
+        </button>
+      )}
+
       <p className="modelNote">
-        {mode === "launch"
+        {isLaunchBenchmark
           ? "Benchmark stack: priced point solutions a new build would otherwise stitch together without OMS."
-          : "Your selections are priced as the current stack and update the savings model immediately."}
+          : "Modernize Existing selections update the savings model immediately."}
       </p>
     </section>
   );

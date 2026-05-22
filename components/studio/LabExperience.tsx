@@ -13,7 +13,7 @@ export function LabExperience({
   useCaseName,
   onEdit,
   onToggleProvider,
-  onOpenPacket,
+  onOpenReport,
 }: {
   input: StudioInput;
   recommendation: Recommendation;
@@ -22,7 +22,7 @@ export function LabExperience({
   useCaseName: string;
   onEdit: () => void;
   onToggleProvider: (providerId: string) => void;
-  onOpenPacket: () => void;
+  onOpenReport: () => void;
 }) {
   return (
     <section className="labStage">
@@ -34,7 +34,7 @@ export function LabExperience({
         onToggleProvider={onToggleProvider}
       />
       <OmsCanvas input={input} recommendation={recommendation} requiredModules={requiredModules} />
-      <BusinessCasePanel input={input} recommendation={recommendation} onOpenPacket={onOpenPacket} />
+      <BusinessCasePanel input={input} recommendation={recommendation} onOpenReport={onOpenReport} />
     </section>
   );
 }

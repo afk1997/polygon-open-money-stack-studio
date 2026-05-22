@@ -1,40 +1,103 @@
 "use client";
 
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2, Circle, Globe2, Loader2, Pencil, Route, ShieldCheck, WalletCards } from "lucide-react";
 import { motion } from "framer-motion";
+import type { ReactNode } from "react";
+import type { StudioInput } from "@/lib/types";
+import { formatMoney } from "@/lib/engine";
 
 const buildSteps = [
   "Read intake",
   "Map OMS modules",
   "Price providers",
   "Build canvas",
-  "Prepare packet",
+  "Prepare report",
 ];
 
-export function BuildingStage({ activeIndex }: { activeIndex: number }) {
+export function BuildingStage({
+  activeIndex,
+  input,
+  providerCount,
+  useCaseName,
+}: {
+  activeIndex: number;
+  input: StudioInput;
+  providerCount: number;
+  useCaseName: string;
+}) {
   return (
     <section className="buildingStage">
+      <motion.aside
+        className="buildIntakeCard"
+        initial={{ opacity: 0, x: -14 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.24 }}
+      >
+        <div className="buildIntakeHeader">
+          <strong>Your intake</strong>
+          <span>Will collapse</span>
+        </div>
+        <BuildFact icon={<WalletCards size={17} />} label="Mode" value={input.mode === "launch" ? "Launch New" : "Modernize Existing"} />
+        <BuildFact icon={<Route size={17} />} label="Use case" value={useCaseName} />
+        <BuildFact icon={<Globe2 size={17} />} label="Corridors" value={input.corridors} />
+        <hr />
+        <BuildFact icon={<ShieldCheck size={17} />} label="Monthly volume" value={formatMoney(input.monthlyVolume)} />
+        <BuildFact icon={<Circle size={17} />} label="Monthly transactions" value={input.monthlyTransactions.toLocaleString()} />
+        <BuildFact icon={<ShieldCheck size={17} />} label={input.mode === "launch" ? "Benchmark stack" : "Current stack"} value={`${providerCount} providers selected`} />
+        <button type="button">
+          <Pencil size={14} />
+          Edit intake
+        </button>
+      </motion.aside>
+
       <motion.div
         className="buildingCard"
         initial={{ opacity: 0, scale: 0.97, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.25 }}
       >
-        <span className="kicker">Building OMS stack</span>
-        <h2>Drafting from your assumptions</h2>
+        <div className="buildGlyph" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </div>
+        <h2>Building OMS stack</h2>
+        <p>Drafting from your assumptions</p>
         <div className="buildRows">
           {buildSteps.map((step, index) => {
             const done = index < activeIndex;
             const active = index === activeIndex;
             return (
               <div key={step} className={done || active ? "active" : ""}>
-                {done ? <CheckCircle2 size={18} /> : <Loader2 size={18} className={active ? "spinning" : ""} />}
+                <b>{String(index + 1).padStart(2, "0")}</b>
+                {done ? <CheckCircle2 size={33} /> : <Loader2 size={33} className={active ? "spinning" : ""} />}
                 <span>{step}</span>
+                <em>{done ? "Completed" : active ? "In progress" : "Queued"}</em>
               </div>
             );
           })}
         </div>
       </motion.div>
     </section>
+  );
+}
+
+function BuildFact({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="buildFact">
+      {icon}
+      <span>
+        <small>{label}</small>
+        <strong>{value}</strong>
+      </span>
+    </div>
   );
 }

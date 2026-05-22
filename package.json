@@ -1,7 +1,7 @@
 {
   "name": "open-money-stack",
   "version": "1.0.0",
-  "description": "Polygon Open Money Stack Studio prototype for PMM-grade launch and migration pitches.",
+  "description": "Polygon Open Money Stack Studio for launch and migration switch reports.",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",

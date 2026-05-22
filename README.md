@@ -17,7 +17,7 @@ Open `http://localhost:3000`.
 - Modernize Existing mode for neobanks, PSPs, payroll platforms, marketplaces, and remittance apps consolidating fragmented vendors.
 - OMS module map for wallet infrastructure, crosschain interoperability, stablecoin orchestration, blockchain integration, cash ramps, on/off-ramp, cross-border payments, CDK, and compliance/security.
 - Competitor research packs with pricing evidence labels: published, public signal, or custom.
-- Scenario savings model, architecture canvas, compliance controls, migration playbook, and PMM export.
+- Scenario savings model, architecture canvas, compliance controls, migration playbook, and switch report export.
 
 ## API Routes
 

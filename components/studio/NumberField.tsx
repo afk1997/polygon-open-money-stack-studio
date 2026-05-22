@@ -54,11 +54,13 @@ export function TextAreaField({
   label,
   value,
   placeholder,
+  maxLength,
   onChange,
 }: {
   label: string;
   value: string;
   placeholder: string;
+  maxLength?: number;
   onChange: (value: string) => void;
 }) {
   return (
@@ -68,8 +70,10 @@ export function TextAreaField({
         suppressHydrationWarning
         value={value}
         placeholder={placeholder}
+        maxLength={maxLength}
         onChange={(event) => onChange(event.target.value)}
       />
+      {maxLength && <small>{value.length} / {maxLength}</small>}
     </label>
   );
 }

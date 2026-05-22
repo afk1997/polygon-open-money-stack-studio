@@ -264,7 +264,7 @@ function buildDemoTrace(workflow: string, input: StudioInput): DemoTrace {
       { name: "map_oms_modules", status: "done" },
       { name: "price_selected_stack", status: "done" },
       { name: "attach_compliance_controls", status: "ready" },
-      { name: "render_pmm_packet", status: "queued" },
+      { name: "render_switch_report", status: "queued" },
     ],
     structuredOutput: {
       mode: input.mode,

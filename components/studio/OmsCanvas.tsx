@@ -3,44 +3,33 @@
 import {
   Banknote,
   Boxes,
-  Braces,
-  Factory,
+  CheckCircle2,
+  ChevronDown,
+  Crosshair,
+  Database,
+  Expand,
   GitBranch,
-  Globe2,
-  Landmark,
+  LockKeyhole,
   Network,
+  Route,
+  Search,
   ShieldCheck,
   WalletCards,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import type { ComponentType } from "react";
 import type { OMSModule, Recommendation, StudioInput } from "@/lib/types";
-import { formatMoney } from "@/lib/engine";
 import { groupProvidersByModule } from "./useStudioModel";
 
 const moduleIcons: Record<string, ComponentType<{ size?: number }>> = {
   "wallet-infra": WalletCards,
   crosschain: Network,
   "stablecoin-orchestration": Banknote,
-  ramps: Globe2,
-  "cross-border": GitBranch,
-  "blockchain-integration": Braces,
+  ramps: LockKeyhole,
+  "cross-border": Route,
+  "blockchain-integration": Database,
   cdk: Boxes,
   "compliance-security": ShieldCheck,
-};
-
-const CANVAS_NODE_WIDTH = 230;
-
-type CanvasNode = {
-  id: string;
-  title: string;
-  label: string;
-  body: string;
-  chips: string[];
-  kind: "source" | "oms" | "module" | "outcome";
-  x: number;
-  y: number;
-  icon: ComponentType<{ size?: number }>;
 };
 
 export function OmsCanvas({
@@ -52,187 +41,132 @@ export function OmsCanvas({
   recommendation: Recommendation;
   requiredModules: OMSModule[];
 }) {
-  const nodes = buildCanvasNodes(input, recommendation, requiredModules);
-  const edges = buildCanvasEdges(nodes);
-  const nodesById = new Map(nodes.map((node) => [node.id, node]));
+  const groups = groupProvidersByModule(input.selectedProviderIds);
+  const topModules = requiredModules.slice(0, 4);
+  const providerNames = groups.flatMap((group) => group.providers.map((provider) => provider.name)).slice(0, 10);
 
   return (
     <section className="canvasShell">
       <div className="canvasToolbar">
-        <div>
-          <span className="kicker">Canvas</span>
-          <h2>{input.mode === "launch" ? "Launch blueprint" : "Migration map"}</h2>
+        <div className="canvasCrumb">
+          <span className="miniMark" />
+          <strong>Polygon OMS</strong>
+          <em>Draft</em>
+          <small>Last saved 2 min ago</small>
         </div>
         <div className="canvasTools">
-          <button type="button">Export PNG</button>
-          <button type="button">Reset view</button>
+          <span>View</span>
+          <button type="button">Logical <ChevronDown size={14} /></button>
+          <span>Environment</span>
+          <button type="button">Production <ChevronDown size={14} /></button>
+          <button className="squareTool" type="button" aria-label="Fit view"><Expand size={15} /></button>
+          <button className="squareTool" type="button" aria-label="Search"><Search size={15} /></button>
+          <button className="squareTool" type="button" aria-label="Lock"><LockKeyhole size={15} /></button>
         </div>
       </div>
 
       <div className="canvasViewport">
         <div className="canvasBoard">
-          <svg className="canvasEdges" width="1100" height="1120" viewBox="0 0 1100 1120">
-            {edges.map((edge) => {
-              const source = nodesById.get(edge.source);
-              const target = nodesById.get(edge.target);
-              if (!source || !target) return null;
-              const sx = source.x + CANVAS_NODE_WIDTH;
-              const sy = source.y + 62;
-              const tx = target.x;
-              const ty = target.y + 62;
-              const mid = sx + Math.max(70, (tx - sx) / 2);
-              return (
-                <motion.path
-                  key={`${edge.source}-${edge.target}`}
-                  d={`M ${sx} ${sy} C ${mid} ${sy}, ${mid} ${ty}, ${tx} ${ty}`}
-                  fill="none"
-                  stroke="#8ea8df"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 1 }}
-                  transition={{ duration: 0.45, delay: 0.08 }}
-                />
-              );
+          <svg className="canvasEdges" width="1040" height="760" viewBox="0 0 1040 760" aria-hidden="true">
+            <path className="softEdge" d="M 156 372 C 260 372, 268 372, 372 372" />
+            {providerNames.slice(0, 8).map((_, index) => (
+              <path
+                key={index}
+                className="dashedEdge"
+                d={`M 156 ${210 + index * 45} C 252 ${210 + index * 45}, 276 372, 372 372`}
+              />
+            ))}
+            {topModules.map((_, index) => {
+              const x = 302 + index * 166;
+              return <path key={index} className="primaryEdge" d={`M ${x} 204 C ${x} 304, 430 302, 430 358`} />;
             })}
+            <path className="primaryEdge" d="M 520 486 C 520 548, 520 560, 520 604" />
+            <path className="primaryEdge" d="M 674 372 C 746 372, 756 372, 818 372" />
+            <path className="softEdge" d="M 452 604 C 452 548, 452 530, 452 486" />
+            <path className="softEdge" d="M 588 604 C 588 548, 588 530, 588 486" />
           </svg>
 
-          {nodes.map((node, index) => {
-            const Icon = node.icon;
+          <motion.article className="stackNode currentStackNode" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+            <span className="nodeKicker">{input.mode === "launch" ? "Benchmark stack" : "Current stack"}</span>
+            <small>{input.selectedProviderIds.length || input.vendorCount} providers</small>
+            <div className="stackProviderList">
+              {(providerNames.length ? providerNames : ["Circle Wallets", "Bridge", "BVNK", "Transak"]).map((name) => (
+                <span key={name}><WalletCards size={14} />{name}</span>
+              ))}
+            </div>
+          </motion.article>
+
+          {topModules.map((module, index) => {
+            const Icon = moduleIcons[module.id] ?? Boxes;
+            const group = groups.find((item) => item.module.id === module.id);
+            const providers = group?.providers.slice(0, 2) ?? module.providers.slice(0, 2);
             return (
               <motion.article
-                key={node.id}
-                className={`canvasNode ${node.kind}`}
-                style={{ left: node.x, top: node.y }}
-                initial={{ opacity: 0, y: 14 }}
+                key={module.id}
+                className="stackNode moduleStackNode"
+                style={{ left: 240 + index * 166 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.22, delay: index * 0.04 }}
+                transition={{ delay: 0.05 * index }}
               >
-                <div className="nodeMeta">
-                  <span><Icon size={14} /> {node.label}</span>
-                </div>
-                <h3>{node.title}</h3>
-                <p>{node.body}</p>
-                <div className="nodeTags">
-                  {node.chips.map((chip) => (
-                    <span key={chip}>{chip}</span>
-                  ))}
-                </div>
+                <Icon size={18} />
+                <span>{shortModuleLabel(module.label)}</span>
+                <small>{providers.length} providers</small>
+                {providers.map((provider) => (
+                  <b key={provider.id}>{provider.name}</b>
+                ))}
               </motion.article>
             );
           })}
+
+          <motion.article className="omsCoreNode" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }}>
+            <div className="omsCoreTitle">
+              <span className="miniMark" />
+              <strong>Polygon OMS Orchestration</strong>
+            </div>
+            <div className="omsCoreGrid">
+              <span><Crosshair size={15} />Policy & routing</span>
+              <span><Database size={15} />Reconciliation</span>
+              <span><WalletCards size={15} />Ledger & balances</span>
+              <span><ShieldCheck size={15} />Risk & monitoring</span>
+              <span><GitBranch size={15} />Counterparty mgmt</span>
+              <span><Boxes size={15} />Workflow engine</span>
+            </div>
+          </motion.article>
+
+          <motion.article className="controlsNode" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}>
+            <span className="nodeKicker"><ShieldCheck size={15} /> Compliance controls</span>
+            <div>
+              {recommendation.compliance.slice(0, 6).map((control) => (
+                <span key={control.id}>{control.label}</span>
+              ))}
+            </div>
+          </motion.article>
+
+          <motion.article className="outcomesNode" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.22 }}>
+            <span className="nodeKicker"><ShieldCheck size={15} /> Outcomes</span>
+            {["Faster settlement", "Lower fees", "Unified ledger", "Better compliance", "Scalable growth"].map((item) => (
+              <p key={item}><CheckCircle2 size={16} />{item}</p>
+            ))}
+          </motion.article>
+
+          <div className="canvasZoom">
+            <button type="button"><Expand size={14} /></button>
+            <span>−</span>
+            <strong>100%</strong>
+            <span>+</span>
+            <button type="button"><LockKeyhole size={14} /></button>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-function buildCanvasNodes(
-  input: StudioInput,
-  recommendation: Recommendation,
-  requiredModules: OMSModule[],
-): CanvasNode[] {
-  const selectedGroups = groupProvidersByModule(input.selectedProviderIds);
-  const sourceTitle = input.mode === "launch" ? "Benchmark stack" : "Current stack";
-  const sourceBody =
-    input.mode === "launch"
-      ? `${input.selectedProviderIds.length} point providers modeled from the selected use case and requirements.`
-      : `${input.selectedProviderIds.length || input.vendorCount} providers, ${input.apiSurfaceCount} APIs, ${input.reconciliationFeeds} reconciliation feeds.`;
-
-  const moduleNodes = requiredModules.slice(0, 6).map((module, index) => ({
-    id: `module-${module.id}`,
-    title: module.label,
-    label: "OMS module",
-    body: moduleCanvasBody(module),
-    chips: module.providers.slice(0, 2).map((provider) => provider.name),
-    kind: "module" as const,
-    x: 570,
-    y: 78 + index * 176,
-    icon: moduleIcons[module.id] ?? Boxes,
-  }));
-
-  return [
-    {
-      id: "source",
-      title: sourceTitle,
-      label: input.mode === "launch" ? "Benchmark" : "Today",
-      body: sourceBody,
-      chips: selectedGroups.slice(0, 3).map((group) => group.module.label),
-      kind: "source",
-      x: 42,
-      y: 340,
-      icon: input.mode === "launch" ? Landmark : Factory,
-    },
-    {
-      id: "oms",
-      title: "Polygon OMS",
-      label: "Orchestration",
-      body: "Wallets, stablecoin settlement, ramps, compliance hooks, crosschain routing, and chain services under one integration layer.",
-      chips: ["one integration", "stablecoin rails", "compliance hooks"],
-      kind: "oms",
-      x: 306,
-      y: 78,
-      icon: Boxes,
-    },
-    ...moduleNodes,
-    {
-      id: "outcome-cost",
-      title: "Business case",
-      label: "Outcome",
-      body: `${formatMoney(recommendation.costModel.firstYearNetSavings)} modeled first-year impact with public pricing caveats attached.`,
-      chips: ["savings", "pricing evidence"],
-      kind: "outcome",
-      x: 840,
-      y: 170,
-      icon: Banknote,
-    },
-    {
-      id: "outcome-controls",
-      title: "Controls",
-      label: "Outcome",
-      body: "KYC/KYB, sanctions, KYT, Travel Rule, velocity limits, audit logs, and incident response paths.",
-      chips: ["risk", "audit", "policy"],
-      kind: "outcome",
-      x: 840,
-      y: 410,
-      icon: ShieldCheck,
-    },
-    {
-      id: "outcome-packet",
-      title: "PMM packet",
-      label: "Outcome",
-      body: "Executive memo, 6-slide pitch, battlecard, and source appendix for a product marketing interview artifact.",
-      chips: ["memo", "battlecard", "sources"],
-      kind: "outcome",
-      x: 840,
-      y: 650,
-      icon: GitBranch,
-    },
-  ];
-}
-
-function moduleCanvasBody(module: OMSModule) {
-  const copy: Record<string, string> = {
-    "wallet-infra": "Wallet policy, delegated signing, account abstraction, and custody routing through one OMS layer.",
-    crosschain: "Crosschain message, liquidity, and settlement routing without separate bridge integrations.",
-    "stablecoin-orchestration": "Issue, hold, settle, reconcile, and route stablecoins across product and payout flows.",
-    ramps: "Cash-in, cash-out, local methods, and payout partner orchestration.",
-    "cross-border": "Stablecoin settlement with local fiat endpoints and corridor reconciliation.",
-    "blockchain-integration": "RPC, indexing, webhooks, event monitoring, and chain-state integrations for the flow.",
-    cdk: "A bespoke payments chain path with Polygon CDK and AggLayer-style interoperability.",
-    "compliance-security": "Sanctions, KYT, velocity limits, audit trails, and incident controls around each flow.",
-  };
-
-  return copy[module.id] ?? module.polygonRole;
-}
-
-function buildCanvasEdges(nodes: CanvasNode[]) {
-  const moduleIds = nodes.filter((node) => node.kind === "module").map((node) => node.id);
-  return [
-    { source: "source", target: "oms" },
-    ...moduleIds.map((moduleId) => ({ source: "oms", target: moduleId })),
-    { source: "oms", target: "outcome-cost" },
-    { source: "oms", target: "outcome-controls" },
-    { source: "oms", target: "outcome-packet" },
-  ];
+function shortModuleLabel(label: string) {
+  return label
+    .replace("Cash Ramps and On/Off-Ramp", "Cash Ramps")
+    .replace("Cross-Border Payments", "Cross-Border Payments")
+    .replace("Stablecoin Orchestration", "Stablecoin Orchestration")
+    .replace("Wallet Infrastructure", "Wallet Infrastructure");
 }

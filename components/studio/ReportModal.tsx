@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import type { Recommendation, StudioInput } from "@/lib/types";
 import { buildExportPitch, formatMoney } from "@/lib/engine";
 
-export function PacketModal({
+export function ReportModal({
   input,
   recommendation,
   open,
@@ -21,35 +21,35 @@ export function PacketModal({
   return (
     <div className="modalLayer" role="dialog" aria-modal="true">
       <motion.section
-        className="packetModal"
+        className="reportModal"
         initial={{ opacity: 0, scale: 0.97, y: 14 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.2 }}
       >
-        <button className="modalClose" type="button" onClick={onClose} aria-label="Close PMM packet">
+        <button className="modalClose" type="button" onClick={onClose} aria-label="Close switch report">
           <X size={18} />
         </button>
-        <span className="kicker">PMM packet</span>
+        <span className="kicker">Switch report</span>
         <h2>{recommendation.title}</h2>
-        <div className="packetGrid">
+        <div className="reportGrid">
           <article>
-            <strong>Executive memo</strong>
+            <strong>Executive brief</strong>
             <p>{recommendation.narrative}</p>
           </article>
           <article>
-            <strong>6-slide pitch</strong>
-            <ol>
-              <li>Fragmented stack or benchmark build cost.</li>
-              <li>Polygon OMS architecture and module map.</li>
-              <li>Provider replacement, wrap, or benchmark story.</li>
-              <li>{formatMoney(recommendation.costModel.firstYearNetSavings)} modeled first-year impact.</li>
-              <li>Compliance and security controls.</li>
-              <li>Launch or migration roadmap.</li>
-            </ol>
+            <strong>Business case</strong>
+            <p>
+              First-year modeled impact is {formatMoney(recommendation.costModel.firstYearNetSavings)} with
+              {` ${recommendation.costModel.selectedProviderCount}`} provider cost lines attached.
+            </p>
           </article>
           <article>
-            <strong>Battlecard</strong>
-            <p>{recommendation.depthMoment}</p>
+            <strong>Switch plan</strong>
+            <ol>
+              {recommendation.playbook.phases.map((phase) => (
+                <li key={phase}>{phase}</li>
+              ))}
+            </ol>
           </article>
           <article>
             <strong>Source appendix</strong>

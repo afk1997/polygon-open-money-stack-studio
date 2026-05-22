@@ -8,7 +8,7 @@ import type { StudioInput, StudioMode } from "@/lib/types";
 import { BuildingStage } from "./studio/BuildingStage";
 import { IntakeExperience, defaultsForUseCase } from "./studio/IntakeExperience";
 import { LabExperience } from "./studio/LabExperience";
-import { PacketModal } from "./studio/PacketModal";
+import { ReportModal } from "./studio/ReportModal";
 import { StudioTopbar } from "./studio/StudioTopbar";
 import { useStudioModel } from "./studio/useStudioModel";
 import type { ComplianceId, RequirementId } from "./studio/config";
@@ -24,7 +24,7 @@ export function Studio() {
   }));
   const [stepIndex, setStepIndex] = useState(0);
   const [buildIndex, setBuildIndex] = useState(0);
-  const [packetOpen, setPacketOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const model = useStudioModel(input, choices);
   const visibleStepCount = input.mode === "launch" ? 3 : 4;
@@ -104,7 +104,7 @@ export function Studio() {
     setBuildIndex(0);
     for (let index = 0; index < 5; index += 1) {
       setBuildIndex(index);
-      await wait(220);
+      await wait(360);
     }
     setStage("lab");
   }
@@ -119,7 +119,7 @@ export function Studio() {
       <StudioTopbar
         stage={stage}
         onReset={() => setStage("intake")}
-        onPacket={() => setPacketOpen(true)}
+        onReport={() => setReportOpen(true)}
       />
 
       <AnimatePresence mode="wait">
@@ -142,7 +142,15 @@ export function Studio() {
             onDraft={draftStack}
           />
         )}
-        {stage === "building" && <BuildingStage key="building" activeIndex={buildIndex} />}
+        {stage === "building" && (
+          <BuildingStage
+            key="building"
+            activeIndex={buildIndex}
+            input={labInput}
+            providerCount={labInput.selectedProviderIds.length}
+            useCaseName={model.useCase.name}
+          />
+        )}
         {stage === "lab" && (
           <LabExperience
             key="lab"
@@ -153,16 +161,16 @@ export function Studio() {
             useCaseName={model.useCase.name}
             onEdit={() => setStage("intake")}
             onToggleProvider={toggleProvider}
-            onOpenPacket={() => setPacketOpen(true)}
+            onOpenReport={() => setReportOpen(true)}
           />
         )}
       </AnimatePresence>
 
-      <PacketModal
+      <ReportModal
         input={labInput}
         recommendation={model.recommendation}
-        open={packetOpen}
-        onClose={() => setPacketOpen(false)}
+        open={reportOpen}
+        onClose={() => setReportOpen(false)}
       />
     </main>
   );

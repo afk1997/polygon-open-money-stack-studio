@@ -1,19 +1,28 @@
 "use client";
 
-import { ArrowRight, CheckCircle2, Factory, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Banknote,
+  CheckCircle2,
+  Factory,
+  Landmark,
+  LockKeyhole,
+  Plus,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import { motion } from "framer-motion";
+import type { ReactNode } from "react";
 import { templates } from "@/lib/data";
 import type { StudioInput, StudioMode } from "@/lib/types";
 import {
-  complianceOptions,
   defaultCompliance,
   defaultRequirementsByUseCase,
   intakeSteps,
   modeLabel,
-  requirementOptions,
 } from "./config";
 import type { ComplianceId, RequirementId } from "./config";
-import { NumberField, TextAreaField, TextField } from "./NumberField";
+import { NumberField, TextAreaField } from "./NumberField";
 import { ProviderSelector } from "./ProviderSelector";
 import type { StudioChoices } from "./types";
 
@@ -48,9 +57,8 @@ export function IntakeExperience({
   onStepChange: (index: number) => void;
   onDraft: () => void;
 }) {
-  const step = intakeSteps[currentStepIndex] ?? intakeSteps[0]!;
-  const canGoBack = currentStepIndex > 0;
-  const canGoNext = currentStepIndex < visibleSteps(input.mode).length - 1;
+  void currentStepIndex;
+  void onStepChange;
 
   return (
     <motion.section
@@ -59,48 +67,42 @@ export function IntakeExperience({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.25 }}
     >
-      <aside className="intakeAside">
-        <span className="kicker">Polygon OMS Studio</span>
-        <h1>Configure your OMS stack</h1>
-        <p>
-          Build a launch blueprint or migration business case from use case, flow, provider,
-          and cost assumptions.
-        </p>
-        <div className="modeGrid">
-          <button
-            className={input.mode === "launch" ? "active" : ""}
-            type="button"
-            onClick={() => onModeChange("launch")}
-          >
-            <Sparkles size={16} />
-            Launch New
-          </button>
-          <button
-            className={input.mode === "migration" ? "active" : ""}
-            type="button"
-            onClick={() => onModeChange("migration")}
-          >
-            <Factory size={16} />
-            Modernize Existing
-          </button>
-        </div>
-        <div className="intakeProgress">
-          {visibleSteps(input.mode).map((item, index) => (
+      <div className="intakeFrame">
+        <aside className="intakeAside">
+          <span className="kicker">Mode</span>
+          <div className="modeStack">
             <button
-              key={item.id}
-              className={currentStepIndex === index ? "active" : ""}
+              className={input.mode === "launch" ? "active" : ""}
               type="button"
-              onClick={() => onStepChange(index)}
+              onClick={() => onModeChange("launch")}
             >
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {item.label}
+              Launch New
+              <span />
             </button>
-          ))}
-        </div>
-      </aside>
+            <button
+              className={input.mode === "migration" ? "active" : ""}
+              type="button"
+              onClick={() => onModeChange("migration")}
+            >
+              Modernize Existing
+              <span />
+            </button>
+          </div>
 
-      <section className="intakeMain">
-        {step.id === "product" && (
+          <div className="modeExplainer">
+            <span>{input.mode === "launch" ? <Sparkles size={18} /> : <Factory size={18} />}</span>
+            <div>
+              <strong>{modeLabel(input.mode)}</strong>
+              <p>
+                {input.mode === "launch"
+                  ? "Design a money movement product from scratch and get an optimal OMS stack for your use case."
+                  : "Map your current providers, costs, and controls into a Polygon OMS migration plan."}
+              </p>
+            </div>
+          </div>
+        </aside>
+
+        <section className="intakeMain">
           <ProductStep
             input={input}
             workflow={workflow}
@@ -108,43 +110,38 @@ export function IntakeExperience({
             onWorkflowChange={onWorkflowChange}
             onUseCaseChange={onUseCaseChange}
           />
-        )}
-        {step.id === "flow" && (
+          <AssumptionsStep input={input} onPatchInput={onPatchInput} />
           <FlowStep
             choices={choices}
             onToggleRequirement={onToggleRequirement}
             onToggleCompliance={onToggleCompliance}
           />
-        )}
-        {step.id === "assumptions" && (
-          <AssumptionsStep input={input} onPatchInput={onPatchInput} />
-        )}
-        {step.id === "providers" && (
+        </section>
+
+        <aside className="intakeProviders">
           <ProviderSelector
             mode={input.mode}
             selectedProviderIds={input.selectedProviderIds}
             benchmarkProviderIds={benchmarkProviderIds}
+            showBenchmarkForLaunch={false}
             onToggleProvider={onToggleProvider}
           />
-        )}
+        </aside>
 
-        <div className="intakeFooter">
-          <button type="button" disabled={!canGoBack} onClick={() => onStepChange(currentStepIndex - 1)}>
-            Back
-          </button>
-          {canGoNext ? (
-            <button className="primaryButton" type="button" onClick={() => onStepChange(currentStepIndex + 1)}>
-              Continue
-              <ArrowRight size={16} />
-            </button>
-          ) : (
+        <footer className="intakeFooter">
+          <p>
+            <LockKeyhole size={14} />
+            Your inputs are secure and never shared.
+          </p>
+          <div>
+            <button type="button">Save draft</button>
             <button className="primaryButton" type="button" onClick={onDraft}>
               Draft OMS stack
               <ArrowRight size={16} />
             </button>
-          )}
-        </div>
-      </section>
+          </div>
+        </footer>
+      </div>
     </motion.section>
   );
 }
@@ -164,18 +161,14 @@ function ProductStep({
 }) {
   return (
     <div className="intakeStep">
-      <span className="kicker">{modeLabel(input.mode)}</span>
-      <h2>Start with the product</h2>
+      <h1>Configure your money movement stack</h1>
       <p className="stepCopy">
-        Choose a use case, add real context if needed, and keep the rest of the studio grounded in those assumptions.
+        Answer a few questions so we can design the right OMS architecture, cost model, and switch report.
       </p>
       <div className="productGrid">
         <label className="selectInput">
           <span>Use case</span>
-          <select
-            value={input.useCaseId}
-            onChange={(event) => onUseCaseChange(event.target.value)}
-          >
+          <select value={input.useCaseId} onChange={(event) => onUseCaseChange(event.target.value)}>
             {templates.map((template) => (
               <option key={template.id} value={template.id}>
                 {template.name}
@@ -183,19 +176,40 @@ function ProductStep({
             ))}
           </select>
         </label>
-        <TextField
-          label="Corridors"
-          value={input.corridors}
-          placeholder="USDC to MXN, BRL, PHP, INR"
-          onChange={(corridors) => onPatchInput({ corridors })}
+        <TextAreaField
+          label="Optional context"
+          value={workflow}
+          placeholder="Add target users, corridors, payout markets, constraints, or product details..."
+          maxLength={500}
+          onChange={onWorkflowChange}
         />
       </div>
-      <TextAreaField
-        label="Optional context"
-        value={workflow}
-        placeholder="Add target users, payout markets, regulatory constraints, current workflow details, or product edge cases..."
-        onChange={onWorkflowChange}
-      />
+      <AssumptionNote />
+    </div>
+  );
+}
+
+function AssumptionNote() {
+  return <span className="fieldHint">Modeled savings exclude salary and hiring assumptions.</span>;
+}
+
+function AssumptionsStep({
+  input,
+  onPatchInput,
+}: {
+  input: StudioInput;
+  onPatchInput: (patch: Partial<StudioInput>) => void;
+}) {
+  return (
+    <div className="assumptionsBlock">
+      <h3>Assumptions</h3>
+      <div className="assumptionGrid">
+        <NumberField label="Monthly volume (USD)" value={input.monthlyVolume} onChange={(monthlyVolume) => onPatchInput({ monthlyVolume })} />
+        <NumberField label="Transactions / month" value={input.monthlyTransactions} onChange={(monthlyTransactions) => onPatchInput({ monthlyTransactions })} />
+        <NumberField label="Active wallets / accounts" value={input.activeWallets} onChange={(activeWallets) => onPatchInput({ activeWallets })} />
+        <NumberField label="Settlement days target" value={input.settlementDays} suffix="days" step={0.25} onChange={(settlementDays) => onPatchInput({ settlementDays })} />
+        <NumberField label="Corridors" value={input.reconciliationFeeds} onChange={(reconciliationFeeds) => onPatchInput({ reconciliationFeeds })} />
+      </div>
     </div>
   );
 }
@@ -210,88 +224,103 @@ function FlowStep({
   onToggleCompliance: (compliance: ComplianceId) => void;
 }) {
   return (
-    <div className="intakeStep">
-      <span className="kicker">Product requirements</span>
-      <h2>Pick the flows OMS needs to support</h2>
-      <p className="stepCopy">Selected flows decide which OMS modules and benchmark providers get priced.</p>
-      <div className="choiceGrid">
-        {requirementOptions.map((option) => (
-          <ChoiceButton
-            key={option.id}
-            selected={choices.requirements.includes(option.id)}
-            label={option.label}
-            detail={option.detail}
-            onClick={() => onToggleRequirement(option.id)}
-          />
-        ))}
-      </div>
-
-      <div className="sectionHeader compact">
+    <div className="flowSection">
+      <div className="sectionHeader">
         <div>
-          <span>Compliance requirements</span>
-          <h3>Select controls that matter for the flow</h3>
+          <h3>Configure your flow</h3>
+          <p>Tell us more about how money moves in your product.</p>
         </div>
       </div>
-      <div className="choiceGrid complianceGrid">
-        {complianceOptions.map((option) => (
-          <ChoiceButton
-            key={option.id}
-            selected={choices.compliance.includes(option.id)}
-            label={option.label}
-            detail={option.detail}
-            onClick={() => onToggleCompliance(option.id)}
-          />
+
+      <div className="flowCardGrid">
+        <FlowCard
+          icon={<ArrowRight size={18} />}
+          title="Money movement"
+          detail="How will money move across borders and within the product?"
+          rows={[
+            ["Domestic transfers", choices.requirements.includes("wallet-balances"), () => onToggleRequirement("wallet-balances")],
+            ["Cross-border payouts", choices.requirements.includes("cross-border"), () => onToggleRequirement("cross-border")],
+            ["Multi-currency support", choices.requirements.includes("dedicated-chain"), () => onToggleRequirement("dedicated-chain")],
+          ]}
+        />
+        <FlowCard
+          icon={<Landmark size={18} />}
+          title="Cash-in / Cash-out"
+          detail="How will users fund accounts and cash out locally?"
+          rows={[
+            ["Card on-ramp", choices.requirements.includes("cash-in"), () => onToggleRequirement("cash-in")],
+            ["Bank transfer", choices.requirements.includes("cash-in"), () => onToggleRequirement("cash-in")],
+            ["Local cash-out / payout", choices.requirements.includes("cash-out"), () => onToggleRequirement("cash-out")],
+            ["None / not required", !choices.requirements.includes("cash-in") && !choices.requirements.includes("cash-out"), () => {
+              if (choices.requirements.includes("cash-in")) onToggleRequirement("cash-in");
+              if (choices.requirements.includes("cash-out")) onToggleRequirement("cash-out");
+            }],
+          ]}
+        />
+        <FlowCard
+          icon={<Banknote size={18} />}
+          title="Stablecoin settlement"
+          detail="How should stablecoins be used for settlement?"
+          rows={[
+            ["USDC settlement", choices.requirements.includes("cross-border"), () => onToggleRequirement("cross-border")],
+            ["Hold balances", choices.requirements.includes("wallet-balances"), () => onToggleRequirement("wallet-balances")],
+            ["Convert to local currency", choices.requirements.includes("cash-out"), () => onToggleRequirement("cash-out")],
+            ["Not required", choices.requirements.length === 0, () => undefined],
+          ]}
+        />
+        <FlowCard
+          icon={<ShieldCheck size={18} />}
+          title="Compliance requirements"
+          detail="What compliance and risk controls are needed?"
+          rows={[
+            ["KYC/KYB", choices.compliance.includes("kyc-kyb"), () => onToggleCompliance("kyc-kyb")],
+            ["Sanctions screening", choices.compliance.includes("sanctions"), () => onToggleCompliance("sanctions")],
+            ["Travel Rule", choices.compliance.includes("travel-rule"), () => onToggleCompliance("travel-rule")],
+            ["Wallet risk monitoring", choices.compliance.includes("kyt"), () => onToggleCompliance("kyt")],
+          ]}
+        />
+      </div>
+
+      <button className="addRequirement" type="button">
+        <Plus size={16} />
+        Add specific requirement
+      </button>
+    </div>
+  );
+}
+
+function FlowCard({
+  icon,
+  title,
+  detail,
+  rows,
+}: {
+  icon: ReactNode;
+  title: string;
+  detail: string;
+  rows: Array<[string, boolean, () => void]>;
+}) {
+  return (
+    <article className="flowCard">
+      <div className="flowCardTop">
+        <span>{icon}</span>
+        <i />
+      </div>
+      <h4>{title}</h4>
+      <p>{detail}</p>
+      <div className="flowChecks">
+        {rows.map(([label, selected, onClick]) => (
+          <button key={label} type="button" className={selected ? "checked" : ""} onClick={onClick}>
+            {selected ? <CheckCircle2 size={14} /> : <span />}
+            {label}
+          </button>
         ))}
       </div>
-    </div>
+    </article>
   );
 }
 
-function AssumptionsStep({
-  input,
-  onPatchInput,
-}: {
-  input: StudioInput;
-  onPatchInput: (patch: Partial<StudioInput>) => void;
-}) {
-  return (
-    <div className="intakeStep">
-      <span className="kicker">Cost assumptions</span>
-      <h2>Set the modeled scale</h2>
-      <p className="stepCopy">Use the closest real operating numbers. Salary and hiring assumptions stay outside the savings model.</p>
-      <div className="assumptionGrid">
-        <NumberField label="Monthly volume" value={input.monthlyVolume} onChange={(monthlyVolume) => onPatchInput({ monthlyVolume })} />
-        <NumberField label="Transactions / month" value={input.monthlyTransactions} onChange={(monthlyTransactions) => onPatchInput({ monthlyTransactions })} />
-        <NumberField label="Active wallets" value={input.activeWallets} onChange={(activeWallets) => onPatchInput({ activeWallets })} />
-        <NumberField label="Settlement delay" value={input.settlementDays} suffix="days" step={0.25} onChange={(settlementDays) => onPatchInput({ settlementDays })} />
-        <NumberField label="API surfaces" value={input.apiSurfaceCount} onChange={(apiSurfaceCount) => onPatchInput({ apiSurfaceCount })} />
-        <NumberField label="Reconciliation feeds" value={input.reconciliationFeeds} onChange={(reconciliationFeeds) => onPatchInput({ reconciliationFeeds })} />
-        <NumberField label="Compliance handoffs" value={input.complianceHandoffs} onChange={(complianceHandoffs) => onPatchInput({ complianceHandoffs })} />
-      </div>
-    </div>
-  );
-}
-
-function ChoiceButton({
-  selected,
-  label,
-  detail,
-  onClick,
-}: {
-  selected: boolean;
-  label: string;
-  detail: string;
-  onClick: () => void;
-}) {
-  return (
-    <button className={selected ? "choiceCard selected" : "choiceCard"} type="button" onClick={onClick}>
-      <span>{selected && <CheckCircle2 size={16} />}{label}</span>
-      <small>{detail}</small>
-    </button>
-  );
-}
-
-function visibleSteps(mode: StudioMode) {
+export function visibleSteps(mode: StudioMode) {
   return intakeSteps.filter((step) => mode === "migration" || step.id !== "providers");
 }
 

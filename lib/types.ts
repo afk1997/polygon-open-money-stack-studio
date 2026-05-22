@@ -142,7 +142,7 @@ export type Recommendation = {
   battlecards: Battlecard[];
 };
 
-export type DraftStage = "blank" | "understanding" | "stack" | "demo" | "eval" | "packet";
+export type DraftStage = "blank" | "understanding" | "stack" | "demo" | "eval" | "report";
 
 export type WorkflowDraftInput = Partial<StudioInput> & {
   workflow?: string;
