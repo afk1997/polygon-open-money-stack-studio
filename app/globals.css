@@ -100,7 +100,6 @@ a {
 .secondaryAction,
 .topbarAction,
 .statusLine,
-.depthCallout,
 .pricingNote {
   display: flex;
   align-items: center;
@@ -455,20 +454,14 @@ textarea:focus {
 .executiveStrip {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 14px;
-  padding: 16px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
 }
 
 .strategyCopy h2 {
   max-width: 920px;
-  font-size: clamp(26px, 3vw, 38px);
-}
-
-.strategyCopy p {
-  max-width: 78ch;
-  margin: 10px 0 0;
-  color: #47534d;
-  line-height: 1.52;
+  font-size: clamp(24px, 2.4vw, 32px);
 }
 
 .statusLine {
@@ -537,22 +530,6 @@ textarea:focus {
 .providerList button:active,
 .mapCard:active {
   transform: scale(0.985);
-}
-
-.depthCallout {
-  grid-column: 1 / -1;
-  gap: 10px;
-  padding: 11px;
-  border: 1px solid rgba(88, 71, 201, 0.22);
-  border-radius: 6px;
-  background: var(--violet-soft);
-}
-
-.depthCallout p {
-  margin: 0;
-  color: #37324f;
-  font-size: 13px;
-  line-height: 1.42;
 }
 
 .migrationMap {

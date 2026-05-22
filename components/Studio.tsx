@@ -16,7 +16,6 @@ import {
   Globe2,
   Landmark,
   Layers3,
-  LockKeyhole,
   Network,
   RefreshCcw,
   ShieldCheck,
@@ -422,16 +421,11 @@ function ExecutiveStrip({
           <span>Strategy status: {generatedLabel}</span>
         </div>
         <h2>{recommendation.title}</h2>
-        <p>{recommendation.narrative}</p>
       </div>
       <button className="primaryAction" type="button" onClick={onGenerate}>
         <Sparkles size={17} />
         Generate OMS Strategy
       </button>
-      <div className="depthCallout">
-        <LockKeyhole size={17} />
-        <p>{recommendation.depthMoment}</p>
-      </div>
     </section>
   );
 }
