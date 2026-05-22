@@ -38,8 +38,10 @@ export function CommandPanel({
       <div className="miniMetrics">
         <Metric label="Monthly volume" value={formatMoney(input.monthlyVolume)} />
         <Metric label="Transactions / month" value={input.monthlyTransactions.toLocaleString()} />
+        <Metric label="Active wallets" value={input.activeWallets.toLocaleString()} />
         <Metric label={input.mode === "launch" ? "Benchmark providers" : "Current providers"} value={String(providerCount)} />
         <Metric label="Settlement days" value={`${input.settlementDays}`} />
+        <Metric label="Corridors" value={String(input.reconciliationFeeds)} />
       </div>
 
       <ProviderSelector

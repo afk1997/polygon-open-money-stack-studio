@@ -1069,10 +1069,10 @@ a {
 }
 
 .labStage {
-  height: calc(100dvh - 88px);
-  min-height: 780px;
+  height: calc(100dvh - 104px);
+  min-height: 820px;
   display: grid;
-  grid-template-columns: 300px minmax(780px, 1fr) 360px;
+  grid-template-columns: 336px minmax(820px, 1fr) 420px;
   background: #fff;
 }
 
@@ -1085,34 +1085,34 @@ a {
 
 .commandPanel {
   border-right: 1px solid var(--line);
-  padding: 22px;
+  padding: 28px;
 }
 
 .businessPanel {
   border-left: 1px solid var(--line);
-  padding: 0 16px 20px;
+  padding: 0 20px 24px;
 }
 
 .commandHeader {
   display: grid;
-  grid-template-columns: 38px 1fr 38px;
+  grid-template-columns: 48px 1fr 46px;
   align-items: center;
   gap: 12px;
-  margin-bottom: 22px;
+  margin-bottom: 26px;
 }
 
 .commandHeader > span {
-  width: 38px;
-  height: 38px;
+  width: 48px;
+  height: 48px;
   display: grid;
   place-items: center;
-  border-radius: 11px;
+  border-radius: 12px;
   color: var(--purple);
   background: var(--purple-soft);
 }
 
 .commandHeader strong {
-  font-size: 15px;
+  font-size: 18px;
 }
 
 .commandHeader div {
@@ -1123,54 +1123,65 @@ a {
 
 .commandHeader small {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .miniMetrics {
   display: grid;
-  gap: 0;
+  gap: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 24px;
+  padding: 18px;
+  margin-bottom: 28px;
+  background: #fff;
 }
 
 .metricTile {
-  min-height: 28px;
+  min-height: 22px;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 8px;
+  gap: 14px;
   align-items: center;
 }
 
 .metricTile span {
   color: #47536c;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 650;
   text-transform: none;
 }
 
 .metricTile strong {
-  font-size: 12px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+  text-align: right;
 }
 
 .canvasShell {
   min-width: 0;
   min-height: 0;
   display: grid;
-  grid-template-rows: 56px 1fr;
+  grid-template-rows: 68px 1fr;
 }
 
 .canvasToolbar {
   justify-content: space-between;
   gap: 16px;
-  padding: 0 20px;
+  padding: 0 22px;
   border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.92);
 }
 
 .canvasCrumb {
   gap: 12px;
   font-size: 13px;
+}
+
+.canvasCrumb strong,
+.canvasCrumb small {
+  white-space: nowrap;
 }
 
 .miniMark {
@@ -1217,8 +1228,8 @@ a {
 
 .canvasBoard {
   position: relative;
-  width: 1040px;
-  height: 760px;
+  width: 1120px;
+  height: 820px;
   margin: 0 auto;
 }
 
@@ -1259,10 +1270,10 @@ a {
 }
 
 .currentStackNode {
-  left: 18px;
-  top: 128px;
-  width: 156px;
-  padding: 12px;
+  left: 42px;
+  top: 148px;
+  width: 188px;
+  padding: 14px;
 }
 
 .nodeKicker {
@@ -1279,7 +1290,7 @@ a {
 
 .stackProviderList {
   display: grid;
-  gap: 9px;
+  gap: 8px;
   margin-top: 14px;
 }
 
@@ -1300,14 +1311,22 @@ a {
   font-weight: 650;
 }
 
+.stackProviderList .stackMore,
+.stackProviderList .stackEmpty,
+.moduleStackNode .modulePlaceholder {
+  color: #66728a;
+  border-style: dashed;
+  background: rgba(247, 249, 253, 0.82);
+}
+
 .moduleStackNode {
-  top: 80px;
-  width: 132px;
-  min-height: 154px;
+  top: 98px;
+  width: 152px;
+  min-height: 170px;
   display: grid;
   align-content: start;
   gap: 8px;
-  padding: 14px 12px;
+  padding: 16px 14px;
 }
 
 .moduleStackNode > svg {
@@ -1326,13 +1345,16 @@ a {
 .moduleStackNode b {
   min-height: 34px;
   font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .omsCoreNode {
-  left: 316px;
-  top: 334px;
-  width: 390px;
-  padding: 24px;
+  left: 436px;
+  top: 374px;
+  width: 430px;
+  padding: 25px;
   border-color: var(--purple);
 }
 
@@ -1354,9 +1376,9 @@ a {
 }
 
 .controlsNode {
-  left: 302px;
-  top: 604px;
-  width: 420px;
+  left: 416px;
+  top: 640px;
+  width: 470px;
   padding: 18px;
 }
 
@@ -1373,9 +1395,9 @@ a {
 }
 
 .outcomesNode {
-  left: 760px;
-  top: 344px;
-  width: 186px;
+  left: 918px;
+  top: 388px;
+  width: 200px;
   padding: 18px;
 }
 
@@ -1386,6 +1408,7 @@ a {
   margin: 16px 0 0;
   color: #52607a;
   font-size: 12px;
+  line-height: 1.25;
 }
 
 .outcomesNode svg {
@@ -1395,7 +1418,7 @@ a {
 .canvasZoom {
   position: absolute;
   left: 28px;
-  bottom: 20px;
+  bottom: 28px;
   gap: 10px;
 }
 
@@ -1418,7 +1441,7 @@ a {
   top: 0;
   z-index: 2;
   gap: 28px;
-  min-height: 56px;
+  min-height: 68px;
   border-bottom: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.94);
   color: #6b758d;
@@ -1428,7 +1451,7 @@ a {
 }
 
 .businessTabs span {
-  height: 56px;
+  height: 68px;
   display: grid;
   place-items: center;
   border-bottom: 3px solid transparent;
@@ -1779,6 +1802,27 @@ a {
   .intakeFrame {
     height: auto;
     grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .labStage {
+    grid-template-columns: 300px minmax(620px, 1fr) 360px;
+  }
+
+  .commandPanel {
+    padding: 24px;
+  }
+
+  .businessPanel {
+    padding: 0 16px 20px;
+  }
+
+  .canvasCrumb {
+    gap: 8px;
+  }
+
+  .canvasCrumb small,
+  .canvasTools > span {
+    display: none;
   }
 
   .intakeAside,

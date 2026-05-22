@@ -19,6 +19,7 @@ import {
 import { motion } from "framer-motion";
 import type { ComponentType } from "react";
 import type { OMSModule, Recommendation, StudioInput } from "@/lib/types";
+import { formatMoney } from "@/lib/engine";
 import { groupProvidersByModule } from "./useStudioModel";
 
 const moduleIcons: Record<string, ComponentType<{ size?: number }>> = {
@@ -42,8 +43,19 @@ export function OmsCanvas({
   requiredModules: OMSModule[];
 }) {
   const groups = groupProvidersByModule(input.selectedProviderIds);
-  const topModules = requiredModules.slice(0, 4);
-  const providerNames = groups.flatMap((group) => group.providers.map((provider) => provider.name)).slice(0, 10);
+  const selectedProviders = groups.flatMap((group) =>
+    group.providers.map((provider) => ({ provider, module: group.module })),
+  );
+  const providerCount = recommendation.costModel.selectedProviderCount || input.selectedProviderIds.length || input.vendorCount;
+  const displayProviders = selectedProviders.slice(0, 10);
+  const hiddenProviderCount = Math.max(selectedProviders.length - displayProviders.length, 0);
+  const moduleCards = buildModuleCards(requiredModules, groups, recommendation);
+  const board = { width: 1120, height: 820 };
+  const currentStackConnectorY = 390;
+  const coreInputX = 436;
+  const moduleConnectorY = 248;
+  const moduleX = (index: number) => 300 + index * 166;
+  const topOutcomes = buildOutcomes(input, recommendation);
 
   return (
     <section className="canvasShell">
@@ -52,7 +64,7 @@ export function OmsCanvas({
           <span className="miniMark" />
           <strong>Polygon OMS</strong>
           <em>Draft</em>
-          <small>Last saved 2 min ago</small>
+          <small>{providerCount} provider inputs priced</small>
         </div>
         <div className="canvasTools">
           <span>View</span>
@@ -67,54 +79,67 @@ export function OmsCanvas({
 
       <div className="canvasViewport">
         <div className="canvasBoard">
-          <svg className="canvasEdges" width="1040" height="760" viewBox="0 0 1040 760" aria-hidden="true">
-            <path className="softEdge" d="M 156 372 C 260 372, 268 372, 372 372" />
-            {providerNames.slice(0, 8).map((_, index) => (
+          <svg className="canvasEdges" width={board.width} height={board.height} viewBox={`0 0 ${board.width} ${board.height}`} aria-hidden="true">
+            <path className="softEdge" d={`M 206 ${currentStackConnectorY} C 300 ${currentStackConnectorY}, 334 ${currentStackConnectorY}, ${coreInputX} ${currentStackConnectorY}`} />
+            {displayProviders.slice(0, 8).map((_, index) => {
+              const y = 212 + index * 46;
+              return (
               <path
                 key={index}
                 className="dashedEdge"
-                d={`M 156 ${210 + index * 45} C 252 ${210 + index * 45}, 276 372, 372 372`}
+                d={`M 206 ${y} C 296 ${y}, 334 ${currentStackConnectorY}, ${coreInputX} ${currentStackConnectorY}`}
               />
-            ))}
-            {topModules.map((_, index) => {
-              const x = 302 + index * 166;
-              return <path key={index} className="primaryEdge" d={`M ${x} 204 C ${x} 304, 430 302, 430 358`} />;
+              );
             })}
-            <path className="primaryEdge" d="M 520 486 C 520 548, 520 560, 520 604" />
-            <path className="primaryEdge" d="M 674 372 C 746 372, 756 372, 818 372" />
-            <path className="softEdge" d="M 452 604 C 452 548, 452 530, 452 486" />
-            <path className="softEdge" d="M 588 604 C 588 548, 588 530, 588 486" />
+            {moduleCards.map((_, index) => {
+              const x = moduleX(index) + 76;
+              return <path key={index} className="primaryEdge" d={`M ${x} ${moduleConnectorY} C ${x} 326, 526 320, 526 374`} />;
+            })}
+            <path className="primaryEdge" d="M 596 518 C 596 582, 596 596, 596 640" />
+            <path className="primaryEdge" d="M 772 410 C 844 410, 854 410, 916 410" />
+            <path className="softEdge" d="M 510 640 C 510 582, 510 558, 510 518" />
+            <path className="softEdge" d="M 682 640 C 682 582, 682 558, 682 518" />
           </svg>
 
           <motion.article className="stackNode currentStackNode" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
             <span className="nodeKicker">{input.mode === "launch" ? "Benchmark stack" : "Current stack"}</span>
-            <small>{input.selectedProviderIds.length || input.vendorCount} providers</small>
+            <small>{providerCount} providers</small>
             <div className="stackProviderList">
-              {(providerNames.length ? providerNames : ["Circle Wallets", "Bridge", "BVNK", "Transak"]).map((name) => (
-                <span key={name}><WalletCards size={14} />{name}</span>
-              ))}
+              {displayProviders.map(({ provider, module }) => {
+                const Icon = moduleIcons[module.id] ?? WalletCards;
+                return (
+                  <span key={provider.id}><Icon size={14} />{provider.name}</span>
+                );
+              })}
+              {hiddenProviderCount > 0 && (
+                <span className="stackMore">+ {hiddenProviderCount} more selected</span>
+              )}
+              {displayProviders.length === 0 && (
+                <span className="stackEmpty">No point providers selected</span>
+              )}
             </div>
           </motion.article>
 
-          {topModules.map((module, index) => {
+          {moduleCards.map(({ module, providers, annualCost }, index) => {
             const Icon = moduleIcons[module.id] ?? Boxes;
-            const group = groups.find((item) => item.module.id === module.id);
-            const providers = group?.providers.slice(0, 2) ?? module.providers.slice(0, 2);
             return (
               <motion.article
                 key={module.id}
                 className="stackNode moduleStackNode"
-                style={{ left: 240 + index * 166 }}
+                style={{ left: moduleX(index) }}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05 * index }}
               >
                 <Icon size={18} />
                 <span>{shortModuleLabel(module.label)}</span>
-                <small>{providers.length} providers</small>
-                {providers.map((provider) => (
+                <small>{providers.length} {providers.length === 1 ? "provider" : "providers"}{annualCost > 0 ? ` · ${formatMoney(annualCost)}/yr` : ""}</small>
+                {providers.slice(0, 2).map((provider) => (
                   <b key={provider.id}>{provider.name}</b>
                 ))}
+                {providers.length === 0 && (
+                  <b className="modulePlaceholder">OMS module planned</b>
+                )}
               </motion.article>
             );
           })}
@@ -145,7 +170,7 @@ export function OmsCanvas({
 
           <motion.article className="outcomesNode" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.22 }}>
             <span className="nodeKicker"><ShieldCheck size={15} /> Outcomes</span>
-            {["Faster settlement", "Lower fees", "Unified ledger", "Better compliance", "Scalable growth"].map((item) => (
+            {topOutcomes.map((item) => (
               <p key={item}><CheckCircle2 size={16} />{item}</p>
             ))}
           </motion.article>
@@ -161,6 +186,78 @@ export function OmsCanvas({
       </div>
     </section>
   );
+}
+
+function buildModuleCards(
+  requiredModules: OMSModule[],
+  groups: ReturnType<typeof groupProvidersByModule>,
+  recommendation: Recommendation,
+) {
+  const byId = new Map<string, { module: OMSModule; providers: OMSModule["providers"]; annualCost: number }>();
+  const moduleCost = new Map<string, number>();
+
+  for (const line of recommendation.costModel.providerCostLines) {
+    moduleCost.set(line.moduleId, (moduleCost.get(line.moduleId) ?? 0) + line.annualCost);
+  }
+
+  for (const module of requiredModules) {
+    byId.set(module.id, { module, providers: [], annualCost: moduleCost.get(module.id) ?? 0 });
+  }
+
+  for (const group of groups) {
+    byId.set(group.module.id, {
+      module: group.module,
+      providers: group.providers,
+      annualCost: moduleCost.get(group.module.id) ?? 0,
+    });
+  }
+
+  return Array.from(byId.values())
+    .sort((a, b) => {
+      const priorityDelta = modulePriority(a.module.id) - modulePriority(b.module.id);
+      if (priorityDelta !== 0) return priorityDelta;
+      return b.providers.length - a.providers.length;
+    })
+    .slice(0, 4);
+}
+
+function modulePriority(moduleId: string) {
+  const order = [
+    "wallet-infra",
+    "stablecoin-orchestration",
+    "ramps",
+    "cross-border",
+    "crosschain",
+    "blockchain-integration",
+    "cdk",
+    "compliance-security",
+  ];
+  const index = order.indexOf(moduleId);
+  return index === -1 ? order.length : index;
+}
+
+function buildOutcomes(input: StudioInput, recommendation: Recommendation) {
+  const cost = recommendation.costModel;
+  const settlementText =
+    input.settlementDays > 1
+      ? `${input.settlementDays}-day settlement drag modeled`
+      : "Same-day settlement target";
+  return [
+    settlementText,
+    `${formatMoney(cost.feeDelta)} fee delta`,
+    `${cost.integrationComplexityReduction}% complexity reduction`,
+    `${input.reconciliationFeeds} reconciliation feeds unified`,
+    input.corridors ? `${compactCorridors(input.corridors)} corridors` : "Selected corridors covered",
+  ];
+}
+
+function compactCorridors(corridors: string) {
+  const parts = corridors
+    .split(/,|→|->| to /i)
+    .map((item) => item.trim())
+    .filter(Boolean);
+  if (parts.length <= 3) return corridors;
+  return `${parts.slice(0, 3).join(", ")} +${parts.length - 3}`;
 }
 
 function shortModuleLabel(label: string) {
