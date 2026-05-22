@@ -141,3 +141,80 @@ export type Recommendation = {
   playbook: MigrationPlaybook;
   battlecards: Battlecard[];
 };
+
+export type DraftStage = "blank" | "understanding" | "stack" | "demo" | "eval" | "packet";
+
+export type WorkflowDraftInput = Partial<StudioInput> & {
+  workflow?: string;
+  quizAnswers?: Record<string, string[]>;
+  otherNotes?: Record<string, string>;
+};
+
+export type StackCanvasNode = {
+  id: string;
+  lane: "workflow" | "current" | "oms" | "partner" | "output" | "eval";
+  title: string;
+  eyebrow: string;
+  body: string;
+  chips: string[];
+  x: number;
+  y: number;
+};
+
+export type StackCanvasEdge = {
+  id: string;
+  source: string;
+  target: string;
+  label: string;
+};
+
+export type DemoTrace = {
+  title: string;
+  prompt: string[];
+  transcript: Array<{
+    actor: "user" | "agent" | "tool";
+    label: string;
+    text: string;
+  }>;
+  actions: Array<{
+    name: string;
+    status: "ready" | "queued" | "running" | "done";
+  }>;
+  structuredOutput: Record<string, string | number | boolean | string[]>;
+};
+
+export type EvalFinding = {
+  id: string;
+  label: string;
+  status: "ready" | "watch" | "blocked";
+  detail: string;
+};
+
+export type DraftRun = {
+  id: string;
+  provider: "fallback" | "openai" | "deepseek";
+  warning?: string;
+  title: string;
+  subtitle: string;
+  input: StudioInput;
+  recommendation: Recommendation;
+  canvasNodes: StackCanvasNode[];
+  canvasEdges: StackCanvasEdge[];
+  demoTrace: DemoTrace;
+  evalFindings: EvalFinding[];
+  generatedAt: string;
+};
+
+export type AiProviderStatus = {
+  provider: "openai" | "deepseek";
+  configured: boolean;
+  modelConfigured: boolean;
+  model?: string;
+  missing: string[];
+};
+
+export type SettingsStatus = {
+  preferredProvider: "openai" | "deepseek" | "auto" | "fallback";
+  providers: AiProviderStatus[];
+  codexBridgeEnabled: boolean;
+};
