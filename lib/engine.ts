@@ -402,12 +402,9 @@ export function calculateCostModel(rawInput: Partial<StudioInput>): CostModel {
   const integrationComplexityReduction = Math.round(
     Math.max(0, 1 - modeledOmsComplexityScore / Math.max(currentComplexityScore, 1)) * 100,
   );
-  const migrationCost =
-    (input.mode === "migration" ? 185000 : 92000) +
-    effectiveVendorCount * 11500 +
-    input.apiSurfaceCount * 4200;
   const steadyStateAnnualSavings = feeDelta + fixedVendorSavings + workingCapitalRelease;
-  const firstYearNetSavings = steadyStateAnnualSavings - migrationCost;
+  const migrationCost = 0;
+  const firstYearNetSavings = steadyStateAnnualSavings;
 
   return {
     currentAnnualCost,

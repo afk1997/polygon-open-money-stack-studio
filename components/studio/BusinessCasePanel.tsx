@@ -36,7 +36,6 @@ export function BusinessCasePanel({
           <BarRow label="Fee delta" value={cost.feeDelta} tone="green" />
           <BarRow label="Fixed vendor savings" value={cost.fixedVendorSavings} tone="green" />
           <BarRow label="Working capital release" value={cost.workingCapitalRelease} tone="green" />
-          <BarRow label="Migration cost" value={-cost.migrationCost} tone="muted" />
         </div>
         <div className="netSavings">
           <span>Net savings (yr 1)</span>
