@@ -1,0 +1,159 @@
+[
+  {
+    "id": "wallet-infra",
+    "label": "Wallet Infrastructure",
+    "polygonRole": "Embedded user wallets, institutional wallet policy, delegated signing, custody partner routing, and account abstraction patterns under one OMS integration.",
+    "providers": [
+      { "id": "circle-wallets", "name": "Circle Wallets", "category": "Programmable wallets", "pricingSignal": "1,000 MAW free; signing-only and all-included MAW tiers published.", "strength": "USDC-native wallet primitives and Gas Station.", "tradeoff": "Best when Circle is already the stablecoin/control plane." },
+      { "id": "coinbase-cdp", "name": "Coinbase CDP", "category": "Embedded wallets", "pricingSignal": "5,000 wallet operations free, then public per-operation pricing.", "strength": "Developer-friendly embedded wallet and Base ecosystem fit.", "tradeoff": "Wallet operation pricing can grow with high-frequency use." },
+      { "id": "crossmint", "name": "Crossmint", "category": "Wallets and payments", "pricingSignal": "1,000 wallets free; wallet overage public; payments custom/tiered.", "strength": "Good consumer onboarding and NFT/digital commerce paths.", "tradeoff": "Broad platform rather than financial-institution money rail." },
+      { "id": "dynamic", "name": "Dynamic", "category": "Wallet auth", "pricingSignal": "Free tier and growth plan published.", "strength": "Excellent login, embedded wallet UX, and multi-wallet support.", "tradeoff": "Not a full money movement stack." },
+      { "id": "privy", "name": "Privy", "category": "Embedded wallets", "pricingSignal": "Public pricing tiers plus enterprise plan.", "strength": "Strong embedded wallet UX for apps starting from zero.", "tradeoff": "Needs other providers for ramps, settlement, compliance, and cross-border payout." },
+      { "id": "turnkey", "name": "Turnkey", "category": "Key management", "pricingSignal": "Free signature allowance; per-signature public model.", "strength": "Excellent secure signing and policy engine.", "tradeoff": "Infrastructure primitive, not orchestration." },
+      { "id": "fireblocks", "name": "Fireblocks", "category": "Institutional custody", "pricingSignal": "Starter and custom annual pricing published.", "strength": "Institutional security, policy approvals, and operations.", "tradeoff": "Enterprise-heavy and one piece of the overall stack." },
+      { "id": "dfns", "name": "DFNS", "category": "Wallet-as-a-service", "pricingSignal": "Custom/enterprise.", "strength": "Bank-grade wallet infrastructure and key management.", "tradeoff": "Pricing and implementation depend on enterprise scope." },
+      { "id": "fordefi", "name": "Fordefi", "category": "MPC wallets", "pricingSignal": "Custom/enterprise.", "strength": "Institutional MPC and transaction policy workflows.", "tradeoff": "Requires separate money movement and ramp orchestration." },
+      { "id": "safe", "name": "Safe", "category": "Smart accounts", "pricingSignal": "Protocol tooling; enterprise services vary.", "strength": "Mature multisig and smart account ecosystem.", "tradeoff": "Less turnkey for regulated fintech flows." },
+      { "id": "sequence", "name": "Sequence", "category": "Wallet stack", "pricingSignal": "Tiered/custom.", "strength": "Game and consumer wallet infrastructure.", "tradeoff": "Not a bank-grade settlement bundle." },
+      { "id": "web3auth", "name": "Web3Auth", "category": "Wallet auth", "pricingSignal": "Public tiered pricing.", "strength": "Fast social login and wallet abstraction.", "tradeoff": "Needs separate compliance and stablecoin rails." },
+      { "id": "zerodev", "name": "ZeroDev", "category": "Account abstraction", "pricingSignal": "Tiered/custom.", "strength": "Smart-account developer experience.", "tradeoff": "Developer primitive rather than financial stack." },
+      { "id": "biconomy", "name": "Biconomy", "category": "Account abstraction", "pricingSignal": "Tiered/custom.", "strength": "Gas abstraction and smart-account tooling.", "tradeoff": "Complements OMS rather than replacing it." },
+      { "id": "thirdweb", "name": "thirdweb", "category": "Web3 development platform", "pricingSignal": "Free and paid cloud tiers.", "strength": "Broad app primitives, wallets, contracts, infra.", "tradeoff": "Not tailored to regulated financial institutions." }
+    ]
+  },
+  {
+    "id": "crosschain",
+    "label": "Crosschain Interoperability",
+    "polygonRole": "AggLayer-style liquidity, crosschain settlement, message routing, and asset movement between institution-owned systems and public chains.",
+    "providers": [
+      { "id": "chainlink-ccip", "name": "Chainlink CCIP", "category": "Crosschain messaging", "pricingSignal": "Publishes gas plus network-fee tables.", "strength": "Security reputation and enterprise adoption.", "tradeoff": "Separate integration and dynamic route costs." },
+      { "id": "layerzero", "name": "LayerZero", "category": "Omnichain messaging", "pricingSignal": "Executor, DVN, and destination gas quoting.", "strength": "Broad chain coverage and developer adoption.", "tradeoff": "Requires message security configuration decisions." },
+      { "id": "wormhole", "name": "Wormhole", "category": "Crosschain messaging", "pricingSignal": "Relayer and gas costs vary by route.", "strength": "Large ecosystem and mature asset transfer paths.", "tradeoff": "Operational risk shifts into bridge/relayer choices." },
+      { "id": "axelar", "name": "Axelar", "category": "Interchain network", "pricingSignal": "Gas and relayer fee quote model.", "strength": "Interchain messaging plus developer tooling.", "tradeoff": "Another network dependency for treasury teams." },
+      { "id": "across", "name": "Across", "category": "Bridge/liquidity", "pricingSignal": "Dynamic relayer fee plus LP fee model.", "strength": "Fast crosschain liquidity settlement.", "tradeoff": "Route-specific liquidity and fee behavior." },
+      { "id": "li-fi", "name": "LI.FI", "category": "Bridge aggregator", "pricingSignal": "Aggregator fee and partner route fees.", "strength": "Aggregates bridge and DEX routes.", "tradeoff": "Great routing layer, not a unified compliance stack." },
+      { "id": "socket", "name": "Socket", "category": "Bridge aggregator", "pricingSignal": "Route quote model.", "strength": "Developer-friendly bridge aggregation.", "tradeoff": "Requires separate treasury/compliance controls." },
+      { "id": "squid", "name": "Squid", "category": "Crosschain swaps", "pricingSignal": "Dynamic quote model.", "strength": "Crosschain liquidity via Axelar ecosystem.", "tradeoff": "Point solution for swaps and routes." },
+      { "id": "hyperlane", "name": "Hyperlane", "category": "Interchain messaging", "pricingSignal": "Open tooling; infra costs vary.", "strength": "Configurable interchain security model.", "tradeoff": "More engineering ownership." },
+      { "id": "debridge", "name": "deBridge", "category": "Crosschain transfer", "pricingSignal": "Dynamic fee model.", "strength": "Fast crosschain value transfer.", "tradeoff": "Needs broader financial ops integration." },
+      { "id": "celer", "name": "Celer", "category": "Bridge/messaging", "pricingSignal": "Dynamic route fees.", "strength": "Bridge and message passing coverage.", "tradeoff": "Additional bridge risk surface." },
+      { "id": "stargate", "name": "Stargate", "category": "Omnichain liquidity", "pricingSignal": "Pool and route fee model.", "strength": "Liquidity movement for supported assets.", "tradeoff": "Asset and pool availability constraints." },
+      { "id": "router-protocol", "name": "Router Protocol", "category": "Crosschain infra", "pricingSignal": "Dynamic/custom.", "strength": "Crosschain intent and message routing.", "tradeoff": "Less directly institution-packaged than OMS." }
+    ]
+  },
+  {
+    "id": "stablecoin-orchestration",
+    "label": "Stablecoin Orchestration",
+    "polygonRole": "Issue, hold, swap, settle, reconcile, and route stablecoins across wallets, merchants, agent wallets, institutions, and local payout partners.",
+    "providers": [
+      { "id": "bridge", "name": "Bridge", "category": "Stablecoin APIs", "pricingSignal": "Gas pass-through, partner charges, and disclosed FX spread up to 1%.", "strength": "Stablecoin-native account and orchestration APIs.", "tradeoff": "Can become another platform beside wallets, ramps, and compliance." },
+      { "id": "bvnk", "name": "BVNK", "category": "Stablecoin payments", "pricingSignal": "Typical provider ranges cited around 0.3%-2%; enterprise custom.", "strength": "Merchant and treasury stablecoin workflows.", "tradeoff": "Less focused on bespoke chain infrastructure." },
+      { "id": "circle-mint", "name": "Circle Mint and CPN", "category": "USDC issuing/network", "pricingSignal": "Enterprise access/custom; wallet fees public separately.", "strength": "USDC issuer, mint/redeem, and institutional network credibility.", "tradeoff": "Circle-first asset and network strategy." },
+      { "id": "zerohash", "name": "ZeroHash", "category": "Crypto/stablecoin infra", "pricingSignal": "Platform pricing custom; issuer fee schedules published for some stablecoins.", "strength": "Regulated crypto infrastructure for fintechs.", "tradeoff": "Full commercials require sales process." },
+      { "id": "stripe-stablecoins", "name": "Stripe Stablecoin Payments", "category": "Payment acceptance", "pricingSignal": "Stablecoin payments public signal around 1.5% where available.", "strength": "Stripe distribution and merchant tooling.", "tradeoff": "Payments acceptance, not full OMS replacement." },
+      { "id": "coinbase-payments", "name": "Coinbase Payments", "category": "USDC payment rails", "pricingSignal": "Onramp and commerce fees vary by product.", "strength": "Consumer crypto distribution and Base ecosystem.", "tradeoff": "Coinbase-centered rails." },
+      { "id": "rain", "name": "Rain", "category": "Stablecoin cards", "pricingSignal": "Custom.", "strength": "Stablecoin card issuing and spend programs.", "tradeoff": "Specific issuing use case." },
+      { "id": "mural", "name": "Mural", "category": "Stablecoin invoicing/payout", "pricingSignal": "Custom/tiered.", "strength": "Global vendor payments and accounts payable.", "tradeoff": "Business app layer, not infrastructure layer." },
+      { "id": "cedar", "name": "Cedar", "category": "Stablecoin treasury", "pricingSignal": "Custom.", "strength": "Treasury and cross-border business payments.", "tradeoff": "Narrower orchestration surface." },
+      { "id": "brale", "name": "Brale", "category": "Stablecoin issuance", "pricingSignal": "Custom.", "strength": "Stablecoin issuance and compliance workflows.", "tradeoff": "Issuer-specific implementation scope." },
+      { "id": "paxos", "name": "Paxos", "category": "Regulated stablecoin infra", "pricingSignal": "Custom/enterprise.", "strength": "Regulated issuer and institutional credibility.", "tradeoff": "Commercials and product scope require enterprise deal." },
+      { "id": "agora", "name": "Agora", "category": "Stablecoin platform", "pricingSignal": "Custom.", "strength": "Stablecoin issuance/network focus.", "tradeoff": "Emerging platform." },
+      { "id": "m0", "name": "M0", "category": "Stablecoin middleware", "pricingSignal": "Custom.", "strength": "Modular stablecoin infrastructure.", "tradeoff": "Different thesis than Polygon one-integration OMS." }
+    ]
+  },
+  {
+    "id": "ramps",
+    "label": "Cash Ramps and On/Off-Ramp",
+    "polygonRole": "Fiat access into and out of stablecoin rails through partner ramps, local payout methods, cash-in/cash-out paths, and orchestration controls.",
+    "providers": [
+      { "id": "moonpay", "name": "MoonPay", "category": "On/off-ramp", "pricingSignal": "Direct fees up to 4.5%; other product fees vary.", "strength": "Large consumer ramp footprint.", "tradeoff": "Consumer-heavy UX and higher visible fees." },
+      { "id": "ramp-network", "name": "Ramp Network", "category": "On/off-ramp", "pricingSignal": "Bank up to 1.4%; cards up to 3.9%-5.45% by region/product.", "strength": "Broad ramp coverage and widget/API options.", "tradeoff": "Route fees vary by geography and payment method." },
+      { "id": "transak", "name": "Transak", "category": "On/off-ramp", "pricingSignal": "Off-ramp public signal around 1%; on-ramp route-dependent.", "strength": "Wide asset and country coverage.", "tradeoff": "Consumer KYC and regional availability constraints." },
+      { "id": "coinbase-onramp", "name": "Coinbase Onramp", "category": "On-ramp", "pricingSignal": "No-fee USDC on Base available by request in some contexts; product pricing varies.", "strength": "Brand trust and Coinbase user base.", "tradeoff": "Coinbase account and ecosystem dependency." },
+      { "id": "banxa", "name": "Banxa", "category": "On/off-ramp", "pricingSignal": "Fees route-dependent; partner pricing varies.", "strength": "Global payment methods and crypto ramp coverage.", "tradeoff": "Commercials often partner-specific." },
+      { "id": "onramper", "name": "Onramper", "category": "Ramp aggregator", "pricingSignal": "Public plans start around $199/mo and $599/mo premium.", "strength": "Aggregates multiple ramp providers.", "tradeoff": "Adds aggregator layer rather than reducing vendors." },
+      { "id": "sardine-ramp", "name": "Sardine", "category": "Risk and ramp", "pricingSignal": "Custom.", "strength": "Fraud, compliance, and crypto ramp controls.", "tradeoff": "Custom enterprise pricing." },
+      { "id": "mercuryo", "name": "Mercuryo", "category": "Ramp and payments", "pricingSignal": "Route/custom.", "strength": "On/off-ramp and payments footprint.", "tradeoff": "Coverage and fees vary by region." },
+      { "id": "alchemy-pay", "name": "Alchemy Pay", "category": "Fiat-crypto ramp", "pricingSignal": "Custom/route-dependent.", "strength": "Global payment method coverage.", "tradeoff": "Integration still separate from wallet/settlement stack." },
+      { "id": "simplex-nuvei", "name": "Simplex/Nuvei", "category": "On-ramp", "pricingSignal": "Route/custom.", "strength": "Card payment processing and ramp heritage.", "tradeoff": "Payment-processor style commercials." },
+      { "id": "mesh", "name": "Mesh", "category": "Connected crypto accounts", "pricingSignal": "Custom.", "strength": "Account connectivity and transfer UX.", "tradeoff": "More account linking than full ramp stack." },
+      { "id": "unlimit", "name": "Unlimit", "category": "Payments and crypto ramp", "pricingSignal": "Custom.", "strength": "Global acquiring and payout footprint.", "tradeoff": "Broad payments provider, not Polygon-native." }
+    ]
+  },
+  {
+    "id": "cross-border",
+    "label": "Cross-Border Payments",
+    "polygonRole": "Stablecoin settlement with fiat endpoints, local payment methods, liquidity routing, and faster reconciliation across corridors.",
+    "providers": [
+      { "id": "wise-platform", "name": "Wise Platform", "category": "International payments", "pricingSignal": "Public business pricing and upfront fee calculator.", "strength": "Transparent FX and strong consumer/business brand.", "tradeoff": "Fiat rails first, not programmable stablecoin settlement." },
+      { "id": "airwallex", "name": "Airwallex", "category": "Global accounts/payments", "pricingSignal": "Public pricing pages; some platform features custom.", "strength": "Multi-currency accounts, cards, and global payments.", "tradeoff": "Financial platform competitor, not chain infrastructure." },
+      { "id": "nium", "name": "Nium", "category": "Global payouts", "pricingSignal": "Custom; markets 190+ countries and 100+ real-time corridors.", "strength": "Bank-grade payout network and APIs.", "tradeoff": "Quote-based and fiat-network heavy." },
+      { "id": "thunes", "name": "Thunes", "category": "Payout network", "pricingSignal": "Custom.", "strength": "Large cross-border payout network.", "tradeoff": "Network layer, not stablecoin architecture layer." },
+      { "id": "rapyd", "name": "Rapyd", "category": "Fintech-as-a-service", "pricingSignal": "Regional pricing pages and custom enterprise.", "strength": "Payments, payouts, wallets, and issuing breadth.", "tradeoff": "Many-product platform with region-specific complexity." },
+      { "id": "dlocal", "name": "dLocal", "category": "Emerging-market payments", "pricingSignal": "Custom.", "strength": "Local payments and payouts in emerging markets.", "tradeoff": "Corridor-specific rails rather than one onchain orchestration layer." },
+      { "id": "terrapay", "name": "TerraPay", "category": "Money movement network", "pricingSignal": "Custom.", "strength": "Global payout network and remittance coverage.", "tradeoff": "Network access does not solve wallet/stablecoin/CDK layers." },
+      { "id": "payoneer", "name": "Payoneer", "category": "Global business payments", "pricingSignal": "Public and custom pricing by product.", "strength": "SMB and marketplace payout footprint.", "tradeoff": "Less programmable onchain infrastructure." },
+      { "id": "visa-direct", "name": "Visa Direct", "category": "Card network push payments", "pricingSignal": "Partner/custom.", "strength": "Global card network reach.", "tradeoff": "Card rails constraints and intermediaries." },
+      { "id": "mastercard-move", "name": "Mastercard Move", "category": "Money movement", "pricingSignal": "Partner/custom.", "strength": "Large network, cards, accounts, wallets.", "tradeoff": "Network-led, not open stablecoin stack." },
+      { "id": "worldpay", "name": "Worldpay", "category": "Merchant payments", "pricingSignal": "Custom.", "strength": "Large acquiring and merchant settlement network.", "tradeoff": "Merchant acquiring first." },
+      { "id": "flutterwave", "name": "Flutterwave", "category": "Africa payments", "pricingSignal": "Public regional pricing plus custom.", "strength": "African payment method coverage.", "tradeoff": "Region-focused fiat payments." },
+      { "id": "tazapay", "name": "Tazapay", "category": "Cross-border B2B payments", "pricingSignal": "Custom/tiered.", "strength": "Escrow and cross-border merchant payments.", "tradeoff": "Specific B2B commerce focus." },
+      { "id": "toku", "name": "Toku", "category": "LatAm payments", "pricingSignal": "Custom.", "strength": "Latin American recurring payments and local methods.", "tradeoff": "Complementary local collection layer." }
+    ]
+  },
+  {
+    "id": "blockchain-integration",
+    "label": "Blockchain Integration",
+    "polygonRole": "RPC, indexers, explorers, smart contract tooling, webhooks, event monitoring, and settlement observability inside the OMS implementation.",
+    "providers": [
+      { "id": "alchemy", "name": "Alchemy", "category": "RPC and developer platform", "pricingSignal": "Public tiered pricing; rollups custom.", "strength": "Strong developer tooling and APIs.", "tradeoff": "Infra platform rather than money-stack orchestration." },
+      { "id": "quicknode", "name": "QuickNode", "category": "RPC and data", "pricingSignal": "Public plans plus enterprise.", "strength": "Broad chain RPC and marketplace.", "tradeoff": "Needs surrounding wallet, ramp, and compliance stack." },
+      { "id": "infura", "name": "Infura", "category": "RPC", "pricingSignal": "Public free/core/growth-style tiers.", "strength": "Mature Ethereum infrastructure.", "tradeoff": "Infrastructure point solution." },
+      { "id": "chainstack", "name": "Chainstack", "category": "Node infrastructure", "pricingSignal": "Public tiers and custom.", "strength": "Node deployment and enterprise support.", "tradeoff": "Does not replace stablecoin/payment operations." },
+      { "id": "blockdaemon", "name": "Blockdaemon", "category": "Institutional blockchain infra", "pricingSignal": "Custom.", "strength": "Institutional nodes, staking, API infrastructure.", "tradeoff": "Enterprise infra, not one-integration OMS." },
+      { "id": "tenderly", "name": "Tenderly", "category": "Simulation and monitoring", "pricingSignal": "Public tiers plus enterprise.", "strength": "Contract simulation, alerts, and debugging.", "tradeoff": "Developer operations layer only." },
+      { "id": "blockscout", "name": "Blockscout", "category": "Explorer", "pricingSignal": "Open source plus hosted/custom.", "strength": "Explorer and transaction transparency.", "tradeoff": "Observability, not settlement orchestration." },
+      { "id": "the-graph", "name": "The Graph", "category": "Indexing", "pricingSignal": "Usage/network economics.", "strength": "Decentralized indexing.", "tradeoff": "Requires subgraph engineering." },
+      { "id": "goldsky", "name": "Goldsky", "category": "Indexing and data", "pricingSignal": "Tiered/custom.", "strength": "Realtime blockchain data pipelines.", "tradeoff": "Complements settlement workflows." },
+      { "id": "moralis", "name": "Moralis", "category": "Web3 APIs", "pricingSignal": "Public tiers.", "strength": "Fast wallet/token/NFT APIs.", "tradeoff": "App data layer rather than fintech rail." },
+      { "id": "covalent", "name": "Covalent", "category": "Blockchain data", "pricingSignal": "Tiered/custom.", "strength": "Historical and multichain data coverage.", "tradeoff": "Analytics API, not money movement." }
+    ]
+  },
+  {
+    "id": "cdk",
+    "label": "Blockchain-as-a-service (CDK)",
+    "polygonRole": "Bespoke institutional chains, appchains, compliance-aware settlement environments, and AggLayer-connected liquidity using Polygon CDK-style deployment.",
+    "providers": [
+      { "id": "polygon-cdk", "name": "Polygon CDK and AggLayer", "category": "ZK chain kit", "pricingSignal": "OMS/CDK pricing custom or partner-led.", "strength": "Polygon-native bespoke chain plus shared liquidity thesis.", "tradeoff": "Early-access packaging needs clear commercial discovery." },
+      { "id": "avacloud", "name": "AvaCloud", "category": "Avalanche L1 launch", "pricingSignal": "Published testnet, mainnet, and pro monthly plans.", "strength": "Clear RaaS packaging and Avalanche ecosystem.", "tradeoff": "Avalanche-specific chain strategy." },
+      { "id": "op-stack", "name": "OP Stack and Superchain", "category": "L2 stack", "pricingSignal": "Open source; ecosystem and service costs vary.", "strength": "Large ecosystem and Superchain narrative.", "tradeoff": "Operationalization and service providers still needed." },
+      { "id": "arbitrum-orbit", "name": "Arbitrum Orbit", "category": "L2/L3 chain stack", "pricingSignal": "Open framework; provider and DAO/licensing considerations vary.", "strength": "Strong Ethereum scaling ecosystem.", "tradeoff": "Commercial path depends on deployment model." },
+      { "id": "zksync-stack", "name": "zkSync ZK Stack", "category": "ZK chain framework", "pricingSignal": "Open framework/custom support.", "strength": "ZK chain thesis and Elastic Chain direction.", "tradeoff": "Institutional packaging less direct than a managed OMS story." },
+      { "id": "cosmos-sdk", "name": "Cosmos SDK and IBC", "category": "Appchain framework", "pricingSignal": "Open source plus validator/infra cost.", "strength": "Mature appchain model and IBC.", "tradeoff": "Higher protocol ownership." },
+      { "id": "substrate", "name": "Substrate/Polkadot", "category": "Appchain framework", "pricingSignal": "Open source plus infra/security costs.", "strength": "Custom runtime control.", "tradeoff": "Specialized engineering requirements." },
+      { "id": "caldera", "name": "Caldera", "category": "Rollup-as-a-service", "pricingSignal": "Custom/demo.", "strength": "Managed rollup deployment.", "tradeoff": "RaaS point provider." },
+      { "id": "conduit", "name": "Conduit", "category": "Rollup-as-a-service", "pricingSignal": "Custom/demo.", "strength": "Managed OP/Arbitrum-style rollups.", "tradeoff": "Needs separate money movement product layer." },
+      { "id": "gelato-raas", "name": "Gelato RaaS", "category": "Rollup-as-a-service", "pricingSignal": "Custom/demo.", "strength": "Managed chains plus automation tooling.", "tradeoff": "RaaS plus integrations, not whole OMS." },
+      { "id": "alchemy-rollups", "name": "Alchemy Rollups", "category": "Rollup platform", "pricingSignal": "Custom/demo.", "strength": "Developer platform plus rollup launch.", "tradeoff": "Developer infra orientation." }
+    ]
+  },
+  {
+    "id": "compliance-security",
+    "label": "Compliance and Security Layer",
+    "polygonRole": "Policy orchestration, compliance hooks, transaction monitoring, risk scoring, sanctions workflows, velocity limits, ledger/audit trails, and incident controls around OMS flows.",
+    "providers": [
+      { "id": "chainalysis", "name": "Chainalysis", "category": "Blockchain analytics", "pricingSignal": "Custom.", "strength": "Sanctions, KYT, investigations, institutional trust.", "tradeoff": "Specialized analytics provider." },
+      { "id": "trm", "name": "TRM Labs", "category": "Blockchain intelligence", "pricingSignal": "Custom.", "strength": "Risk scoring, investigations, compliance coverage.", "tradeoff": "Must be integrated into money movement workflows." },
+      { "id": "elliptic", "name": "Elliptic", "category": "Blockchain analytics", "pricingSignal": "Custom.", "strength": "Crypto compliance and risk intelligence.", "tradeoff": "Point compliance layer." },
+      { "id": "notabene", "name": "Notabene", "category": "Travel Rule", "pricingSignal": "Custom.", "strength": "Travel Rule network and VASP workflows.", "tradeoff": "Specific regulatory control." },
+      { "id": "sardine", "name": "Sardine", "category": "Fraud and compliance", "pricingSignal": "Custom.", "strength": "Fraud, device, KYC, crypto risk controls.", "tradeoff": "Custom enterprise implementation." },
+      { "id": "alloy", "name": "Alloy", "category": "Identity decisioning", "pricingSignal": "Custom.", "strength": "KYC/KYB orchestration and decisioning.", "tradeoff": "Identity layer, not settlement layer." },
+      { "id": "persona", "name": "Persona", "category": "Identity verification", "pricingSignal": "Custom/tiered.", "strength": "KYC flows and document verification UX.", "tradeoff": "Needs policy and transaction monitoring around it." },
+      { "id": "sumsub", "name": "Sumsub", "category": "KYC/KYB", "pricingSignal": "Public starter signals plus custom.", "strength": "Global verification and KYB/KYC modules.", "tradeoff": "Verification provider only." },
+      { "id": "complyadvantage", "name": "ComplyAdvantage", "category": "AML screening", "pricingSignal": "Custom.", "strength": "Sanctions, PEP, adverse media screening.", "tradeoff": "Screening layer." },
+      { "id": "unit21", "name": "Unit21", "category": "Risk operations", "pricingSignal": "Custom.", "strength": "Case management and transaction monitoring.", "tradeoff": "Ops layer must connect to rails." },
+      { "id": "blockaid", "name": "Blockaid", "category": "Web3 security", "pricingSignal": "Custom.", "strength": "Transaction simulation and malicious interaction protection.", "tradeoff": "Security control, not compliance program." },
+      { "id": "hypernative", "name": "Hypernative", "category": "Threat monitoring", "pricingSignal": "Custom.", "strength": "Realtime threat detection and incident monitoring.", "tradeoff": "Runtime security layer." }
+    ]
+  }
+]

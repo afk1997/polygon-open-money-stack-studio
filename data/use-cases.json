@@ -1,0 +1,90 @@
+[
+  {
+    "id": "neobank-dollar-account",
+    "name": "Neobank Dollar Account",
+    "segment": "neobank",
+    "headline": "USD balances and local cash-out for users outside the US.",
+    "defaultVolume": 24000000,
+    "defaultTransactions": 180000,
+    "defaultWallets": 135000,
+    "defaultCorridors": "USDC to MXN, BRL, PHP, INR",
+    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "ramps", "cross-border", "compliance-security"]
+  },
+  {
+    "id": "remittance-app",
+    "name": "Remittance App",
+    "segment": "consumer fintech",
+    "headline": "Stablecoin settlement with local fiat payout into high-volume corridors.",
+    "defaultVolume": 18000000,
+    "defaultTransactions": 260000,
+    "defaultWallets": 90000,
+    "defaultCorridors": "US to Mexico, Philippines, India",
+    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "ramps", "cross-border", "compliance-security"]
+  },
+  {
+    "id": "global-payroll",
+    "name": "Global Payroll",
+    "segment": "B2B payroll",
+    "headline": "Contractor payouts across 20 countries with audit-grade controls.",
+    "defaultVolume": 32000000,
+    "defaultTransactions": 52000,
+    "defaultWallets": 28000,
+    "defaultCorridors": "USDC to LATAM, EMEA, APAC",
+    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "cross-border", "compliance-security"]
+  },
+  {
+    "id": "merchant-settlement",
+    "name": "Merchant Settlement",
+    "segment": "PSP",
+    "headline": "Stablecoin settlement for merchants without exposing them to crypto UX.",
+    "defaultVolume": 58000000,
+    "defaultTransactions": 420000,
+    "defaultWallets": 15000,
+    "defaultCorridors": "USDC settlement to local fiat accounts",
+    "requiredModules": ["stablecoin-orchestration", "ramps", "cross-border", "blockchain-integration", "compliance-security"]
+  },
+  {
+    "id": "marketplace-payouts",
+    "name": "Marketplace Payouts",
+    "segment": "marketplace",
+    "headline": "Seller balances, instant withdrawal, and local payout in many markets.",
+    "defaultVolume": 46000000,
+    "defaultTransactions": 310000,
+    "defaultWallets": 210000,
+    "defaultCorridors": "USDC to bank, card, wallet, and cash methods",
+    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "ramps", "cross-border", "compliance-security"]
+  },
+  {
+    "id": "agentic-payments",
+    "name": "AI-Agent x402 Payments",
+    "segment": "agent commerce",
+    "headline": "Bounded agent wallets, API micropayments, spend controls, and settlement logs.",
+    "defaultVolume": 4200000,
+    "defaultTransactions": 3600000,
+    "defaultWallets": 240000,
+    "defaultCorridors": "USDC micropayments and automated API settlement",
+    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "crosschain", "blockchain-integration", "compliance-security"]
+  },
+  {
+    "id": "gaming-economy",
+    "name": "Gaming Economy",
+    "segment": "gaming",
+    "headline": "Creator wallets, crosschain assets, treasury settlement, and risk controls.",
+    "defaultVolume": 9600000,
+    "defaultTransactions": 850000,
+    "defaultWallets": 470000,
+    "defaultCorridors": "In-game balances, USDC treasury, local cash-out",
+    "requiredModules": ["wallet-infra", "crosschain", "stablecoin-orchestration", "ramps", "blockchain-integration"]
+  },
+  {
+    "id": "institutional-cdk",
+    "name": "Institutional CDK Chain",
+    "segment": "financial institution",
+    "headline": "A bespoke settlement chain connected to shared liquidity and compliance operations.",
+    "defaultVolume": 125000000,
+    "defaultTransactions": 620000,
+    "defaultWallets": 65000,
+    "defaultCorridors": "Institution-owned chain to Polygon settlement and fiat payout",
+    "requiredModules": ["cdk", "crosschain", "stablecoin-orchestration", "blockchain-integration", "compliance-security"]
+  }
+]

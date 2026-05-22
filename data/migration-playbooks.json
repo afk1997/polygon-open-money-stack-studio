@@ -1,0 +1,41 @@
+[
+  {
+    "id": "neobank-modernization",
+    "name": "Existing Neobank Modernization",
+    "retained": ["Core ledger", "Sponsor bank", "Primary KYC vendor", "Customer support tooling"],
+    "replaced": ["Separate wallet vendor", "Standalone stablecoin API", "Bridge aggregator", "Manual reconciliation scripts"],
+    "wrapped": ["Fraud rules", "Treasury approvals", "Local payout partner"],
+    "phases": [
+      "Mirror current payout corridors and ledger events in a sandbox.",
+      "Route 5% of stablecoin settlement through OMS with full reconciliation.",
+      "Expand to priority corridors and replace point wallet/stablecoin APIs.",
+      "Move treasury policy and incident controls into the OMS operating model."
+    ]
+  },
+  {
+    "id": "psp-stablecoin-settlement",
+    "name": "PSP Stablecoin Settlement",
+    "retained": ["Merchant acquiring", "Risk engine", "Merchant dashboard", "Tax reporting"],
+    "replaced": ["Slow correspondent settlement path", "Manual stablecoin treasury process", "Separate chain monitoring"],
+    "wrapped": ["Merchant risk tiers", "Settlement preferences", "Bank payout provider"],
+    "phases": [
+      "Add stablecoin settlement as an opt-in merchant settlement method.",
+      "Settle internally in USDC while merchants receive local fiat.",
+      "Automate treasury movement, reconciliation, and exception queues.",
+      "Use corridor-level economics to expand merchants by region."
+    ]
+  },
+  {
+    "id": "payroll-global-payouts",
+    "name": "Payroll Global Payouts",
+    "retained": ["Payroll calculation", "Tax withholding logic", "Contractor portal"],
+    "replaced": ["Multiple payout APIs", "Manual bank-failure retries", "Spreadsheet-based FX reconciliation"],
+    "wrapped": ["Contractor KYB/KYC", "Regional payout partners", "Support escalation"],
+    "phases": [
+      "Model contractor corridors and payout failure rates.",
+      "Launch stablecoin treasury settlement with local payout endpoints.",
+      "Add wallet-based emergency payouts and instant contractor withdrawals.",
+      "Consolidate reconciliation and compliance evidence for every run."
+    ]
+  }
+]

@@ -1,0 +1,13 @@
+[
+  { "id": "kyc", "label": "KYC/KYB checkpoint", "phase": "Identity", "description": "Verify customers, merchants, vendors, and counterparties before wallet funding or payout activation." },
+  { "id": "sanctions", "label": "Sanctions and PEP screening", "phase": "Identity", "description": "Screen users and counterparties before onboarding, funding, payout, and case escalation." },
+  { "id": "wallet-risk", "label": "Wallet risk scoring", "phase": "Transaction", "description": "Score source and destination wallets with KYT rules before approving stablecoin movement." },
+  { "id": "travel-rule", "label": "Travel Rule checks", "phase": "Transaction", "description": "Collect, transmit, and retain originator/beneficiary information where VASP obligations apply." },
+  { "id": "velocity", "label": "Velocity and corridor limits", "phase": "Policy", "description": "Apply user, merchant, wallet, country, asset, and corridor-level thresholds." },
+  { "id": "allowdeny", "label": "Allow and deny lists", "phase": "Policy", "description": "Maintain blocked countries, addresses, counterparties, and restricted business policies." },
+  { "id": "mpc-policy", "label": "MPC and approval policy", "phase": "Security", "description": "Require multi-approver, role-based, and risk-weighted signing controls for treasury movement." },
+  { "id": "ledger", "label": "Ledger reconciliation", "phase": "Operations", "description": "Tie fiat ledger entries, wallet balances, stablecoin transfers, and payout confirmations into an audit trail." },
+  { "id": "webhooks", "label": "Webhook retries and idempotency", "phase": "Operations", "description": "Protect money movement state from duplicate, delayed, or failed webhook delivery." },
+  { "id": "incident-freeze", "label": "Incident freeze controls", "phase": "Security", "description": "Freeze users, wallets, corridors, chains, or payout partners when risk thresholds are crossed." },
+  { "id": "licensing", "label": "Regional licensing assumption", "phase": "Governance", "description": "Make sponsor bank, MTL, EMI, VASP, and local payout partner assumptions explicit in every pitch." }
+]

@@ -1,0 +1,859 @@
+:root {
+  --bg: #f6f7f3;
+  --ink: #17201b;
+  --muted: #66716a;
+  --line: #dce1dc;
+  --panel: rgba(255, 255, 252, 0.92);
+  --panel-solid: #fffffc;
+  --accent: #365c50;
+  --accent-2: #6b58d8;
+  --amber: #a56b2a;
+  --danger: #8f3f3f;
+  --shadow: 0 24px 80px rgba(31, 43, 36, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  font-family:
+    Geist,
+    Satoshi,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+.studio {
+  min-height: 100dvh;
+  padding: 18px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.noise {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.26;
+  background-image:
+    linear-gradient(rgba(23, 32, 27, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 32, 27, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 85%);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1500px;
+  margin: 0 auto 16px;
+  padding: 13px 16px;
+  border: 1px solid rgba(220, 225, 220, 0.78);
+  background: rgba(255, 255, 252, 0.74);
+  backdrop-filter: blur(18px);
+  border-radius: 18px;
+}
+
+.brandLockup,
+.topbarMeta,
+.panelHeader,
+.sourceHeader,
+.canvasHeader,
+.modeSwitch,
+.tabBar,
+.depthMoment,
+.moduleTile,
+.brandMark,
+.depthIcon,
+.primaryButton,
+.iconButton {
+  display: flex;
+  align-items: center;
+}
+
+.brandLockup {
+  gap: 12px;
+}
+
+.brandMark,
+.depthIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
+  justify-content: center;
+  color: #fff;
+  background: var(--ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.brandLockup h1,
+.panelHeader h2,
+.heroStrip h2,
+.canvasHeader h3,
+.sourceHeader h3,
+.playbook h3 {
+  margin: 0;
+  letter-spacing: 0;
+  line-height: 1.03;
+}
+
+.brandLockup h1 {
+  font-size: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.topbarMeta {
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.topbarMeta span,
+.canvasLegend span,
+.moduleTile,
+.moduleChips button,
+.providerList button,
+.modeSwitch button,
+.tabBar button,
+.primaryButton,
+.iconButton {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 252, 0.76);
+}
+
+.topbarMeta span,
+.canvasLegend span {
+  padding: 7px 10px;
+  border-radius: 999px;
+  color: #49534d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.workspace {
+  max-width: 1500px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 340px minmax(500px, 1fr) 390px;
+  gap: 16px;
+  align-items: start;
+}
+
+.panel,
+.heroStrip,
+.canvasShell,
+.depthMoment,
+.assumptionBox,
+.playbook {
+  border: 1px solid rgba(220, 225, 220, 0.86);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.panel {
+  border-radius: 22px;
+  padding: 15px;
+}
+
+.leftPanel,
+.rightPanel {
+  position: sticky;
+  top: 16px;
+  max-height: calc(100dvh - 34px);
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.panelHeader {
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.panelHeader h2 {
+  font-size: 23px;
+}
+
+.modeSwitch {
+  padding: 4px;
+  background: #edf0ec;
+  border-radius: 14px;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.modeSwitch button,
+.tabBar button {
+  min-height: 38px;
+  border-radius: 11px;
+  justify-content: center;
+  gap: 7px;
+  color: #59655e;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.modeSwitch button {
+  flex: 1;
+}
+
+.modeSwitch button.active,
+.tabBar button.active,
+.moduleChips button.selected,
+.providerList button.checked {
+  color: var(--ink);
+  background: var(--panel-solid);
+  border-color: #c6d0c8;
+  box-shadow: 0 9px 24px rgba(44, 61, 51, 0.08);
+}
+
+.field,
+.numberField {
+  display: grid;
+  gap: 7px;
+}
+
+.field {
+  margin-bottom: 13px;
+}
+
+.field span,
+.numberField span,
+.sectionTitle span {
+  color: #4e5953;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+select,
+textarea,
+input {
+  width: 100%;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: #fbfcf8;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+select,
+input {
+  min-height: 40px;
+  padding: 0 11px;
+}
+
+textarea {
+  min-height: 70px;
+  resize: vertical;
+  padding: 10px 11px;
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+  border-color: rgba(54, 92, 80, 0.62);
+  box-shadow: 0 0 0 4px rgba(54, 92, 80, 0.09);
+}
+
+.field small,
+.numberField small,
+.competitorRow small,
+.controlStep small,
+.savingsHero span,
+.sourceHeader span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.metricInputs,
+.miniGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.numberField {
+  padding: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 252, 0.7);
+  border-radius: 14px;
+}
+
+.numberField input {
+  padding: 0;
+  min-height: 24px;
+  border: 0;
+  background: transparent;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.stackControls {
+  margin: 10px 0 15px;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 9px;
+}
+
+.moduleChips,
+.providerList {
+  display: grid;
+  gap: 7px;
+}
+
+.moduleChips {
+  grid-template-columns: 1fr 1fr;
+}
+
+.moduleChips button,
+.providerList button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 36px;
+  padding: 7px 9px;
+  border-radius: 11px;
+  color: #56615b;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.providerList {
+  margin-top: 10px;
+}
+
+.providerList button svg {
+  opacity: 0.2;
+}
+
+.providerList button.checked svg {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.canvasColumn {
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.heroStrip {
+  min-height: 142px;
+  padding: 22px;
+  border-radius: 24px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.heroStrip::after {
+  content: "";
+  position: absolute;
+  right: -9%;
+  top: -55%;
+  width: 42%;
+  height: 190%;
+  background: linear-gradient(120deg, transparent, rgba(107, 88, 216, 0.12), transparent);
+  transform: rotate(16deg);
+}
+
+.heroStrip h2 {
+  max-width: 860px;
+  font-size: clamp(30px, 4vw, 58px);
+  letter-spacing: 0;
+}
+
+.heroStrip p:last-child {
+  max-width: 78ch;
+  margin: 12px 0 0;
+  color: #536058;
+  line-height: 1.55;
+}
+
+.primaryButton,
+.iconButton {
+  position: relative;
+  z-index: 1;
+  justify-content: center;
+  gap: 8px;
+  color: #fff;
+  background: var(--ink);
+  border-color: var(--ink);
+  border-radius: 13px;
+  min-height: 42px;
+  padding: 0 14px;
+  font-weight: 850;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.primaryButton:active,
+.iconButton:active,
+.modeSwitch button:active,
+.tabBar button:active,
+.moduleChips button:active,
+.providerList button:active {
+  transform: scale(0.98);
+}
+
+.primaryButton.wide {
+  width: 100%;
+}
+
+.iconButton {
+  width: 38px;
+  min-height: 38px;
+  padding: 0;
+}
+
+.depthMoment {
+  min-height: 72px;
+  border-radius: 20px;
+  padding: 14px 16px;
+  gap: 13px;
+}
+
+.depthMoment p {
+  margin: 0;
+  color: #3c4841;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.canvasShell {
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.canvasHeader {
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.canvasLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.canvasLegend .current {
+  color: #6c4a2a;
+}
+
+.canvasLegend .oms {
+  color: var(--accent);
+}
+
+.canvasLegend .control {
+  color: #584fa0;
+}
+
+.flowWrap {
+  height: 560px;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(107, 88, 216, 0.08), transparent 24%),
+    radial-gradient(circle at 85% 90%, rgba(54, 92, 80, 0.12), transparent 30%),
+    #fbfcf8;
+}
+
+.react-flow__node {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  width: 190px;
+}
+
+.react-flow__handle {
+  background: var(--accent);
+  border-color: #fff;
+}
+
+.flowNode {
+  min-height: 92px;
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(198, 208, 200, 0.9);
+  background: rgba(255, 255, 252, 0.93);
+  box-shadow: 0 18px 44px rgba(31, 43, 36, 0.09);
+}
+
+.flowNode strong {
+  font-size: 13px;
+}
+
+.flowNode span {
+  color: #66716a;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.flowNode.current {
+  border-color: rgba(165, 107, 42, 0.38);
+}
+
+.flowNode.oms {
+  border-color: rgba(54, 92, 80, 0.42);
+}
+
+.flowNode.control {
+  border-color: rgba(107, 88, 216, 0.34);
+}
+
+.moduleRunway {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.moduleTile {
+  min-height: 56px;
+  border-radius: 16px;
+  padding: 11px;
+  gap: 9px;
+  color: #3e4b44;
+  font-size: 13px;
+  font-weight: 780;
+}
+
+.rightPanel {
+  display: grid;
+  gap: 13px;
+}
+
+.tabBar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.tabBar button {
+  padding: 0 8px;
+}
+
+.tabPanel {
+  display: grid;
+  gap: 12px;
+}
+
+.savingsHero {
+  min-height: 126px;
+  padding: 16px;
+  border-radius: 18px;
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(23, 32, 27, 0.96), rgba(54, 92, 80, 0.94)),
+    var(--ink);
+}
+
+.savingsHero p {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.savingsHero strong {
+  display: block;
+  font-size: clamp(38px, 5vw, 58px);
+  letter-spacing: 0;
+  line-height: 0.98;
+}
+
+.savingsHero span {
+  display: block;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.metricRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.metricRow span {
+  color: var(--muted);
+}
+
+.metricRow strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.waterfall {
+  display: grid;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.waterfallBar > div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+  font-size: 12px;
+}
+
+.waterfallBar i {
+  display: block;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+.assumptionBox,
+.playbook {
+  border-radius: 18px;
+  padding: 13px;
+}
+
+.assumptionBox p {
+  margin: 0;
+  color: #56615b;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.assumptionBox p + p {
+  margin-top: 9px;
+}
+
+.sourceHeader {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.moduleRole {
+  margin: 0;
+  color: #4e5a53;
+  line-height: 1.45;
+}
+
+.competitorRows {
+  display: grid;
+  gap: 9px;
+}
+
+.competitorRow {
+  display: grid;
+  gap: 7px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.competitorRow > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.competitorRow strong {
+  font-size: 14px;
+}
+
+.competitorRow div span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.competitorRow p {
+  margin: 0;
+  color: #445048;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.competitorRow a {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.controlTimeline {
+  display: grid;
+  gap: 10px;
+}
+
+.controlStep {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.controlStep > span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #edf2ed;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.controlStep strong,
+.controlStep small {
+  display: block;
+}
+
+.controlStep p {
+  margin: 6px 0 0;
+  color: #536058;
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.playbookGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.playbookGrid div {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fbfcf8;
+}
+
+.playbookGrid strong {
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.playbookGrid span,
+.playbook li {
+  color: #536058;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.playbook ol {
+  margin: 13px 0 0;
+  padding-left: 19px;
+}
+
+.playbook li + li {
+  margin-top: 7px;
+}
+
+.exportBox {
+  min-height: 570px;
+  border-radius: 18px;
+  color: #1d2721;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.52;
+}
+
+@media (max-width: 1280px) {
+  .workspace {
+    grid-template-columns: 320px minmax(460px, 1fr);
+  }
+
+  .rightPanel {
+    position: static;
+    grid-column: 1 / -1;
+    max-height: none;
+  }
+}
+
+@media (max-width: 880px) {
+  .studio {
+    padding: 10px;
+  }
+
+  .topbar,
+  .workspace,
+  .heroStrip,
+  .moduleRunway,
+  .metricInputs,
+  .miniGrid,
+  .moduleChips,
+  .playbookGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace {
+    display: grid;
+  }
+
+  .topbar {
+    display: grid;
+  }
+
+  .topbarMeta {
+    justify-content: flex-start;
+  }
+
+  .leftPanel {
+    position: static;
+    max-height: none;
+  }
+
+  .flowWrap {
+    height: 620px;
+  }
+}
