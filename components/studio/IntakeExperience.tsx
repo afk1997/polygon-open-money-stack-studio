@@ -215,9 +215,33 @@ function AssumptionsStep({
         <NumberField label="Transactions / month" value={input.monthlyTransactions} onChange={(monthlyTransactions) => onPatchInput({ monthlyTransactions })} />
         <NumberField label="Active wallets / accounts" value={input.activeWallets} onChange={(activeWallets) => onPatchInput({ activeWallets })} />
         <NumberField label="Settlement days target" value={input.settlementDays} suffix="days" step={0.25} onChange={(settlementDays) => onPatchInput({ settlementDays })} />
-        <NumberField label="Corridors" value={input.reconciliationFeeds} onChange={(reconciliationFeeds) => onPatchInput({ reconciliationFeeds })} />
+        <CorridorField value={input.reconciliationFeeds} onChange={(reconciliationFeeds) => onPatchInput({ reconciliationFeeds })} />
       </div>
     </div>
+  );
+}
+
+function CorridorField({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label className="numberInput corridorSelect">
+      <span>Corridors</span>
+      <div>
+        <select value={value} onChange={(event) => onChange(Number(event.target.value))}>
+          {[1, 3, 6, 11, 20].map((count) => (
+            <option key={count} value={count}>
+              {count}
+            </option>
+          ))}
+        </select>
+        <ChevronDown size={15} aria-hidden="true" />
+      </div>
+    </label>
   );
 }
 
