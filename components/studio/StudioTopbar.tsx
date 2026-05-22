@@ -66,7 +66,7 @@ export function StudioTopbar({
               <Expand size={15} />
               Lab
             </button>
-            <button type="button">
+            <button type="button" onClick={requestCanvasExport}>
               <Download size={15} />
               Export
             </button>
@@ -77,11 +77,11 @@ export function StudioTopbar({
         )}
         {stage === "lab" && (
           <>
-            <button type="button">
+            <button type="button" onClick={() => void shareStudio()}>
               <Share2 size={15} />
               Share
             </button>
-            <button type="button">
+            <button type="button" onClick={requestCanvasExport}>
               <Download size={15} />
               Export
             </button>
@@ -93,4 +93,25 @@ export function StudioTopbar({
       </div>
     </header>
   );
+}
+
+function requestCanvasExport() {
+  window.dispatchEvent(new CustomEvent("oms:export-canvas"));
+}
+
+async function shareStudio() {
+  const shareData = {
+    title: "Polygon OMS Stack Studio",
+    text: "Polygon OMS Stack Studio switch report",
+    url: window.location.href,
+  };
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      return;
+    }
+    await navigator.clipboard?.writeText(window.location.href);
+  } catch {
+    // Sharing can be cancelled by the user; no UI state needs to change.
+  }
 }

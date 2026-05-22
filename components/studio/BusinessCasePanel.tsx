@@ -120,13 +120,17 @@ export function BusinessCasePanel({
           <FileText size={17} />
           Generate switch report
         </button>
-        <button type="button">
+        <button type="button" onClick={requestCanvasExport}>
           <Download size={17} />
           Export canvas
         </button>
       </section>
     </aside>
   );
+}
+
+function requestCanvasExport() {
+  window.dispatchEvent(new CustomEvent("oms:export-canvas"));
 }
 
 function BreakdownRow({

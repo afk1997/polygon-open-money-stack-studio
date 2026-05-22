@@ -1220,17 +1220,33 @@ a {
 }
 
 .canvasViewport {
+  position: relative;
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
+  cursor: grab;
   background-image: radial-gradient(circle, rgba(80, 111, 175, 0.18) 1px, transparent 1.2px);
   background-size: 20px 20px;
+  touch-action: none;
+  user-select: none;
+}
+
+.canvasViewport:active {
+  cursor: grabbing;
+}
+
+.canvasWorld {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  will-change: transform;
 }
 
 .canvasBoard {
   position: relative;
   width: 1120px;
   height: 820px;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .canvasEdges {
@@ -1267,6 +1283,18 @@ a {
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.92);
   box-shadow: 0 12px 28px rgba(28, 42, 76, 0.07);
+}
+
+.draggableNode {
+  touch-action: none;
+}
+
+.canvasViewport:not(.locked) .draggableNode {
+  cursor: grab;
+}
+
+.canvasViewport:not(.locked) .draggableNode:active {
+  cursor: grabbing;
 }
 
 .currentStackNode {
@@ -1420,6 +1448,7 @@ a {
   left: 28px;
   bottom: 28px;
   gap: 10px;
+  z-index: 8;
 }
 
 .canvasZoom button,
@@ -1434,6 +1463,13 @@ a {
   color: #52607a;
   background: #fff;
   font-size: 13px;
+}
+
+.canvasTools .active,
+.canvasZoom .active {
+  border-color: #b8a7ff;
+  color: var(--purple);
+  background: var(--purple-soft);
 }
 
 .businessTabs {
