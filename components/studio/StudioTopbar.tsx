@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Ellipsis, Expand, Save, Share2 } from "lucide-react";
+import { CheckCircle2, Download, Ellipsis, Expand, Share2 } from "lucide-react";
 import type { LabStage } from "./types";
 
 export function StudioTopbar({
@@ -23,10 +23,7 @@ export function StudioTopbar({
   return (
     <header className="studioTopbar">
       <div className="brandCluster">
-        <span className="brandMark" aria-hidden="true">
-          <i />
-          <i />
-        </span>
+        <img className="brandMark" src="/polygon-icon-primary-purple.svg" alt="" aria-hidden="true" />
         <div>
           <strong>Polygon OMS</strong>
           <span>Stack Studio</span>
@@ -56,7 +53,7 @@ export function StudioTopbar({
           <>
             <button type="button">
               Saved draft
-              <Save size={15} />
+              <CheckCircle2 size={15} />
             </button>
             <button className="iconButton" type="button" aria-label="More actions">
               <Ellipsis size={17} />

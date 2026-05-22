@@ -3,7 +3,7 @@
 import {
   ArrowRight,
   Banknote,
-  CheckCircle2,
+  ChevronDown,
   Factory,
   Landmark,
   LockKeyhole,
@@ -111,11 +111,6 @@ export function IntakeExperience({
             onUseCaseChange={onUseCaseChange}
           />
           <AssumptionsStep input={input} onPatchInput={onPatchInput} />
-          <FlowStep
-            choices={choices}
-            onToggleRequirement={onToggleRequirement}
-            onToggleCompliance={onToggleCompliance}
-          />
         </section>
 
         <aside className="intakeProviders">
@@ -124,9 +119,18 @@ export function IntakeExperience({
             selectedProviderIds={input.selectedProviderIds}
             benchmarkProviderIds={benchmarkProviderIds}
             showBenchmarkForLaunch={false}
+            showNote={false}
             onToggleProvider={onToggleProvider}
           />
         </aside>
+
+        <section className="intakeFlowPanel">
+          <FlowStep
+            choices={choices}
+            onToggleRequirement={onToggleRequirement}
+            onToggleCompliance={onToggleCompliance}
+          />
+        </section>
 
         <footer className="intakeFooter">
           <p>
@@ -163,12 +167,15 @@ function ProductStep({
     <div className="intakeStep">
       <h1>Configure your money movement stack</h1>
       <p className="stepCopy">
-        Answer a few questions so we can design the right OMS architecture, cost model, and switch report.
+        Answer a few questions so we can design the right OMS architecture, cost model, and go-to-market narrative.
       </p>
       <div className="productGrid">
         <label className="selectInput">
           <span>Use case</span>
           <select value={input.useCaseId} onChange={(event) => onUseCaseChange(event.target.value)}>
+            <option value="" disabled>
+              Select a use case
+            </option>
             {templates.map((template) => (
               <option key={template.id} value={template.id}>
                 {template.name}
@@ -284,6 +291,7 @@ function FlowStep({
       <button className="addRequirement" type="button">
         <Plus size={16} />
         Add specific requirement
+        <ChevronDown size={15} />
       </button>
     </div>
   );
@@ -311,7 +319,9 @@ function FlowCard({
       <div className="flowChecks">
         {rows.map(([label, selected, onClick]) => (
           <button key={label} type="button" className={selected ? "checked" : ""} onClick={onClick}>
-            {selected ? <CheckCircle2 size={14} /> : <span />}
+            <span className="checkBox" aria-hidden="true">
+              {selected ? "✓" : ""}
+            </span>
             {label}
           </button>
         ))}

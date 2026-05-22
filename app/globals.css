@@ -96,7 +96,7 @@ a {
 }
 
 .studioTopbar {
-  min-height: 88px;
+  min-height: 104px;
   justify-content: space-between;
   gap: 24px;
   padding: 0 38px;
@@ -106,62 +106,31 @@ a {
 }
 
 .brandCluster {
-  gap: 14px;
+  gap: 18px;
   min-width: 250px;
 }
 
 .brandMark {
-  position: relative;
   width: 46px;
-  height: 38px;
+  height: 41px;
   flex: 0 0 auto;
-}
-
-.brandMark::before,
-.brandMark::after,
-.brandMark i {
-  content: "";
-  position: absolute;
-  width: 17px;
-  height: 17px;
-  border: 4px solid var(--purple);
-  border-radius: 6px;
-  transform: rotate(30deg);
-}
-
-.brandMark::before {
-  left: 4px;
-  top: 9px;
-}
-
-.brandMark::after {
-  left: 22px;
-  top: 18px;
-}
-
-.brandMark i:first-child {
-  left: 22px;
-  top: 1px;
-}
-
-.brandMark i:last-child {
-  display: none;
+  object-fit: contain;
 }
 
 .brandCluster div {
   display: grid;
-  gap: 2px;
+  gap: 3px;
 }
 
 .brandCluster strong {
   font-size: 21px;
-  line-height: 1;
+  line-height: 0.95;
 }
 
 .brandCluster span:not(.brandMark) {
   color: #3d465a;
   font-size: 21px;
-  line-height: 1;
+  line-height: 0.95;
 }
 
 .stageIndicator {
@@ -188,8 +157,8 @@ a {
 }
 
 .stageIndicator span.active {
-  color: var(--ink);
-  border-color: var(--purple);
+  color: var(--purple);
+  border-bottom-color: var(--purple);
 }
 
 .stageIndicator span.active b {
@@ -197,56 +166,78 @@ a {
 }
 
 .topbarActions {
-  justify-content: flex-end;
   gap: 12px;
-  min-width: 250px;
 }
 
 .topbarActions button,
 .intakeFooter button,
-.canvasTools button,
-.commandHeader button,
-.reportActions button,
-.buildIntakeCard button,
 .addRequirement,
 .addProviderButton,
+.canvasTools button,
+.canvasZoom button,
+.businessPanel button,
+.commandHeader button,
+.modalClose,
+.reportActions button,
+.buildIntakeCard button,
 .settingsPanel > a {
-  min-height: 42px;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 9px;
   border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 0 16px;
-  color: #20283a;
-  background: rgba(255, 255, 255, 0.88);
-  font-size: 14px;
+  border-radius: 7px;
+  padding: 0 18px;
+  color: #1b2436;
+  background: #fff;
   font-weight: 750;
-  box-shadow: 0 8px 20px rgba(36, 47, 76, 0.04);
+  box-shadow: 0 8px 18px rgba(31, 45, 82, 0.04);
+}
+
+.topbarActions button {
+  min-height: 38px;
+  gap: 8px;
+  padding: 0 13px;
+  font-size: 13px;
+}
+
+.topbarActions .iconButton {
+  width: 38px;
+}
+
+.topbarActions button:first-child {
+  color: #4d5870;
+}
+
+.topbarActions button:first-child svg {
+  color: #36bd82;
 }
 
 .topbarActions .iconButton,
-.topbarActions .avatarButton,
-.commandHeader button,
-.canvasTools .squareTool {
-  width: 42px;
+.modalClose {
   padding: 0;
 }
 
-.topbarActions .avatarButton {
-  border-radius: 999px;
-  color: var(--purple);
-  background: var(--purple-soft);
+.avatarButton {
+  width: 44px;
+  border-radius: 999px !important;
+  color: var(--purple) !important;
+  background: var(--purple-soft) !important;
 }
 
-.primaryButton {
-  color: #fff !important;
-  border-color: var(--purple) !important;
-  background: linear-gradient(135deg, var(--purple), #4a28df) !important;
-  box-shadow: 0 14px 28px rgba(99, 56, 245, 0.22) !important;
+.primaryButton,
+.businessPanel .primaryButton {
+  border-color: transparent !important;
+  color: white !important;
+  background: linear-gradient(135deg, #6236ee, #6d36e9) !important;
+  box-shadow: 0 16px 34px rgba(88, 51, 229, 0.26) !important;
 }
 
+/*
+ * Older generated-logo CSS intentionally left behind during early prototypes
+ * created a mark that did not match Polygon. The real asset is now used above.
+ */
 .kicker,
 .sectionHeader span,
 .nodeKicker,
@@ -263,16 +254,16 @@ a {
 }
 
 .intakeStage {
-  min-height: calc(100dvh - 88px);
-  padding: 16px 32px;
+  min-height: calc(100dvh - 104px);
+  padding: 0 32px 16px;
 }
 
 .intakeFrame {
-  height: calc(100dvh - 120px);
-  min-height: 720px;
+  height: calc(100dvh - 104px);
+  min-height: 760px;
   display: grid;
-  grid-template-columns: 280px minmax(620px, 1fr) 390px;
-  grid-template-rows: 1fr auto;
+  grid-template-columns: 280px minmax(640px, 1fr) 395px;
+  grid-template-rows: 418px minmax(0, 1fr) auto;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.92);
@@ -281,10 +272,13 @@ a {
 }
 
 .intakeAside {
+  grid-column: 1;
+  grid-row: 1;
   display: grid;
   align-content: start;
-  gap: 28px;
-  padding: 32px 22px;
+  gap: 14px;
+  min-height: 418px;
+  padding: 32px 20px;
   border-right: 1px solid var(--line);
   overflow: auto;
 }
@@ -296,7 +290,7 @@ a {
 
 .modeStack button {
   justify-content: space-between;
-  min-height: 52px;
+  min-height: 49px;
   border: 1px solid var(--line);
   border-radius: 7px;
   padding: 0 16px;
@@ -322,8 +316,10 @@ a {
 }
 
 .modeExplainer {
+  align-items: flex-start;
   gap: 16px;
-  padding-top: 20px;
+  margin-top: 16px;
+  padding-top: 0;
   border-top: 1px solid transparent;
 }
 
@@ -363,17 +359,20 @@ a {
 }
 
 .intakeMain {
+  grid-column: 2;
+  grid-row: 1;
   min-width: 0;
   display: grid;
   align-content: start;
   gap: 16px;
-  padding: 26px 42px 22px;
+  min-height: 418px;
+  padding: 32px 42px 18px 52px;
   overflow: auto;
 }
 
 .intakeStep h1 {
   margin: 0;
-  font-size: 32px;
+  font-size: 30px;
   line-height: 1.08;
   letter-spacing: 0;
 }
@@ -386,7 +385,7 @@ a {
 .productGrid {
   display: grid;
   grid-template-columns: 0.9fr 1.2fr;
-  gap: 44px;
+  gap: 42px;
 }
 
 .selectInput,
@@ -422,12 +421,12 @@ a {
 
 .selectInput select,
 .textInput input {
-  min-height: 52px;
+  min-height: 50px;
   padding: 0 16px;
 }
 
 .textAreaInput textarea {
-  min-height: 118px;
+  min-height: 122px;
   resize: vertical;
   padding: 16px;
   line-height: 1.45;
@@ -460,12 +459,12 @@ a {
 .assumptionGrid {
   display: grid;
   grid-template-columns: 1.08fr 1fr 1.06fr 0.98fr 0.9fr;
-  gap: 34px;
+  gap: 32px;
   margin-top: 16px;
 }
 
 .numberInput div {
-  min-height: 46px;
+  min-height: 43px;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   display: grid;
@@ -488,9 +487,16 @@ a {
 }
 
 .flowSection {
-  margin-top: 4px;
-  padding-top: 16px;
+  margin: 0;
+}
+
+.intakeFlowPanel {
+  grid-column: 1 / 3;
+  grid-row: 2;
+  min-width: 0;
+  padding: 16px 20px 15px;
   border-top: 1px solid var(--line);
+  overflow: hidden;
 }
 
 .sectionHeader {
@@ -511,10 +517,10 @@ a {
 }
 
 .flowCard {
-  min-height: 168px;
+  min-height: 210px;
   border: 1px solid var(--line);
   border-radius: 7px;
-  padding: 14px 12px;
+  padding: 16px 12px 14px;
   background: #fff;
 }
 
@@ -534,6 +540,21 @@ a {
   background: var(--purple-soft);
 }
 
+.flowCard:nth-child(2) .flowCardTop span {
+  color: #2475f7;
+  background: #eaf2ff;
+}
+
+.flowCard:nth-child(3) .flowCardTop span {
+  color: #04966b;
+  background: #e8f8f1;
+}
+
+.flowCard:nth-child(4) .flowCardTop span {
+  color: #d88a16;
+  background: #fff2dc;
+}
+
 .flowCardTop i {
   width: 15px;
   height: 15px;
@@ -547,15 +568,15 @@ a {
 }
 
 .flowCard p {
-  min-height: 28px;
+  min-height: 34px;
   margin: 6px 0 14px 54px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .flowChecks {
   display: grid;
-  gap: 5px;
-  margin-top: 8px;
+  gap: 6px;
+  margin-top: 6px;
 }
 
 .flowChecks button {
@@ -571,39 +592,72 @@ a {
   text-align: left;
 }
 
-.flowChecks button > span {
+.flowChecks button > .checkBox {
   width: 15px;
   height: 15px;
+  display: inline-grid;
+  place-items: center;
   border: 1px solid var(--line-strong);
   border-radius: 3px;
+  color: white;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
 }
 
-.flowChecks button.checked svg {
-  color: var(--purple);
-  fill: var(--purple);
+.flowChecks button.checked .checkBox {
+  border-color: var(--purple);
+  background: var(--purple);
 }
 
 .addRequirement {
-  margin-top: 14px;
-  min-width: 240px;
+  margin-top: 12px;
+  min-height: 32px;
+  width: 226px;
   justify-content: flex-start;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 650;
   color: #4b5570;
+  white-space: nowrap;
 }
 
 .intakeProviders {
-  padding: 28px 22px;
-  border-left: 1px solid var(--line);
+  grid-column: 3;
+  grid-row: 1 / 3;
+  padding: 26px 22px 26px 0;
   overflow: auto;
 }
 
 .providerSelector {
   display: grid;
   gap: 14px;
+  min-height: 692px;
+  align-content: start;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.74);
 }
 
 .providerSelector .sectionHeader {
-  align-items: flex-start;
+  display: block;
   margin: 0;
+}
+
+.providerSelector .sectionHeader > div {
+  display: grid;
+  gap: 8px;
+}
+
+.providerTitleLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.providerTitleLine small {
+  flex: 0 0 auto;
 }
 
 .providerSelector .sectionHeader small {
@@ -630,7 +684,7 @@ a {
 .providerAccordion summary {
   justify-content: space-between;
   gap: 12px;
-  min-height: 50px;
+  min-height: 49px;
   padding: 0 14px;
   list-style: none;
   color: #111827;
@@ -658,6 +712,13 @@ a {
   color: var(--purple);
   background: var(--purple-soft);
   font-size: 12px;
+}
+
+.providerSummaryMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #556179;
 }
 
 .providerRows {
@@ -718,7 +779,7 @@ a {
   grid-column: 1 / -1;
   justify-content: space-between;
   gap: 20px;
-  min-height: 74px;
+  min-height: 80px;
   padding: 0 22px;
   border-top: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.92);
@@ -1625,7 +1686,7 @@ a {
 
 @media (max-width: 1280px) {
   .intakeFrame {
-    grid-template-columns: 240px minmax(520px, 1fr) 330px;
+    grid-template-columns: 240px minmax(520px, 1fr) 360px;
   }
 
   .flowCardGrid {
@@ -1662,8 +1723,18 @@ a {
 
   .intakeFrame {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
     height: auto;
     min-height: calc(100dvh - 120px);
+  }
+
+  .intakeAside,
+  .intakeMain,
+  .intakeProviders,
+  .intakeFlowPanel,
+  .intakeFooter {
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .intakeAside,
@@ -1674,8 +1745,26 @@ a {
 
   .intakeAside,
   .intakeMain,
-  .intakeProviders {
+  .intakeProviders,
+  .intakeFlowPanel {
     overflow: visible;
+  }
+
+  .intakeAside,
+  .intakeMain {
+    min-height: 0;
+  }
+
+  .intakeProviders {
+    padding: 18px;
+  }
+
+  .intakeFlowPanel {
+    padding: 18px;
+  }
+
+  .providerSelector {
+    min-height: 0;
   }
 
   .productGrid,

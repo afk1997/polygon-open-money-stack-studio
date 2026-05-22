@@ -14,9 +14,25 @@ import { useStudioModel } from "./studio/useStudioModel";
 import type { ComplianceId, RequirementId } from "./studio/config";
 import type { LabStage, StudioChoices } from "./studio/types";
 
+const intakeDefaultInput: StudioInput = {
+  ...defaultInput,
+  mode: "launch",
+  useCaseId: "",
+  monthlyVolume: 10000000,
+  monthlyTransactions: 100000,
+  activeWallets: 50000,
+  settlementDays: 1,
+  vendorCount: 0,
+  apiSurfaceCount: 0,
+  reconciliationFeeds: 3,
+  complianceHandoffs: 0,
+  selectedProviderIds: [],
+  corridors: "",
+};
+
 export function Studio() {
   const [stage, setStage] = useState<LabStage>("intake");
-  const [input, setInput] = useState<StudioInput>(normalizeInput(defaultInput));
+  const [input, setInput] = useState<StudioInput>(intakeDefaultInput);
   const [workflow, setWorkflow] = useState("");
   const [choices, setChoices] = useState<StudioChoices>(() => ({
     requirements: defaultsForUseCase(defaultInput.useCaseId).requirements,
@@ -34,25 +50,48 @@ export function Studio() {
   }, [stepIndex, visibleStepCount]);
 
   function patchInput(patch: Partial<StudioInput>) {
-    setInput((current) => normalizeInput({ ...current, ...patch }));
+    setInput((current) => {
+      const useCaseId = patch.useCaseId ?? current.useCaseId;
+      const next = normalizeInput({ ...current, ...patch });
+      return useCaseId === "" ? { ...next, useCaseId: "" } : next;
+    });
   }
 
   function setMode(mode: StudioMode) {
-    setInput((current) =>
-      normalizeInput({
+    setInput((current) => {
+      const needsMigrationDefault = mode === "migration" && current.useCaseId === "";
+      return normalizeInput({
         ...current,
+        ...(needsMigrationDefault
+          ? {
+              useCaseId: defaultInput.useCaseId,
+              monthlyVolume: defaultInput.monthlyVolume,
+              monthlyTransactions: defaultInput.monthlyTransactions,
+              activeWallets: defaultInput.activeWallets,
+              corridors: defaultInput.corridors,
+            }
+          : {}),
         mode,
         selectedProviderIds: mode === "launch" ? [] : defaultInput.selectedProviderIds,
-        vendorCount: mode === "launch" ? 8 : defaultInput.selectedProviderIds.length,
-        apiSurfaceCount: mode === "launch" ? 12 : 18,
+        vendorCount: mode === "launch" ? 0 : defaultInput.selectedProviderIds.length,
+        apiSurfaceCount: mode === "launch" ? 0 : 18,
         reconciliationFeeds: mode === "launch" ? 3 : 6,
-        complianceHandoffs: mode === "launch" ? 3 : 4,
-        settlementDays: mode === "launch" ? 1.5 : 3,
-      }),
-    );
+        complianceHandoffs: mode === "launch" ? 0 : 4,
+        settlementDays: mode === "launch" ? 1 : 3,
+      });
+    });
   }
 
   function setUseCase(useCaseId: string) {
+    if (!useCaseId) {
+      setInput((current) => ({
+        ...current,
+        useCaseId: "",
+        corridors: "",
+      }));
+      return;
+    }
+
     const selected = templates.find((template) => template.id === useCaseId) ?? templates[0]!;
     setInput((current) =>
       normalizeInput({

@@ -1,6 +1,19 @@
 "use client";
 
-import { CheckCircle2, Circle, Layers3 } from "lucide-react";
+import {
+  Braces,
+  CheckCircle2,
+  ChevronDown,
+  Circle,
+  CircleDollarSign,
+  Landmark,
+  Network,
+  Route,
+  ShieldCheck,
+  WalletCards,
+  Box,
+} from "lucide-react";
+import type { ReactNode } from "react";
 import { modules } from "@/lib/data";
 import type { StudioMode } from "@/lib/types";
 
@@ -9,12 +22,14 @@ export function ProviderSelector({
   selectedProviderIds,
   benchmarkProviderIds,
   showBenchmarkForLaunch = true,
+  showNote = true,
   onToggleProvider,
 }: {
   mode: StudioMode;
   selectedProviderIds: string[];
   benchmarkProviderIds: string[];
   showBenchmarkForLaunch?: boolean;
+  showNote?: boolean;
   onToggleProvider: (providerId: string) => void;
 }) {
   const effectiveIds = mode === "launch" && showBenchmarkForLaunch ? benchmarkProviderIds : selectedProviderIds;
@@ -24,11 +39,13 @@ export function ProviderSelector({
   return (
     <section className="providerSelector">
       <div className="sectionHeader">
-        <div>
-          <h3>{isLaunchBenchmark ? "Benchmark stack" : "Current providers"}</h3>
+        <div className="providerHeading">
+          <div className="providerTitleLine">
+            <h3>{isLaunchBenchmark ? "Benchmark stack" : "Current providers"}</h3>
+            {!isLaunchBenchmark && <small>Optional</small>}
+          </div>
           {!isLaunchBenchmark && <p>Select if you are Modernizing Existing. This helps us calculate savings and create your migration plan.</p>}
         </div>
-        {!isLaunchBenchmark && <small>Optional</small>}
       </div>
 
       <div className="providerAccordion">
@@ -38,10 +55,13 @@ export function ProviderSelector({
             <details key={module.id}>
               <summary>
                 <span>
-                  <Layers3 size={15} />
-                  {module.label}
+                  {moduleIcon(module.id)}
+                  {shortModuleLabel(module.id, module.label)}
                 </span>
-                <strong>{selectedCount}</strong>
+                <span className="providerSummaryMeta">
+                  <strong>{selectedCount}</strong>
+                  <ChevronDown size={15} />
+                </span>
               </summary>
               <div className="providerRows">
                 {module.providers.map((provider) => {
@@ -74,11 +94,37 @@ export function ProviderSelector({
         </button>
       )}
 
-      <p className="modelNote">
-        {isLaunchBenchmark
-          ? "Benchmark stack: priced point solutions a new build would otherwise stitch together without OMS."
-          : "Modernize Existing selections update the savings model immediately."}
-      </p>
+      {showNote && (
+        <p className="modelNote">
+          {isLaunchBenchmark
+            ? "Benchmark stack: priced point solutions a new build would otherwise stitch together without OMS."
+            : "Modernize Existing selections update the savings model immediately."}
+        </p>
+      )}
     </section>
   );
+}
+
+function shortModuleLabel(moduleId: string, label: string) {
+  const labels: Record<string, string> = {
+    ramps: "Cash Ramps & On/Off-Ramp",
+    cdk: "BaaS / CDK",
+    "compliance-security": "Compliance & Security",
+  };
+  return labels[moduleId] ?? label;
+}
+
+function moduleIcon(moduleId: string) {
+  const size = 15;
+  const icons: Record<string, ReactNode> = {
+    "wallet-infra": <WalletCards size={size} />,
+    crosschain: <Network size={size} />,
+    "stablecoin-orchestration": <CircleDollarSign size={size} />,
+    ramps: <Landmark size={size} />,
+    "cross-border": <Route size={size} />,
+    "blockchain-integration": <Braces size={size} />,
+    cdk: <Box size={size} />,
+    "compliance-security": <ShieldCheck size={size} />,
+  };
+  return icons[moduleId] ?? <Box size={size} />;
 }
