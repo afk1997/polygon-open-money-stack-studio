@@ -24,8 +24,15 @@ type ProviderPricingProfile = {
   volumeBps?: number;
   transactionFee?: number;
   walletMonthlyFee?: number;
+  verificationFee?: number;
+  verificationMonthlyShare?: number;
+  protocolRevenueShareRate?: number;
+  protocolProfitShareRate?: number;
+  protocolProfitMarginAssumption?: number;
+  protocolRevenueProxyBps?: number;
   freeWallets?: number;
   freeMonthlyTransactions?: number;
+  freeMonthlyVerifications?: number;
   confidence?: CostConfidence;
   basis: string;
   note: string;
@@ -40,6 +47,10 @@ const moduleExposure: Record<string, { volume: number; transactions: number; wal
   "blockchain-integration": { volume: 0, transactions: 0.65, wallets: 0 },
   cdk: { volume: 0.12, transactions: 0.4, wallets: 0 },
   "compliance-security": { volume: 0, transactions: 0.55, wallets: 0.2 },
+  "settlement-chain": { volume: 0, transactions: 1, wallets: 0 },
+  "yield-treasury": { volume: 0.4, transactions: 0, wallets: 0 },
+  "card-issuing": { volume: 0.6, transactions: 0.4, wallets: 0 },
+  identity: { volume: 0, transactions: 0, wallets: 1 },
 };
 
 const providerPricingProfiles: Record<string, ProviderPricingProfile> = {
@@ -71,11 +82,12 @@ const providerPricingProfiles: Record<string, ProviderPricingProfile> = {
     note: "Modeled from the public growth plan rather than enterprise custom pricing.",
   },
   privy: {
+    fixedMonthly: 299,
     walletMonthlyFee: 0.018,
-    freeWallets: 1000,
-    confidence: "public-signal",
-    basis: "embedded-wallet MAW model",
-    note: "Modeled as a public-signal MAW SaaS estimate where enterprise terms vary.",
+    freeWallets: 499,
+    confidence: "published",
+    basis: "core plan plus MAW overage",
+    note: "Modeled from public tier signals with MAW overage. Strategic note: Privy moved into Stripe/Bridge's stablecoin-wallet orbit in 2025, so ownership matters in vendor strategy.",
   },
   turnkey: {
     transactionFee: 0.015,
@@ -103,18 +115,18 @@ const providerPricingProfiles: Record<string, ProviderPricingProfile> = {
     note: "Custom-priced MPC wallet platform modeled as an annual enterprise line.",
   },
   "chainlink-ccip": {
-    volumeBps: 5,
+    volumeBps: 10,
     transactionFee: 0.03,
     confidence: "published",
     basis: "gas, network fee, message fee",
-    note: "Modeled from public CCIP fee-table style inputs with route variability.",
+    note: "Modeled at a 10 bps token-transfer network-fee signal plus per-message gas/message cost; exact routes vary.",
   },
   layerzero: {
     transactionFee: 0.025,
-    volumeBps: 3,
+    volumeBps: 6,
     confidence: "public-signal",
     basis: "executor/DVN/gas quote",
-    note: "Modeled as dynamic executor plus destination gas fees.",
+    note: "Modeled at a 6 bps public-signal token-transfer cost plus executor and destination gas fees.",
   },
   wormhole: {
     transactionFee: 0.025,
@@ -130,11 +142,11 @@ const providerPricingProfiles: Record<string, ProviderPricingProfile> = {
     note: "Modeled as a liquidity-route bps cost; exact quote changes by route.",
   },
   bridge: {
-    volumeBps: 35,
+    volumeBps: 70,
     fixedMonthly: 5000,
     confidence: "published",
     basis: "stablecoin API plus FX spread",
-    note: "Modeled below the disclosed upper FX spread to avoid treating worst-case as default.",
+    note: "Modeled at 70 bps as a fair midpoint below Bridge's disclosed up-to-1% FX spread, plus platform access.",
   },
   bvnk: {
     volumeBps: 70,
@@ -251,15 +263,21 @@ const providerPricingProfiles: Record<string, ProviderPricingProfile> = {
   },
   "op-stack": {
     fixedAnnual: 96000,
+    protocolRevenueShareRate: 0.025,
+    protocolProfitShareRate: 0.15,
+    protocolProfitMarginAssumption: 0.4,
+    protocolRevenueProxyBps: 12,
     confidence: "public-signal",
     basis: "open source plus service/infra",
-    note: "Open-source stack modeled with managed service, infra, and operating cost signals.",
+    note: "Open-source plus managed service/infra. Adds a proxy for Superchain-style 2.5% revenue or 15% profit share economics so Polygon CDK's no-rent-seeking angle is visible.",
   },
   "arbitrum-orbit": {
     fixedAnnual: 96000,
+    protocolRevenueShareRate: 0.1,
+    protocolRevenueProxyBps: 12,
     confidence: "public-signal",
     basis: "open framework plus service/infra",
-    note: "Open framework modeled with provider, infra, and operating cost signals.",
+    note: "Open framework plus managed service/infra. Adds a proxy for independent Orbit net protocol revenue share so Polygon CDK can be compared on rent-seeking as well as infra cost.",
   },
   chainalysis: {
     fixedAnnual: 75000,
@@ -292,16 +310,280 @@ const providerPricingProfiles: Record<string, ProviderPricingProfile> = {
     note: "Custom-priced decisioning modeled as an annual platform line.",
   },
   persona: {
-    fixedAnnual: 30000,
+    fixedMonthly: 250,
+    verificationFee: 1.2,
+    verificationMonthlyShare: 0.08,
+    freeMonthlyVerifications: 100,
     confidence: "public-signal",
-    basis: "identity verification platform",
-    note: "Modeled as a KYC/KYB SaaS platform signal; per-check fees vary.",
+    basis: "identity plan plus per-verification",
+    note: "Modeled as platform access plus per-verification usage; fixed-only modeling understates KYC cost at scale.",
   },
   sumsub: {
-    fixedAnnual: 24000,
+    fixedMonthly: 299,
+    verificationFee: 1.5,
+    verificationMonthlyShare: 0.08,
+    freeMonthlyVerifications: 50,
+    confidence: "published",
+    basis: "compliance plan plus per-verification",
+    note: "Modeled as platform access plus blended per-verification usage; fixed-only modeling understates KYC cost at scale.",
+  },
+  coinme: {
+    fixedAnnual: 0,
     confidence: "public-signal",
-    basis: "KYC/KYB platform",
-    note: "Modeled from public starter signals plus growth-stage usage.",
+    basis: "Polygon OMS fiat-ramp component",
+    note: "Polygon-owned/integrated OMS component after the Coinme transaction; not modeled as a separate point-solution vendor cost.",
+  },
+  agglayer: {
+    fixedAnnual: 0,
+    confidence: "public-signal",
+    basis: "Polygon OMS interoperability",
+    note: "Polygon-native interoperability layer for CDK and Polygon-connected liquidity; not modeled as a separate competitor cost.",
+  },
+  "sequence-trails": {
+    fixedAnnual: 0,
+    confidence: "public-signal",
+    basis: "Polygon OMS intents",
+    note: "Sequence Trails belongs on the Polygon side of the architecture and is excluded from point-solution cost comparisons.",
+  },
+  vaultbridge: {
+    fixedAnnual: 0,
+    confidence: "public-signal",
+    basis: "Polygon OMS treasury yield",
+    note: "Revenue-generating treasury layer rather than a vendor cost line; shown as a Polygon differentiator.",
+  },
+  "polygon-id": {
+    fixedAnnual: 0,
+    confidence: "public-signal",
+    basis: "Polygon/Privado identity",
+    note: "Open-source ZK identity layer; may pair with regulated KYC vendors for initial verification but should not be priced as a per-check point solution.",
+  },
+  "polygon-id-identity": {
+    fixedAnnual: 0,
+    confidence: "public-signal",
+    basis: "Polygon/Privado identity",
+    note: "Reusable identity credential layer on the Polygon side; excludes regulated verification partner fees.",
+  },
+  "polygon-pos": {
+    fixedAnnual: 0,
+    transactionFee: 0.002,
+    confidence: "published",
+    basis: "Polygon network gas",
+    note: "Public Polygon network transaction cost signal used for settlement-chain comparison.",
+  },
+  "polygon-zkevm": {
+    fixedAnnual: 0,
+    transactionFee: 0.015,
+    confidence: "public-signal",
+    basis: "Polygon zkEVM gas",
+    note: "Modeled as a Polygon ZK rollup gas signal; exact cost depends on batch and network conditions.",
+  },
+  base: {
+    transactionFee: 0.09,
+    confidence: "public-signal",
+    basis: "Base network gas",
+    note: "Modeled as a public-signal L2 chain comparison line; actual gas varies by congestion and calldata.",
+  },
+  "arbitrum-one": {
+    transactionFee: 0.09,
+    confidence: "public-signal",
+    basis: "Arbitrum network gas",
+    note: "Modeled as an optimistic-rollup settlement comparison line; actual gas varies by transaction shape.",
+  },
+  optimism: {
+    transactionFee: 0.09,
+    confidence: "public-signal",
+    basis: "Optimism network gas",
+    note: "Modeled as an OP Mainnet settlement comparison line; chain economics should also include Superchain revenue-share context where applicable.",
+  },
+  solana: {
+    transactionFee: 0.0015,
+    confidence: "public-signal",
+    basis: "Solana base plus priority fees",
+    note: "Modeled with a small priority-fee allowance above the base fee; non-EVM rebuild costs are not included.",
+  },
+  stellar: {
+    transactionFee: 0.0008,
+    confidence: "published",
+    basis: "Stellar base fee",
+    note: "Payment-native chain comparison line using low published base-fee signal plus practical fee buffer.",
+  },
+  tron: {
+    transactionFee: 2.5,
+    confidence: "public-signal",
+    basis: "Tron USDT transfer energy/bandwidth",
+    note: "Modeled from public-signal USDT transfer cost ranges on Tron; energy rental and bandwidth can change the effective cost.",
+  },
+  "avalanche-c": {
+    transactionFee: 0.2,
+    confidence: "public-signal",
+    basis: "Avalanche C-Chain gas",
+    note: "Modeled as dynamic C-Chain gas, separate from AvaCloud/L1 deployment commercials.",
+  },
+  "bnb-chain": {
+    transactionFee: 0.006,
+    confidence: "public-signal",
+    basis: "BNB Chain gas",
+    note: "Modeled as a low-cost EVM settlement chain with region-specific stablecoin distribution advantages.",
+  },
+  "ethereum-mainnet": {
+    transactionFee: 0.5,
+    confidence: "public-signal",
+    basis: "Ethereum L1 gas",
+    note: "Modeled at a modest L1 gas scenario; mainnet can be materially higher under congestion.",
+  },
+  sui: {
+    transactionFee: 0.003,
+    confidence: "public-signal",
+    basis: "Sui gas",
+    note: "Modeled as a low-fee non-EVM settlement chain; Move rebuild costs are not included.",
+  },
+  aptos: {
+    transactionFee: 0.005,
+    confidence: "public-signal",
+    basis: "Aptos gas",
+    note: "Modeled as a low-fee non-EVM settlement chain; Move rebuild costs are not included.",
+  },
+  morpho: {
+    fixedAnnual: 0,
+    confidence: "public-signal",
+    basis: "yield protocol",
+    note: "Treasury yield layer; protocol fees come from generated yield, not payment volume cost.",
+  },
+  aave: {
+    fixedAnnual: 0,
+    confidence: "public-signal",
+    basis: "lending market",
+    note: "Treasury yield layer; reserve-factor economics affect yield, not direct payment movement cost.",
+  },
+  compound: {
+    fixedAnnual: 0,
+    confidence: "public-signal",
+    basis: "lending market",
+    note: "Treasury yield layer modeled as zero vendor cost in the savings comparison.",
+  },
+  spark: {
+    fixedAnnual: 0,
+    confidence: "public-signal",
+    basis: "lending market",
+    note: "Treasury yield layer backed by governance-set rates; not a direct payment-rail cost.",
+  },
+  yearn: {
+    fixedAnnual: 0,
+    confidence: "published",
+    basis: "yield aggregator",
+    note: "Yield aggregator fees are taken from generated yield, not gross money-movement volume.",
+  },
+  pendle: {
+    fixedAnnual: 0,
+    confidence: "published",
+    basis: "yield trading",
+    note: "Yield trading fee layer; useful for treasury strategy but not a direct rail cost.",
+  },
+  "stripe-issuing": {
+    transactionFee: 0.1,
+    confidence: "published",
+    basis: "Stripe Issuing virtual card",
+    note: "Modeled from public virtual-card pricing; physical cards and dispute/FX fees vary.",
+  },
+  marqeta: {
+    fixedAnnual: 100000,
+    volumeBps: 4,
+    confidence: "custom",
+    basis: "enterprise issuing platform",
+    note: "Custom enterprise issuing platform modeled with annual minimum plus usage signal.",
+  },
+  lithic: {
+    fixedMonthly: 200,
+    transactionFee: 0.08,
+    confidence: "custom",
+    basis: "card issuing API",
+    note: "Startup-friendly issuing API modeled with platform and per-authorization signal; actual terms vary.",
+  },
+  unit: {
+    fixedMonthly: 1000,
+    confidence: "custom",
+    basis: "BaaS platform",
+    note: "Modeled as BaaS platform access; interchange-share economics are not credited as savings.",
+  },
+  galileo: {
+    fixedAnnual: 60000,
+    confidence: "custom",
+    basis: "processor platform",
+    note: "Custom enterprise processor line modeled for neobank card-issuing stacks.",
+  },
+  column: {
+    fixedMonthly: 500,
+    confidence: "custom",
+    basis: "chartered bank platform",
+    note: "Modeled as direct-bank platform access; sponsor-bank economics are outside the OMS fee model.",
+  },
+  "treasury-prime": {
+    fixedMonthly: 3000,
+    confidence: "custom",
+    basis: "multi-bank BaaS",
+    note: "Modeled as BaaS platform access; interchange splits and sponsor-bank fees vary by program.",
+  },
+  highnote: {
+    fixedAnnual: 75000,
+    confidence: "custom",
+    basis: "issuing plus ledger platform",
+    note: "Modern issuing platform modeled as a custom annual platform line.",
+  },
+  "modern-treasury": {
+    fixedMonthly: 2500,
+    confidence: "custom",
+    basis: "payment ops platform",
+    note: "Reconciliation and payment-ops platform that pairs with issuer/bank rails rather than replacing them.",
+  },
+  "sumsub-identity": {
+    fixedMonthly: 299,
+    verificationFee: 1.5,
+    verificationMonthlyShare: 0.08,
+    freeMonthlyVerifications: 50,
+    confidence: "published",
+    basis: "compliance plan plus per-verification",
+    note: "Identity-module version of Sumsub so Polygon ID can be compared against verification vendors directly.",
+  },
+  "persona-identity": {
+    fixedMonthly: 250,
+    verificationFee: 1.2,
+    verificationMonthlyShare: 0.08,
+    freeMonthlyVerifications: 100,
+    confidence: "public-signal",
+    basis: "identity plan plus per-verification",
+    note: "Identity-module version of Persona with per-verification usage modeled.",
+  },
+  "veriff-identity": {
+    fixedMonthly: 99,
+    verificationFee: 1.5,
+    verificationMonthlyShare: 0.08,
+    confidence: "published",
+    basis: "KYC plan plus per-verification",
+    note: "Modeled as platform access plus blended verification usage.",
+  },
+  "onfido-identity": {
+    fixedAnnual: 60000,
+    confidence: "custom",
+    basis: "enterprise identity contract",
+    note: "Modeled as an enterprise verification contract; per-check economics vary by package.",
+  },
+  "jumio-identity": {
+    fixedAnnual: 145000,
+    confidence: "custom",
+    basis: "enterprise identity contract",
+    note: "Modeled as a premium enterprise verification contract.",
+  },
+  "civic-identity": {
+    walletMonthlyFee: 0.05,
+    confidence: "public-signal",
+    basis: "active pass model",
+    note: "Web3-native reusable-pass model; modeled as low usage cost per active credential/pass event.",
+  },
+  "alloy-identity": {
+    fixedAnnual: 45000,
+    confidence: "custom",
+    basis: "identity decisioning",
+    note: "Decisioning layer on top of underlying verification vendors.",
   },
 };
 
@@ -312,7 +594,7 @@ export const defaultInput: StudioInput = {
   monthlyTransactions: 180000,
   activeWallets: 135000,
   settlementDays: 3,
-  vendorCount: 11,
+  vendorCount: 14,
   apiSurfaceCount: 18,
   reconciliationFeeds: 6,
   complianceHandoffs: 4,
@@ -328,6 +610,9 @@ export const defaultInput: StudioInput = {
     "trm",
     "alchemy",
     "chainlink-ccip",
+    "base",
+    "stripe-issuing",
+    "sumsub-identity",
   ],
   corridors: "USDC to MXN, BRL, PHP, INR",
 };
@@ -349,6 +634,9 @@ export function normalizeInput(input: Partial<StudioInput>): StudioInput {
 export function calculateCostModel(rawInput: Partial<StudioInput>): CostModel {
   const input = normalizeInput(rawInput);
   const providerCostLines = buildProviderCostLines(input);
+  const polygonStackItemsPriced = getSelectedPolygonStackItems(input.selectedProviderIds).map(
+    (provider) => provider.name,
+  );
   const selectedProviderCount = providerCostLines.length;
   const usesProviderModel = selectedProviderCount > 0;
   const effectiveVendorCount = usesProviderModel ? selectedProviderCount : input.vendorCount;
@@ -414,6 +702,8 @@ export function calculateCostModel(rawInput: Partial<StudioInput>): CostModel {
     selectedProviderVariableCost,
     selectedProviderCount,
     providerCostLines,
+    polygonStackAnnualCost: 0,
+    polygonStackItemsPriced,
     operationalOverheadAnnualCost: usesProviderModel ? operationalOverheadAnnualCost : 0,
     feeDelta,
     fixedVendorSavings,
@@ -434,6 +724,9 @@ export function calculateCostModel(rawInput: Partial<StudioInput>): CostModel {
       "Provider pricing lines are directional: published prices use public tables, public-signal lines use public ranges or fee structures, and custom-priced vendors use conservative scenario estimates.",
       "Working-capital release assumes stablecoin settlement reduces liquidity drag versus multi-day fiat settlement.",
       "No salary, headcount, or developer-cost savings are included by default because team costs vary heavily by market and hiring model.",
+      "Sequence, Coinme, Agglayer, Sequence Trails, Vaultbridge, Polygon ID, Polygon PoS, and Polygon CDK are rendered as Polygon OMS-side capabilities, not point-solution competitors.",
+      "Polygon-owned/integrated components are excluded from current-stack competitor cost lines. External regulated partners such as KYC, banking, issuing, and local payout providers remain priced when selected.",
+      "Yield and treasury protocols are treated as strategic upside or yield-share mechanisms, not direct money-movement cost lines.",
     ],
   };
 }
@@ -502,6 +795,7 @@ export function buildExportPitch(rawInput: Partial<StudioInput>) {
       ? `Current stack cost is computed from ${recommendation.costModel.selectedProviderCount} selected point-solution providers: ${formatMoney(recommendation.costModel.selectedProviderAnnualCost)} provider cost plus ${formatMoney(recommendation.costModel.operationalOverheadAnnualCost)} integration/reconciliation overhead.`
       : `Current stack cost uses the blended scenario model because no point-solution providers were selected.`,
     `The model excludes salary, headcount, and developer-cost savings by default; integration complexity is shown separately as a non-monetary reduction.`,
+    `Polygon-owned/integrated pieces such as Sequence, Coinme, Agglayer, Polygon ID, Vaultbridge, Polygon PoS, and Polygon CDK are treated as OMS-side capabilities, not competitor cost lines.`,
     "",
     `## Selected Provider Cost Lines`,
     providerLines.length > 0
@@ -534,7 +828,7 @@ function buildProviderCostLines(input: StudioInput): ProviderCostLine[] {
   const selectedIds = new Set(input.selectedProviderIds);
   const selected = modules.flatMap((module) =>
     module.providers
-      .filter((provider) => selectedIds.has(provider.id))
+      .filter((provider) => selectedIds.has(provider.id) && !provider.polygonOwned)
       .map((provider) => ({ module, provider })),
   );
   const selectedByModule = selected.reduce<Record<string, number>>((counts, item) => {
@@ -552,6 +846,20 @@ function buildProviderCostLines(input: StudioInput): ProviderCostLine[] {
       (input.monthlyTransactions * exposure.transactions) / moduleProviderCount;
     const allocatedWallets =
       (input.activeWallets * exposure.wallets) / moduleProviderCount;
+    const allocatedMonthlyVerifications =
+      allocatedWallets * (profile.verificationMonthlyShare ?? 0);
+    const annualProtocolRevenueProxy =
+      allocatedMonthlyVolume * 12 * ((profile.protocolRevenueProxyBps ?? 0) / 10000);
+    const annualProtocolRevenueShare =
+      annualProtocolRevenueProxy * (profile.protocolRevenueShareRate ?? 0);
+    const annualProtocolProfitShare =
+      annualProtocolRevenueProxy *
+      (profile.protocolProfitMarginAssumption ?? 0.4) *
+      (profile.protocolProfitShareRate ?? 0);
+    const annualProtocolShareCost = Math.max(
+      annualProtocolRevenueShare,
+      annualProtocolProfitShare,
+    );
     const annualFixedCost =
       (profile.fixedAnnual ?? 0) + (profile.fixedMonthly ?? 0) * 12;
     const annualVariableCost =
@@ -561,7 +869,11 @@ function buildProviderCostLines(input: StudioInput): ProviderCostLine[] {
         (profile.transactionFee ?? 0) +
       Math.max(allocatedWallets - (profile.freeWallets ?? 0), 0) *
         12 *
-        (profile.walletMonthlyFee ?? 0);
+        (profile.walletMonthlyFee ?? 0) +
+      Math.max(allocatedMonthlyVerifications - (profile.freeMonthlyVerifications ?? 0), 0) *
+        12 *
+        (profile.verificationFee ?? 0) +
+      annualProtocolShareCost;
     const evidence = pricing.find((item) => item.providerId === provider.id);
     const confidence = profile.confidence ?? evidence?.type ?? "modeled";
 
@@ -586,6 +898,12 @@ function buildProviderCostLines(input: StudioInput): ProviderCostLine[] {
         profile.walletMonthlyFee
           ? `${formatUnitCost(profile.walletMonthlyFee)} per monthly active wallet after allowance.`
           : "",
+        profile.verificationFee
+          ? `${formatUnitCost(profile.verificationFee)} per verification; ${Math.round((profile.verificationMonthlyShare ?? 0) * 100)}% of allocated active accounts modeled as monthly verifications.`
+          : "",
+        annualProtocolShareCost
+          ? `${formatMoney(annualProtocolShareCost)} modeled protocol revenue-share proxy from ${profile.protocolRevenueProxyBps} bps of allocated CDK/module volume.`
+          : "",
       ]
         .filter(Boolean)
         .join(" "),
@@ -593,8 +911,18 @@ function buildProviderCostLines(input: StudioInput): ProviderCostLine[] {
   });
 }
 
+function getSelectedPolygonStackItems(providerIds: string[]): Provider[] {
+  const ids = new Set(providerIds);
+  return modules.flatMap((module) =>
+    module.providers.filter((provider) => ids.has(provider.id) && provider.polygonOwned),
+  );
+}
+
 function formatUnitCost(value: number) {
-  if (value >= 1) return formatMoney(value);
+  if (value >= 1 && value < 100) {
+    return Number.isInteger(value) ? `$${value}` : `$${value.toFixed(2)}`;
+  }
+  if (value >= 100) return formatMoney(value);
   return `$${value.toFixed(value < 0.01 ? 3 : 2)}`;
 }
 
@@ -665,6 +993,38 @@ function fallbackProfile(moduleId: string, provider: Provider): ProviderPricingP
         basis: "compliance platform estimate",
         note: "Fallback compliance model uses an annual platform line; per-check/KYT usage varies.",
       };
+    case "settlement-chain":
+      return {
+        transactionFee: 0.05,
+        confidence: customConfidence,
+        basis: "chain gas estimate",
+        note: "Fallback chain model uses a conservative per-transaction gas estimate; specific chain profiles override this.",
+      };
+    case "yield-treasury":
+      return {
+        fixedAnnual: 0,
+        confidence: customConfidence,
+        basis: "yield protocol estimate",
+        note: "Yield protocols are revenue-generating rather than payment-cost lines; modeled at zero direct cost.",
+      };
+    case "card-issuing":
+      return {
+        fixedMonthly: 1500,
+        transactionFee: 0.1,
+        confidence: customConfidence,
+        basis: "card issuing platform estimate",
+        note: "Fallback issuing model uses platform access plus per-authorization cost; interchange upside is not credited here.",
+      };
+    case "identity":
+      return {
+        fixedMonthly: 99,
+        verificationFee: 1.2,
+        verificationMonthlyShare: 0.08,
+        freeMonthlyVerifications: 50,
+        confidence: customConfidence,
+        basis: "identity verification estimate",
+        note: "Fallback identity model uses platform access plus per-verification usage.",
+      };
     default:
       return {
         fixedAnnual: 24000,
@@ -702,7 +1062,7 @@ function buildBattlecards(selectedModules: OMSModule[]): Battlecard[] {
     moduleId: module.id,
     moduleLabel: module.label,
     polygonAngle: module.polygonRole,
-    competitors: module.providers.slice(0, 6),
+    competitors: module.providers.filter((provider) => !provider.polygonOwned).slice(0, 6),
   }));
 }
 

@@ -10,7 +10,7 @@ import { IntakeExperience, defaultsForUseCase } from "./studio/IntakeExperience"
 import { LabExperience } from "./studio/LabExperience";
 import { ReportModal } from "./studio/ReportModal";
 import { StudioTopbar } from "./studio/StudioTopbar";
-import { useStudioModel } from "./studio/useStudioModel";
+import { providerModule, useStudioModel } from "./studio/useStudioModel";
 import type { ComplianceId, RequirementId } from "./studio/config";
 import type { LabStage, StudioChoices } from "./studio/types";
 
@@ -126,6 +126,7 @@ export function Studio() {
 
   function toggleProvider(providerId: string) {
     if (input.mode === "launch") return;
+    if (providerModule(providerId)?.provider.polygonOwned) return;
     setInput((current) => {
       const selected = new Set(current.selectedProviderIds);
       if (selected.has(providerId)) selected.delete(providerId);

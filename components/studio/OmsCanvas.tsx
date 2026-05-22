@@ -2,18 +2,22 @@
 
 import {
   Banknote,
+  BadgeCheck,
   Boxes,
   CheckCircle2,
   ChevronDown,
+  CreditCard,
   Crosshair,
   Database,
   Expand,
   GitBranch,
+  Layers3,
   LockKeyhole,
   Network,
   Route,
   Search,
   ShieldCheck,
+  TrendingUp,
   WalletCards,
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -44,6 +48,10 @@ const moduleIcons: Record<string, ComponentType<{ size?: number }>> = {
   "blockchain-integration": Database,
   cdk: Boxes,
   "compliance-security": ShieldCheck,
+  "settlement-chain": Layers3,
+  "yield-treasury": TrendingUp,
+  "card-issuing": CreditCard,
+  identity: BadgeCheck,
 };
 
 export function OmsCanvas({
@@ -57,15 +65,18 @@ export function OmsCanvas({
 }) {
   const groups = groupProvidersByModule(input.selectedProviderIds);
   const selectedProviders = groups.flatMap((group) =>
-    group.providers.map((provider) => ({ provider, module: group.module })),
+    group.providers
+      .filter((provider) => !provider.polygonOwned)
+      .map((provider) => ({ provider, module: group.module })),
   );
+  const displayProviders = selectedProviders.slice(0, 10);
   const providerCount =
     recommendation.costModel.selectedProviderCount ||
-    input.selectedProviderIds.length ||
+    displayProviders.length ||
     input.vendorCount;
-  const displayProviders = selectedProviders.slice(0, 10);
   const hiddenProviderCount = Math.max(selectedProviders.length - displayProviders.length, 0);
   const moduleCards = buildModuleCards(requiredModules, groups, recommendation);
+  const polygonStackItems = useMemo(() => buildPolygonStackItems(requiredModules), [requiredModules]);
   const board = useMemo(() => ({ width: 1120, height: 820 }), []);
   const topOutcomes = buildOutcomes(input, recommendation);
   const viewportRef = useRef<HTMLDivElement | null>(null);
@@ -85,8 +96,8 @@ export function OmsCanvas({
 
     return {
       current: { x: 42, y: 148, width: 188, height: 532 },
-      core: { x: 436, y: 374, width: 430, height: 190 },
-      controls: { x: 416, y: 640, width: 470, height: 132 },
+      core: { x: 436, y: 352, width: 430, height: 250 },
+      controls: { x: 416, y: 656, width: 470, height: 132 },
       outcomes: { x: 918, y: 388, width: 200, height: 218 },
       ...moduleRects,
     };
@@ -181,6 +192,7 @@ export function OmsCanvas({
       providers: displayProviders.map(({ provider }) => provider.name),
       outcomes: topOutcomes,
       controls: recommendation.compliance.slice(0, 6).map((control) => control.label),
+      polygonStackItems: polygonStackItems.map((provider) => provider.name),
     });
     const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
     const link = document.createElement("a");
@@ -200,6 +212,7 @@ export function OmsCanvas({
     displayProviders,
     topOutcomes,
     recommendation.compliance,
+    polygonStackItems,
   ]);
 
   useEffect(() => {
@@ -403,6 +416,16 @@ export function OmsCanvas({
                 <span><GitBranch size={15} />Counterparty mgmt</span>
                 <span><Boxes size={15} />Workflow engine</span>
               </div>
+              {polygonStackItems.length > 0 && (
+                <div className="polygonStackStrip">
+                  <small>Integrated Polygon stack</small>
+                  <div>
+                    {polygonStackItems.map((provider) => (
+                      <span key={provider.id}>{provider.name}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </motion.article>
 
             <motion.article
@@ -599,13 +622,17 @@ function buildModuleCards(
   }
 
   for (const module of requiredModules) {
-    byId.set(module.id, { module, providers: [], annualCost: moduleCost.get(module.id) ?? 0 });
+    byId.set(module.id, {
+      module,
+      providers: module.providers.filter((provider) => provider.polygonOwned),
+      annualCost: moduleCost.get(module.id) ?? 0,
+    });
   }
 
   for (const group of groups) {
     byId.set(group.module.id, {
       module: group.module,
-      providers: group.providers,
+      providers: group.providers.filter((provider) => !provider.polygonOwned),
       annualCost: moduleCost.get(group.module.id) ?? 0,
     });
   }
@@ -625,6 +652,10 @@ function modulePriority(moduleId: string) {
     "stablecoin-orchestration",
     "ramps",
     "cross-border",
+    "settlement-chain",
+    "identity",
+    "card-issuing",
+    "yield-treasury",
     "crosschain",
     "blockchain-integration",
     "cdk",
@@ -663,7 +694,39 @@ function shortModuleLabel(label: string) {
     .replace("Cash Ramps and On/Off-Ramp", "Cash Ramps")
     .replace("Cross-Border Payments", "Cross-Border Payments")
     .replace("Stablecoin Orchestration", "Stablecoin Orchestration")
-    .replace("Wallet Infrastructure", "Wallet Infrastructure");
+    .replace("Wallet Infrastructure", "Wallet Infrastructure")
+    .replace("Card Issuing / BaaS", "Card Issuing")
+    .replace("Yield / Treasury", "Yield / Treasury")
+    .replace("Settlement Chain", "Settlement Chain");
+}
+
+function buildPolygonStackItems(requiredModules: OMSModule[]) {
+  const seen = new Set<string>();
+  return requiredModules
+    .flatMap((module) => module.providers.filter((provider) => provider.polygonOwned))
+    .filter((provider) => {
+      if (seen.has(provider.id)) return false;
+      seen.add(provider.id);
+      return true;
+    })
+    .sort((a, b) => polygonStackPriority(a.id) - polygonStackPriority(b.id))
+    .slice(0, 8);
+}
+
+function polygonStackPriority(providerId: string) {
+  const order = [
+    "sequence",
+    "coinme",
+    "agglayer",
+    "sequence-trails",
+    "polygon-pos",
+    "polygon-cdk",
+    "vaultbridge",
+    "polygon-id",
+    "polygon-id-identity",
+  ];
+  const index = order.indexOf(providerId);
+  return index === -1 ? order.length : index;
 }
 
 function buildExportSvg({
@@ -677,6 +740,7 @@ function buildExportSvg({
   providers,
   outcomes,
   controls,
+  polygonStackItems,
 }: {
   board: { width: number; height: number };
   edgePaths: Array<{ id: string; className: string; d: string }>;
@@ -688,6 +752,7 @@ function buildExportSvg({
   providers: string[];
   outcomes: string[];
   controls: string[];
+  polygonStackItems: string[];
 }) {
   const node = (rect: Rect, title: string, lines: string[]) => `
     <rect x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" rx="10" fill="#ffffff" stroke="#dce4f1"/>
@@ -708,7 +773,7 @@ function buildExportSvg({
   ${edgePaths.map((edge) => `<path d="${edge.d}" fill="none" stroke="${edge.className === "primaryEdge" ? "#6b3df4" : "#9eabd0"}" stroke-width="1.6" stroke-dasharray="${edge.className === "dashedEdge" ? "4 5" : "0"}"/>`).join("")}
   ${node(currentRect, "CURRENT STACK", providers)}
   ${modules.map((item) => node(item.rect, item.label.toUpperCase(), item.providers.length ? item.providers : ["OMS module planned"])).join("")}
-  ${node(coreRect, "POLYGON OMS ORCHESTRATION", ["Policy & routing", "Reconciliation", "Ledger & balances", "Risk & monitoring", "Counterparty mgmt", "Workflow engine"])}
+  ${node(coreRect, "POLYGON OMS ORCHESTRATION", ["Policy & routing", "Reconciliation", "Ledger & balances", "Risk & monitoring", "Counterparty mgmt", "Workflow engine", ...polygonStackItems.slice(0, 4)])}
   ${node(controlsRect, "COMPLIANCE CONTROLS", controls)}
   ${node(outcomesRect, "OUTCOMES", outcomes)}
 </svg>`.trim();

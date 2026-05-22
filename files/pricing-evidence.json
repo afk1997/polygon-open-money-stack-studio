@@ -59,7 +59,7 @@
     "providerId": "bridge",
     "source": "Bridge Fee Disclosure",
     "url": "https://www.bridge.xyz/legal/fee-disclosure-statement/overview",
-    "evidence": "Bridge discloses gas pass-through, partner charges, and FX spread up to 1%; engine models 70 bps as a midpoint below the published upper bound.",
+    "evidence": "Bridge discloses gas pass-through, partner charges, and FX spread up to 1%.",
     "type": "published"
   },
   {
@@ -80,14 +80,14 @@
     "providerId": "chainlink-ccip",
     "source": "Chainlink CCIP Billing",
     "url": "https://docs.chain.link/ccip/billing",
-    "evidence": "CCIP publishes gas, message, and network-fee billing components; engine models token transfer network cost at 10 bps plus message/gas signals.",
+    "evidence": "CCIP publishes gas and network fee billing components.",
     "type": "published"
   },
   {
     "providerId": "layerzero",
     "source": "LayerZero Executors",
     "url": "https://docs.layerzero.network/v2/concepts/permissionless-execution/executors",
-    "evidence": "LayerZero execution fees depend on executor, gas, and message configuration; engine models token transfers at a 6 bps public-signal midpoint plus destination gas.",
+    "evidence": "LayerZero execution fees depend on executor, gas, and message configuration.",
     "type": "public-signal"
   },
   {
@@ -299,6 +299,27 @@
     "url": "https://etherscan.io/gastracker",
     "evidence": "May 2026 average fees historically low (sub-cent for simple transfers); variable under load.",
     "type": "public-signal"
+  },
+  {
+    "providerId": "bridge-fix",
+    "source": "Bridge Fee Disclosure (Stripe-owned)",
+    "url": "https://www.bridge.xyz/legal/fee-disclosure-statement/overview",
+    "evidence": "Disclosed FX spread up to 1% (100 bps); engine modeled at 70 bps mid-point per re-review.",
+    "type": "published"
+  },
+  {
+    "providerId": "layerzero-fix",
+    "source": "LayerZero fees overview",
+    "url": "https://docs.layerzero.network/v2/concepts/permissionless-execution/executors",
+    "evidence": "Token transfers typically 0.063\u20130.07% (~6\u20137 bps) plus destination gas; engine adjusted from 3 to 6.",
+    "type": "public-signal"
+  },
+  {
+    "providerId": "chainlink-ccip-fix",
+    "source": "Chainlink CCIP Billing",
+    "url": "https://docs.chain.link/ccip/billing",
+    "evidence": "Token transfers ~0.10% (10 bps) + message fee + destination gas; engine adjusted from 5 to 10 bps.",
+    "type": "published"
   },
   {
     "providerId": "sumsub",

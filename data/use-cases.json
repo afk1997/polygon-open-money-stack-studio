@@ -8,7 +8,7 @@
     "defaultTransactions": 180000,
     "defaultWallets": 135000,
     "defaultCorridors": "USDC to MXN, BRL, PHP, INR",
-    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "ramps", "cross-border", "compliance-security"]
+    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "ramps", "cross-border", "settlement-chain", "identity", "card-issuing", "yield-treasury", "compliance-security"]
   },
   {
     "id": "remittance-app",
@@ -19,7 +19,7 @@
     "defaultTransactions": 260000,
     "defaultWallets": 90000,
     "defaultCorridors": "US to Mexico, Philippines, India",
-    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "ramps", "cross-border", "compliance-security"]
+    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "ramps", "cross-border", "settlement-chain", "identity", "compliance-security"]
   },
   {
     "id": "global-payroll",
@@ -30,7 +30,7 @@
     "defaultTransactions": 52000,
     "defaultWallets": 28000,
     "defaultCorridors": "USDC to LATAM, EMEA, APAC",
-    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "cross-border", "compliance-security"]
+    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "cross-border", "settlement-chain", "identity", "compliance-security"]
   },
   {
     "id": "merchant-settlement",
@@ -41,7 +41,7 @@
     "defaultTransactions": 420000,
     "defaultWallets": 15000,
     "defaultCorridors": "USDC settlement to local fiat accounts",
-    "requiredModules": ["stablecoin-orchestration", "ramps", "cross-border", "blockchain-integration", "compliance-security"]
+    "requiredModules": ["stablecoin-orchestration", "ramps", "cross-border", "blockchain-integration", "settlement-chain", "card-issuing", "compliance-security"]
   },
   {
     "id": "marketplace-payouts",
@@ -52,7 +52,7 @@
     "defaultTransactions": 310000,
     "defaultWallets": 210000,
     "defaultCorridors": "USDC to bank, card, wallet, and cash methods",
-    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "ramps", "cross-border", "compliance-security"]
+    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "ramps", "cross-border", "settlement-chain", "identity", "card-issuing", "compliance-security"]
   },
   {
     "id": "agentic-payments",
@@ -63,7 +63,7 @@
     "defaultTransactions": 3600000,
     "defaultWallets": 240000,
     "defaultCorridors": "USDC micropayments and automated API settlement",
-    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "crosschain", "blockchain-integration", "compliance-security"]
+    "requiredModules": ["wallet-infra", "stablecoin-orchestration", "crosschain", "blockchain-integration", "settlement-chain", "identity", "compliance-security"]
   },
   {
     "id": "gaming-economy",
@@ -74,7 +74,7 @@
     "defaultTransactions": 850000,
     "defaultWallets": 470000,
     "defaultCorridors": "In-game balances, USDC treasury, local cash-out",
-    "requiredModules": ["wallet-infra", "crosschain", "stablecoin-orchestration", "ramps", "blockchain-integration"]
+    "requiredModules": ["wallet-infra", "crosschain", "stablecoin-orchestration", "ramps", "blockchain-integration", "settlement-chain", "identity"]
   },
   {
     "id": "institutional-cdk",
@@ -85,6 +85,6 @@
     "defaultTransactions": 620000,
     "defaultWallets": 65000,
     "defaultCorridors": "Institution-owned chain to Polygon settlement and fiat payout",
-    "requiredModules": ["cdk", "crosschain", "stablecoin-orchestration", "blockchain-integration", "compliance-security"]
+    "requiredModules": ["cdk", "crosschain", "stablecoin-orchestration", "blockchain-integration", "settlement-chain", "yield-treasury", "identity", "compliance-security"]
   }
 ]

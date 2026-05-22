@@ -809,6 +809,19 @@ a {
   color: #556179;
 }
 
+.providerSummaryMeta em {
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0 8px;
+  color: #5b35d5;
+  background: #f2edff;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+}
+
 .providerRows {
   display: grid;
   gap: 7px;
@@ -829,6 +842,18 @@ a {
 .providerRows button.selected {
   border-color: #9b86ff;
   background: #f6f3ff;
+}
+
+.providerRows button.polygonStackProvider {
+  border-style: dashed;
+  color: #5130c5;
+  background: linear-gradient(180deg, #fbfaff 0%, #f6f1ff 100%);
+  cursor: default;
+  opacity: 1;
+}
+
+.providerRows button.polygonStackProvider svg {
+  color: var(--purple);
 }
 
 .providerRows button span {
@@ -1091,6 +1116,7 @@ a {
 .businessPanel {
   border-left: 1px solid var(--line);
   padding: 0 20px 24px;
+  overflow-x: hidden;
 }
 
 .commandHeader {
@@ -1403,6 +1429,38 @@ a {
   margin-top: 26px;
 }
 
+.polygonStackStrip {
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.polygonStackStrip small {
+  color: #6f5de7;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.polygonStackStrip div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.polygonStackStrip span {
+  border: 1px solid #d8ccff;
+  border-radius: 999px;
+  padding: 5px 8px;
+  color: #4d2ed1;
+  background: #f6f2ff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
 .controlsNode {
   left: 416px;
   top: 640px;
@@ -1590,8 +1648,7 @@ a {
 
 .breakdownMath {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: center;
+  grid-template-columns: 1fr;
   gap: 8px;
 }
 
@@ -1614,6 +1671,7 @@ a {
   color: var(--purple);
   font-style: normal;
   font-weight: 850;
+  display: none;
 }
 
 .breakdownRow em {

@@ -111,6 +111,8 @@ export function BusinessCasePanel({
         <p>
           Costs are modeled from selected point-solution providers and may vary by contract,
           corridor, volume, and compliance scope. Polygon OMS pricing is early-access/custom.
+          Polygon-owned OMS components are shown as integrated stack layers, not as competitor
+          cost lines.
         </p>
         <textarea suppressHydrationWarning readOnly value={buildExportPitch(input)} />
       </details>

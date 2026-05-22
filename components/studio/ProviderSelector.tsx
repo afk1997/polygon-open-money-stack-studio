@@ -2,14 +2,19 @@
 
 import {
   Braces,
+  BadgeCheck,
   CheckCircle2,
   ChevronDown,
   Circle,
   CircleDollarSign,
+  CreditCard,
+  Coins,
   Landmark,
+  Layers3,
   Network,
   Route,
   ShieldCheck,
+  TrendingUp,
   WalletCards,
   Box,
 } from "lucide-react";
@@ -50,7 +55,9 @@ export function ProviderSelector({
 
       <div className="providerAccordion">
         {modules.map((module) => {
-          const selectedCount = module.providers.filter((provider) => selectedSet.has(provider.id)).length;
+          const competitorProviders = module.providers.filter((provider) => !provider.polygonOwned);
+          const selectedCount = competitorProviders.filter((provider) => selectedSet.has(provider.id)).length;
+          const polygonStackCount = module.providers.filter((provider) => provider.polygonOwned).length;
           return (
             <details key={module.id}>
               <summary>
@@ -60,24 +67,29 @@ export function ProviderSelector({
                 </span>
                 <span className="providerSummaryMeta">
                   <strong>{selectedCount}</strong>
+                  {polygonStackCount > 0 && <em>{polygonStackCount} OMS</em>}
                   <ChevronDown size={15} />
                 </span>
               </summary>
               <div className="providerRows">
                 {module.providers.map((provider) => {
                   const checked = selectedSet.has(provider.id);
+                  const isPolygonStack = Boolean(provider.polygonOwned);
                   return (
                     <button
                       key={provider.id}
-                      className={checked ? "selected" : ""}
+                      className={[
+                        checked ? "selected" : "",
+                        isPolygonStack ? "polygonStackProvider" : "",
+                      ].filter(Boolean).join(" ")}
                       type="button"
-                      disabled={mode === "launch"}
+                      disabled={mode === "launch" || isPolygonStack}
                       onClick={() => onToggleProvider(provider.id)}
                     >
-                      {checked ? <CheckCircle2 size={16} /> : <Circle size={16} />}
+                      {isPolygonStack ? <CheckCircle2 size={16} /> : checked ? <CheckCircle2 size={16} /> : <Circle size={16} />}
                       <span>
                         <strong>{provider.name}</strong>
-                        <small>{provider.pricingSignal}</small>
+                        <small>{isPolygonStack ? "Polygon OMS integrated layer" : provider.pricingSignal}</small>
                       </span>
                     </button>
                   );
@@ -110,6 +122,10 @@ function shortModuleLabel(moduleId: string, label: string) {
     ramps: "Cash Ramps & On/Off-Ramp",
     cdk: "BaaS / CDK",
     "compliance-security": "Compliance & Security",
+    "settlement-chain": "Settlement Chain",
+    "yield-treasury": "Yield / Treasury",
+    "card-issuing": "Card Issuing / BaaS",
+    identity: "Identity",
   };
   return labels[moduleId] ?? label;
 }
@@ -125,6 +141,11 @@ function moduleIcon(moduleId: string) {
     "blockchain-integration": <Braces size={size} />,
     cdk: <Box size={size} />,
     "compliance-security": <ShieldCheck size={size} />,
+    "settlement-chain": <Layers3 size={size} />,
+    "yield-treasury": <TrendingUp size={size} />,
+    "card-issuing": <CreditCard size={size} />,
+    identity: <BadgeCheck size={size} />,
+    intents: <Coins size={size} />,
   };
   return icons[moduleId] ?? <Box size={size} />;
 }

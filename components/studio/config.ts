@@ -7,7 +7,11 @@ export type RequirementId =
   | "cross-border"
   | "merchant-settlement"
   | "agent-payments"
-  | "dedicated-chain";
+  | "dedicated-chain"
+  | "settlement-chain"
+  | "identity"
+  | "card-issuing"
+  | "treasury-yield";
 
 export type ComplianceId =
   | "kyc-kyb"
@@ -75,6 +79,30 @@ export const requirementOptions: Array<{
     detail: "Institution-owned chain or appchain settlement path.",
     modules: ["cdk", "crosschain", "blockchain-integration"],
   },
+  {
+    id: "settlement-chain",
+    label: "Settlement chain",
+    detail: "Compare Polygon PoS/CDK against Base, Solana, Stellar, Tron, and other rails.",
+    modules: ["settlement-chain"],
+  },
+  {
+    id: "identity",
+    label: "Identity credentials",
+    detail: "Reusable credentials, KYC/KYB handoff, and verification cost control.",
+    modules: ["identity", "compliance-security"],
+  },
+  {
+    id: "card-issuing",
+    label: "Card issuing",
+    detail: "Debit/prepaid cards, interchange economics, and BaaS dependencies.",
+    modules: ["card-issuing"],
+  },
+  {
+    id: "treasury-yield",
+    label: "Yield / treasury",
+    detail: "Idle bridged TVL, treasury yield, and chain revenue strategy.",
+    modules: ["yield-treasury"],
+  },
 ];
 
 export const complianceOptions: Array<{
@@ -92,14 +120,14 @@ export const complianceOptions: Array<{
 ];
 
 export const defaultRequirementsByUseCase: Record<string, RequirementId[]> = {
-  "neobank-dollar-account": ["wallet-balances", "cash-in", "cash-out", "cross-border"],
-  "remittance-app": ["cash-in", "cash-out", "cross-border"],
-  "global-payroll": ["wallet-balances", "cross-border", "cash-out"],
-  "merchant-settlement": ["merchant-settlement", "cash-out", "cross-border"],
-  "marketplace-payouts": ["wallet-balances", "cash-out", "cross-border"],
-  "agentic-payments": ["wallet-balances", "agent-payments", "cross-border"],
-  "gaming-economy": ["wallet-balances", "cash-out", "agent-payments"],
-  "institutional-cdk": ["dedicated-chain", "cross-border", "merchant-settlement"],
+  "neobank-dollar-account": ["wallet-balances", "cash-in", "cash-out", "cross-border", "settlement-chain", "identity", "card-issuing", "treasury-yield"],
+  "remittance-app": ["cash-in", "cash-out", "cross-border", "settlement-chain", "identity"],
+  "global-payroll": ["wallet-balances", "cross-border", "cash-out", "settlement-chain", "identity"],
+  "merchant-settlement": ["merchant-settlement", "cash-out", "cross-border", "settlement-chain", "card-issuing"],
+  "marketplace-payouts": ["wallet-balances", "cash-out", "cross-border", "settlement-chain", "identity", "card-issuing"],
+  "agentic-payments": ["wallet-balances", "agent-payments", "cross-border", "settlement-chain", "identity"],
+  "gaming-economy": ["wallet-balances", "cash-out", "agent-payments", "settlement-chain", "identity"],
+  "institutional-cdk": ["dedicated-chain", "cross-border", "merchant-settlement", "settlement-chain", "treasury-yield", "identity"],
 };
 
 export const defaultCompliance: ComplianceId[] = [
@@ -118,6 +146,10 @@ const benchmarkByModule: Record<string, string[]> = {
   "blockchain-integration": ["alchemy"],
   cdk: ["avacloud"],
   "compliance-security": ["chainalysis", "trm"],
+  "settlement-chain": ["base", "solana", "stellar", "tron"],
+  "yield-treasury": ["morpho", "aave"],
+  "card-issuing": ["stripe-issuing", "marqeta"],
+  identity: ["sumsub-identity", "persona-identity"],
 };
 
 export function buildBenchmarkProviderIds(moduleIds: string[]) {

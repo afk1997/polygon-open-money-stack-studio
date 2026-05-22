@@ -271,7 +271,8 @@ function FlowStep({
           rows={[
             ["Domestic transfers", choices.requirements.includes("wallet-balances"), () => onToggleRequirement("wallet-balances")],
             ["Cross-border payouts", choices.requirements.includes("cross-border"), () => onToggleRequirement("cross-border")],
-            ["Multi-currency support", choices.requirements.includes("dedicated-chain"), () => onToggleRequirement("dedicated-chain")],
+            ["Settlement chain comparison", choices.requirements.includes("settlement-chain"), () => onToggleRequirement("settlement-chain")],
+            ["Dedicated chain", choices.requirements.includes("dedicated-chain"), () => onToggleRequirement("dedicated-chain")],
           ]}
         />
         <FlowCard
@@ -282,6 +283,7 @@ function FlowStep({
             ["Card on-ramp", choices.requirements.includes("cash-in"), () => onToggleRequirement("cash-in")],
             ["Bank transfer", choices.requirements.includes("cash-in"), () => onToggleRequirement("cash-in")],
             ["Local cash-out / payout", choices.requirements.includes("cash-out"), () => onToggleRequirement("cash-out")],
+            ["Card issuing", choices.requirements.includes("card-issuing"), () => onToggleRequirement("card-issuing")],
             ["None / not required", !choices.requirements.includes("cash-in") && !choices.requirements.includes("cash-out"), () => {
               if (choices.requirements.includes("cash-in")) onToggleRequirement("cash-in");
               if (choices.requirements.includes("cash-out")) onToggleRequirement("cash-out");
@@ -296,6 +298,7 @@ function FlowStep({
             ["USDC settlement", choices.requirements.includes("cross-border"), () => onToggleRequirement("cross-border")],
             ["Hold balances", choices.requirements.includes("wallet-balances"), () => onToggleRequirement("wallet-balances")],
             ["Convert to local currency", choices.requirements.includes("cash-out"), () => onToggleRequirement("cash-out")],
+            ["Treasury yield", choices.requirements.includes("treasury-yield"), () => onToggleRequirement("treasury-yield")],
             ["Not required", choices.requirements.length === 0, () => undefined],
           ]}
         />
@@ -305,6 +308,7 @@ function FlowStep({
           detail="What compliance and risk controls are needed?"
           rows={[
             ["KYC/KYB", choices.compliance.includes("kyc-kyb"), () => onToggleCompliance("kyc-kyb")],
+            ["Reusable identity", choices.requirements.includes("identity"), () => onToggleRequirement("identity")],
             ["Sanctions screening", choices.compliance.includes("sanctions"), () => onToggleCompliance("sanctions")],
             ["Travel Rule", choices.compliance.includes("travel-rule"), () => onToggleCompliance("travel-rule")],
             ["Wallet risk monitoring", choices.compliance.includes("kyt"), () => onToggleCompliance("kyt")],

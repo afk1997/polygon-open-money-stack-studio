@@ -10,9 +10,13 @@ export type Provider = {
   pricingSignal: string;
   strength: string;
   tradeoff: string;
+  /**
+   * Tags providers that belong to the Polygon Open Money Stack itself
+   * (e.g. Sequence, Coinme, Polygon CDK, Agglayer, Vaultbridge, Polygon ID,
+   * Polygon PoS, Sequence Trails). UI should visually group these as the
+   * integrated stack rather than as point-solution competitors.
+   */
   polygonOwned?: boolean;
-  polygonStackRole?: string;
-  ownershipNote?: string;
 };
 
 export type OMSModule = {
@@ -28,16 +32,6 @@ export type PricingEvidence = {
   url: string;
   evidence: string;
   type: PricingType;
-};
-
-export type PolygonStackItem = {
-  id: string;
-  name: string;
-  moduleId: string;
-  layer: string;
-  role: string;
-  evidenceProviderId: string;
-  status: "integrated" | "polygon-owned" | "polygon-native" | "ecosystem";
 };
 
 export type UseCaseTemplate = {
@@ -91,8 +85,6 @@ export type CostModel = {
   selectedProviderVariableCost: number;
   selectedProviderCount: number;
   providerCostLines: ProviderCostLine[];
-  polygonStackAnnualCost: number;
-  polygonStackItemsPriced: string[];
   operationalOverheadAnnualCost: number;
   feeDelta: number;
   fixedVendorSavings: number;

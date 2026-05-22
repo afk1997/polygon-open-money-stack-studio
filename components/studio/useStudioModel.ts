@@ -68,7 +68,7 @@ export function useStudioModel(input: StudioInput, choices: StudioChoices) {
 export function getProvidersByIds(providerIds: string[]) {
   const ids = new Set(providerIds);
   return modules.flatMap((module) =>
-    module.providers.filter((provider) => ids.has(provider.id)),
+    module.providers.filter((provider) => ids.has(provider.id) && !provider.polygonOwned),
   );
 }
 
@@ -77,7 +77,7 @@ export function groupProvidersByModule(providerIds: string[]) {
   return modules
     .map((module) => ({
       module,
-      providers: module.providers.filter((provider) => ids.has(provider.id)),
+      providers: module.providers.filter((provider) => ids.has(provider.id) && !provider.polygonOwned),
     }))
     .filter((group) => group.providers.length > 0);
 }
