@@ -244,7 +244,7 @@ function buildOutcomes(input: StudioInput, recommendation: Recommendation) {
       : "Same-day settlement target";
   return [
     settlementText,
-    `${formatMoney(cost.feeDelta)} fee delta`,
+    `${formatMoney(cost.feeDelta)} provider fee reduction`,
     `${cost.integrationComplexityReduction}% complexity reduction`,
     `${input.reconciliationFeeds} reconciliation feeds unified`,
     input.corridors ? `${compactCorridors(input.corridors)} corridors` : "Selected corridors covered",

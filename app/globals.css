@@ -1496,6 +1496,98 @@ a {
   font-size: 13px;
 }
 
+.savingsFormula {
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfdff;
+}
+
+.savingsFormula span,
+.breakdownCopy small,
+.breakdownMath small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.savingsFormula strong {
+  color: #25304a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.savingsBreakdown {
+  display: grid;
+  gap: 12px;
+  padding-top: 18px;
+  margin-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.breakdownRow {
+  display: grid;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.breakdownRow:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.breakdownCopy {
+  display: grid;
+  gap: 4px;
+}
+
+.breakdownCopy strong {
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.breakdownCopy small {
+  line-height: 1.35;
+}
+
+.breakdownMath {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.breakdownMath span {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 9px;
+  background: #fff;
+}
+
+.breakdownMath b {
+  color: #172036;
+  font-size: 12px;
+}
+
+.breakdownMath i {
+  color: var(--purple);
+  font-style: normal;
+  font-weight: 850;
+}
+
+.breakdownRow em {
+  justify-self: end;
+  color: var(--green);
+  font-style: normal;
+  font-size: 15px;
+  font-weight: 850;
+}
+
 .waterfallBars {
   display: grid;
   gap: 14px;

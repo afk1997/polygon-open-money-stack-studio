@@ -14,6 +14,13 @@ export function BusinessCasePanel({
   onOpenReport: () => void;
 }) {
   const cost = recommendation.costModel;
+  const currentVariableFees =
+    cost.selectedProviderVariableCost ||
+    Math.max(cost.currentAnnualCost - cost.selectedProviderFixedCost - cost.operationalOverheadAnnualCost, 0);
+  const modeledMovementCost = Math.max(currentVariableFees - cost.feeDelta, 0);
+  const currentFixedOps = cost.selectedProviderFixedCost + cost.operationalOverheadAnnualCost;
+  const modeledFixedOps = Math.max(currentFixedOps - cost.fixedVendorSavings, 0);
+  const annualVolume = input.monthlyVolume * 12;
   const topProviderLines = cost.providerCostLines
     .slice()
     .sort((a, b) => b.annualCost - a.annualCost)
@@ -31,14 +38,41 @@ export function BusinessCasePanel({
         <span>Savings waterfall</span>
         <p>{input.mode === "launch" ? "First-year launch advantage" : "First-year savings"}</p>
         <h2>{formatMoney(cost.firstYearNetSavings)}</h2>
-        <div className="waterfallBars">
-          <BarRow label="Provider cost lines" value={cost.currentAnnualCost} tone="neutral" />
-          <BarRow label="Fee delta" value={cost.feeDelta} tone="green" />
-          <BarRow label="Fixed vendor savings" value={cost.fixedVendorSavings} tone="green" />
-          <BarRow label="Working capital release" value={cost.workingCapitalRelease} tone="green" />
+        <div className="savingsFormula">
+          <span>Modeled as</span>
+          <strong>provider fee reduction + vendor and ops reduction + settlement liquidity value</strong>
+        </div>
+        <div className="savingsBreakdown">
+          <BreakdownRow
+            title="Provider fee reduction"
+            detail="Current point-solution variable fees minus modeled OMS movement cost."
+            beforeLabel="Current variable fees"
+            beforeValue={currentVariableFees}
+            afterLabel="Modeled OMS movement"
+            afterValue={modeledMovementCost}
+            savings={cost.feeDelta}
+          />
+          <BreakdownRow
+            title="Vendor and ops reduction"
+            detail="Fixed vendor costs plus API, reconciliation, and compliance handoff overhead."
+            beforeLabel="Current fixed + ops"
+            beforeValue={currentFixedOps}
+            afterLabel="Modeled OMS fixed"
+            afterValue={modeledFixedOps}
+            savings={cost.fixedVendorSavings}
+          />
+          <BreakdownRow
+            title="Settlement liquidity value"
+            detail={`${formatMoney(annualVolume)} annual volume with ${input.settlementDays}-day settlement drag modeled.`}
+            beforeLabel="Current delay"
+            beforeText={`${input.settlementDays} days`}
+            afterLabel="Modeled OMS target"
+            afterText="Near same-day"
+            savings={cost.workingCapitalRelease}
+          />
         </div>
         <div className="netSavings">
-          <span>Net savings (yr 1)</span>
+          <span>Total modeled savings</span>
           <strong>{formatMoney(cost.firstYearNetSavings)}</strong>
         </div>
       </section>
@@ -95,20 +129,45 @@ export function BusinessCasePanel({
   );
 }
 
-function BarRow({
-  label,
-  value,
-  tone,
+function BreakdownRow({
+  title,
+  detail,
+  beforeLabel,
+  beforeValue,
+  beforeText,
+  afterLabel,
+  afterValue,
+  afterText,
+  savings,
 }: {
-  label: string;
-  value: number;
-  tone: "green" | "neutral" | "muted";
+  title: string;
+  detail: string;
+  beforeLabel: string;
+  beforeValue?: number;
+  beforeText?: string;
+  afterLabel: string;
+  afterValue?: number;
+  afterText?: string;
+  savings: number;
 }) {
   return (
-    <div className={`barRow ${tone}`}>
-      <span>{label}</span>
-      <i />
-      <strong>{formatMoney(value)}</strong>
+    <div className="breakdownRow">
+      <div className="breakdownCopy">
+        <strong>{title}</strong>
+        <small>{detail}</small>
+      </div>
+      <div className="breakdownMath">
+        <span>
+          <small>{beforeLabel}</small>
+          <b>{beforeText ?? formatMoney(beforeValue ?? 0)}</b>
+        </span>
+        <i aria-hidden="true">→</i>
+        <span>
+          <small>{afterLabel}</small>
+          <b>{afterText ?? formatMoney(afterValue ?? 0)}</b>
+        </span>
+      </div>
+      <em>{formatMoney(savings)}</em>
     </div>
   );
 }
