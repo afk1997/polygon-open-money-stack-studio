@@ -306,7 +306,7 @@ a {
   height: calc(100dvh - 104px);
   min-height: 760px;
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr) 395px;
+  grid-template-columns: 280px minmax(640px, 1fr) 360px;
   grid-template-rows: minmax(388px, auto) minmax(0, 1fr) auto;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -409,10 +409,10 @@ a {
   min-width: 0;
   display: grid;
   align-content: start;
-  gap: 14px;
-  min-height: 388px;
-  padding: 30px 34px 16px 44px;
-  overflow: hidden;
+  gap: 16px;
+  min-height: 418px;
+  padding: 32px 42px 18px 52px;
+  overflow: auto;
 }
 
 .intakeStep h1 {
@@ -424,22 +424,21 @@ a {
 }
 
 .stepCopy {
-  margin: 9px 0 23px;
+  margin: 9px 0 27px;
   font-size: 13px;
   font-weight: 400;
 }
 
 .productGrid {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
-  gap: 34px;
+  grid-template-columns: 0.9fr 1.2fr;
+  gap: 42px;
 }
 
 .selectInput,
 .textInput,
 .textAreaInput,
 .numberInput {
-  min-width: 0;
   display: grid;
   align-content: start;
   gap: 7px;
@@ -459,8 +458,7 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  min-height: 26px;
-  white-space: normal;
+  white-space: nowrap;
 }
 
 .numberInput > span::after {
@@ -500,7 +498,7 @@ a {
 }
 
 .textAreaInput textarea {
-  min-height: 108px;
+  min-height: 120px;
   resize: vertical;
   padding: 16px;
   color: #172036;
@@ -536,8 +534,8 @@ a {
 
 .assumptionGrid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 20px;
+  grid-template-columns: 155px 145px 150px 140px 126px;
+  gap: 31px;
   margin-top: 15px;
 }
 
@@ -769,18 +767,18 @@ a {
 .intakeProviders {
   grid-column: 3;
   grid-row: 1 / 3;
-  padding: 26px 22px 26px 0;
+  padding: 22px 16px 22px 0;
   overflow: auto;
 }
 
 .providerSelector {
   display: grid;
-  gap: 14px;
+  gap: 10px;
   min-height: 0;
   align-content: start;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 18px;
+  padding: 14px;
   background: rgba(255, 255, 255, 0.74);
 }
 
@@ -791,7 +789,11 @@ a {
 
 .providerSelector .sectionHeader > div {
   display: grid;
-  gap: 8px;
+  gap: 6px;
+}
+
+.providerSelector p {
+  margin: 0;
 }
 
 .providerTitleLine {
@@ -815,7 +817,7 @@ a {
 
 .providerAccordion {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .providerAccordion details {
@@ -828,8 +830,8 @@ a {
 .providerAccordion summary {
   justify-content: space-between;
   gap: 12px;
-  min-height: 49px;
-  padding: 0 14px;
+  min-height: 44px;
+  padding: 0 12px;
   list-style: none;
   color: #111827;
   font-size: 13px;
