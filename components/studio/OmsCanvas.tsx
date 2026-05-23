@@ -5,7 +5,6 @@ import {
   BadgeCheck,
   Boxes,
   CheckCircle2,
-  ChevronDown,
   CreditCard,
   Crosshair,
   Database,
@@ -84,8 +83,7 @@ export function OmsCanvas({
   const dragRef = useRef<{ id: string; start: Point; offset: Point } | null>(null);
   const [view, setView] = useState<ViewState>({ x: 0, y: 0, scale: 1 });
   const [locked, setLocked] = useState(false);
-  const [viewMode, setViewMode] = useState<"Logical" | "Cost">("Logical");
-  const [environmentMode, setEnvironmentMode] = useState<"Production" | "Sandbox">("Production");
+  const viewMode = "Cost";
   const [nodeOffsets, setNodeOffsets] = useState<Record<string, Point>>({});
 
   const baseRects = useMemo<Record<string, Rect>>(() => {
@@ -298,22 +296,6 @@ export function OmsCanvas({
           <small>Last saved 2 min ago</small>
         </div>
         <div className="canvasTools">
-          <span>View</span>
-          <button
-            type="button"
-            onClick={() => setViewMode((current) => (current === "Logical" ? "Cost" : "Logical"))}
-            aria-label="Toggle canvas view"
-          >
-            {viewMode} <ChevronDown size={14} />
-          </button>
-          <span>Environment</span>
-          <button
-            type="button"
-            onClick={() => setEnvironmentMode((current) => (current === "Production" ? "Sandbox" : "Production"))}
-            aria-label="Toggle environment"
-          >
-            {environmentMode} <ChevronDown size={14} />
-          </button>
           <button className="squareTool" type="button" onClick={fitView} aria-label="Fit view"><Expand size={15} /></button>
           <button className="squareTool" type="button" onClick={() => centerRect(coreRect, 1.08)} aria-label="Focus OMS core"><Search size={15} /></button>
           <button
