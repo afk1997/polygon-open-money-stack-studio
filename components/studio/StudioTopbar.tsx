@@ -1,17 +1,17 @@
 "use client";
 
-import { CheckCircle2, Download, Edit3, Ellipsis, Share2 } from "lucide-react";
+import { CheckCircle2, ChevronDown, Download, Ellipsis, Maximize2, Share2 } from "lucide-react";
 import type { LabStage } from "./types";
 
 export function StudioTopbar({
   stage,
   draftSaved,
-  onReset,
+  onGoLab,
   onReport,
 }: {
   stage: LabStage;
   draftSaved: boolean;
-  onReset: () => void;
+  onGoLab: () => void;
   onReport: () => void;
 }) {
   const progress = [
@@ -23,7 +23,7 @@ export function StudioTopbar({
   ];
 
   return (
-    <header className="studioTopbar">
+    <header className={`studioTopbar ${stage === "building" ? "buildingTopbar" : ""}`}>
       <div className="brandCluster">
         <img className="brandMark" src="/polygon-icon-primary-purple.svg" alt="" aria-hidden="true" />
         <div>
@@ -32,13 +32,13 @@ export function StudioTopbar({
         </div>
       </div>
 
-      {stage !== "intake" && (
+      {stage !== "intake" && stage !== "building" && (
         <nav className="stageIndicator" aria-label="Studio progress">
           {progress.map(([number, label], index) => (
             <span
               key={label}
               className={
-                (stage === "building" && index <= 1) || (stage === "lab" && index === 2)
+                stage === "lab" && index === 2
                   ? "active"
                   : ""
               }
@@ -58,10 +58,20 @@ export function StudioTopbar({
           </span>
         )}
         {stage === "building" && (
-          <button type="button" onClick={onReset}>
-            <Edit3 size={15} />
-            Edit intake
-          </button>
+          <>
+            <button type="button" onClick={onGoLab}>
+              <Maximize2 size={15} />
+              Lab
+            </button>
+            <button type="button" onClick={onReport}>
+              <Download size={15} />
+              Export
+            </button>
+            <button className="avatarButton topbarAvatar" type="button" onClick={openSettings} aria-label="Open settings">
+              K
+              <ChevronDown size={14} />
+            </button>
+          </>
         )}
         {stage === "lab" && (
           <>
@@ -81,6 +91,10 @@ export function StudioTopbar({
       </div>
     </header>
   );
+}
+
+function openSettings() {
+  window.location.href = "/settings";
 }
 
 function requestCanvasExport() {

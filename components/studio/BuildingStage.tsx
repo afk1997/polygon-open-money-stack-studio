@@ -19,14 +19,18 @@ export function BuildingStage({
   input,
   providerCount,
   useCaseName,
+  onEdit,
 }: {
   activeIndex: number;
   input: StudioInput;
   providerCount: number;
   useCaseName: string;
+  onEdit: () => void;
 }) {
   return (
     <section className="buildingStage">
+      <BuildProgressRail activeIndex={activeIndex} />
+
       <motion.aside
         className="buildIntakeCard"
         initial={{ opacity: 0, x: -14 }}
@@ -44,7 +48,7 @@ export function BuildingStage({
         <BuildFact icon={<ShieldCheck size={17} />} label="Monthly volume" value={formatMoney(input.monthlyVolume)} />
         <BuildFact icon={<Circle size={17} />} label="Monthly transactions" value={input.monthlyTransactions.toLocaleString()} />
         <BuildFact icon={<ShieldCheck size={17} />} label={input.mode === "launch" ? "Benchmark stack" : "Current stack"} value={`${providerCount} providers selected`} />
-        <button type="button">
+        <button type="button" onClick={onEdit}>
           <Pencil size={14} />
           Edit intake
         </button>
@@ -79,6 +83,22 @@ export function BuildingStage({
         </div>
       </motion.div>
     </section>
+  );
+}
+
+function BuildProgressRail({ activeIndex }: { activeIndex: number }) {
+  return (
+    <nav className="buildProgressRail" aria-label="Build progress">
+      {buildSteps.map((step, index) => {
+        const active = index <= activeIndex;
+        return (
+          <span key={step} className={active ? "active" : ""}>
+            <b>{String(index + 1).padStart(2, "0")}</b>
+            {step}
+          </span>
+        );
+      })}
+    </nav>
   );
 }
 

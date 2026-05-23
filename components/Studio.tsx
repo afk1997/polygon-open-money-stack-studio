@@ -148,12 +148,14 @@ export function Studio() {
 
   async function draftStack() {
     persistDraft(input, workflow, choices, setDraftSaved);
+    scrollToTop();
     setStage("building");
     setBuildIndex(0);
     for (let index = 0; index < 5; index += 1) {
       setBuildIndex(index);
       await wait(360);
     }
+    scrollToTop();
     setStage("lab");
   }
 
@@ -167,7 +169,10 @@ export function Studio() {
       <StudioTopbar
         stage={stage}
         draftSaved={draftSaved}
-        onReset={() => setStage("intake")}
+        onGoLab={() => {
+          scrollToTop();
+          setStage("lab");
+        }}
         onReport={() => setReportOpen(true)}
       />
 
@@ -200,6 +205,10 @@ export function Studio() {
             input={labInput}
             providerCount={labInput.selectedProviderIds.length}
             useCaseName={model.useCase.name}
+            onEdit={() => {
+              scrollToTop();
+              setStage("intake");
+            }}
           />
         )}
         {stage === "lab" && (
@@ -229,6 +238,10 @@ export function Studio() {
 
 function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, left: 0 });
 }
 
 function persistDraft(

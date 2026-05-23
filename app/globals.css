@@ -249,6 +249,57 @@ a {
   width: 38px;
 }
 
+.buildingTopbar {
+  min-height: 88px;
+  padding: 0 36px;
+}
+
+.buildingTopbar .brandCluster {
+  min-width: 330px;
+  gap: 14px;
+}
+
+.buildingTopbar .brandMark {
+  width: 42px;
+  height: 38px;
+}
+
+.buildingTopbar .brandCluster div {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.buildingTopbar .brandCluster strong,
+.buildingTopbar .brandCluster span:not(.brandMark) {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.buildingTopbar .brandCluster span:not(.brandMark) {
+  color: #111827;
+}
+
+.buildingTopbar .topbarActions button {
+  min-height: 42px;
+  padding: 0 18px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.buildingTopbar .topbarActions button:first-child svg {
+  color: #53607a;
+}
+
+.buildingTopbar .topbarAvatar {
+  width: 50px;
+  min-width: 50px;
+  gap: 6px;
+  padding: 0 10px;
+  color: var(--purple) !important;
+  font-weight: 800 !important;
+}
+
 .topbarActions button:first-child {
   color: #4d5870;
 }
@@ -980,27 +1031,83 @@ a {
   position: relative;
   min-height: calc(100dvh - 88px);
   display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 160px;
+  grid-template-columns: 360px minmax(720px, 1fr);
+  grid-template-rows: 44px minmax(0, 1fr);
+  column-gap: 116px;
+  row-gap: 30px;
+  align-items: start;
+  padding: 48px 60px 60px;
+}
+
+.buildProgressRail {
+  grid-column: 2;
+  width: min(920px, 100%);
+  justify-self: start;
+  margin-left: -90px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 18px;
+  color: #7f8aa3;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.buildProgressRail span {
+  position: relative;
+  min-width: 0;
+  display: flex;
   align-items: center;
-  padding: 64px 64px;
+  gap: 8px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #dbe3f0;
+  white-space: nowrap;
+}
+
+.buildProgressRail span::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #c7d0e0;
+}
+
+.buildProgressRail span.active {
+  color: var(--purple);
+  border-bottom-color: var(--purple);
+}
+
+.buildProgressRail span.active::before {
+  background: var(--purple);
+}
+
+.buildProgressRail b {
+  color: inherit;
+  font-size: 13px;
+  font-weight: 850;
 }
 
 .buildIntakeCard {
-  width: 310px;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 300px;
+  margin-top: 18px;
   display: grid;
-  gap: 22px;
+  gap: 20px;
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 22px;
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: var(--shadow);
+  border-radius: 10px;
+  padding: 24px 24px 22px;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 18px 42px rgba(33, 45, 77, 0.05);
 }
 
 .buildIntakeHeader {
   justify-content: space-between;
   color: #78849b;
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 800;
 }
 
 .buildIntakeHeader span {
@@ -1012,7 +1119,7 @@ a {
 }
 
 .buildFact {
-  gap: 14px;
+  gap: 16px;
   color: #8b97ad;
 }
 
@@ -1025,7 +1132,8 @@ a {
   color: #b2bacb;
   font-family: var(--mono);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 850;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -1038,6 +1146,7 @@ a {
   width: 100%;
   border: 0;
   border-top: 1px solid var(--line);
+  margin: 4px 0;
 }
 
 .buildIntakeCard button {
@@ -1045,19 +1154,22 @@ a {
 }
 
 .buildingCard {
-  width: min(680px, 100%);
-  justify-self: center;
+  grid-column: 2;
+  grid-row: 2;
+  width: min(650px, 100%);
+  justify-self: start;
+  margin-left: 10px;
   border: 1px solid #b9c7ef;
-  border-radius: 12px;
-  padding: 42px 40px 36px;
+  border-radius: 10px;
+  padding: 40px 40px 32px;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 24px 70px rgba(33, 45, 77, 0.1);
 }
 
 .buildGlyph {
   position: relative;
-  width: 66px;
-  height: 66px;
+  width: 74px;
+  height: 68px;
   margin: 0 auto 26px;
 }
 
@@ -1087,13 +1199,16 @@ a {
 .buildingCard h2 {
   margin: 0;
   text-align: center;
-  font-size: 34px;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0;
 }
 
 .buildingCard > p {
-  margin: 12px 0 32px;
+  margin: 12px 0 30px;
   color: var(--muted);
   text-align: center;
+  font-size: 16px;
 }
 
 .buildRows {
@@ -1102,7 +1217,7 @@ a {
 }
 
 .buildRows div {
-  min-height: 68px;
+  min-height: 64px;
   gap: 22px;
   border-bottom: 1px solid var(--line);
   color: #6a758c;
@@ -1129,7 +1244,7 @@ a {
 .buildRows span {
   flex: 1;
   color: var(--ink);
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 800;
 }
 
@@ -2268,6 +2383,22 @@ a {
     height: auto;
     grid-template-columns: 1fr;
     padding: 20px;
+  }
+
+  .buildProgressRail,
+  .buildIntakeCard,
+  .buildingCard {
+    grid-column: 1;
+    grid-row: auto;
+    margin-left: 0;
+    margin-top: 0;
+  }
+
+  .buildProgressRail {
+    width: 100%;
+    grid-template-columns: repeat(5, 150px);
+    overflow-x: auto;
+    padding-bottom: 8px;
   }
 
   .buildIntakeCard,
