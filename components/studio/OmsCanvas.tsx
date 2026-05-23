@@ -90,15 +90,15 @@ export function OmsCanvas({
     const moduleRects = Object.fromEntries(
       moduleCards.map(({ module }, index) => [
         `module-${module.id}`,
-        { x: 300 + index * 166, y: 98, width: 152, height: 170 },
+        { x: 306 + index * 168, y: 92, width: 158, height: 162 },
       ]),
     );
 
     return {
-      current: { x: 42, y: 148, width: 188, height: 532 },
-      core: { x: 436, y: 352, width: 430, height: 250 },
-      controls: { x: 416, y: 656, width: 470, height: 132 },
-      outcomes: { x: 918, y: 388, width: 200, height: 218 },
+      current: { x: 48, y: 160, width: 190, height: 500 },
+      core: { x: 438, y: 360, width: 450, height: 260 },
+      controls: { x: 410, y: 684, width: 500, height: 150 },
+      outcomes: { x: 930, y: 392, width: 196, height: 214 },
       ...moduleRects,
     };
   }, [moduleCards]);
@@ -120,6 +120,7 @@ export function OmsCanvas({
     id: `module-${module.id}`,
     rect: getRect(`module-${module.id}`),
   }));
+  const graphBounds = useMemo(() => getGraphBounds(Object.values(baseRects)), [baseRects]);
   const edgePaths = buildEdgePaths({
     currentRect,
     coreRect,
@@ -133,13 +134,15 @@ export function OmsCanvas({
     const viewport = viewportRef.current;
     if (!viewport) return;
     const bounds = viewport.getBoundingClientRect();
-    const scale = Math.min((bounds.width - 56) / board.width, (bounds.height - 56) / board.height, 1);
+    const graphWidth = graphBounds.maxX - graphBounds.minX;
+    const graphHeight = graphBounds.maxY - graphBounds.minY;
+    const scale = clamp(Math.min((bounds.width - 72) / graphWidth, (bounds.height - 104) / graphHeight, 0.96), 0.68, 0.96);
     setView({
-      scale: Math.max(0.48, scale),
-      x: Math.max(28, (bounds.width - board.width * scale) / 2),
-      y: 28,
+      scale,
+      x: Math.max(20, (bounds.width - graphWidth * scale) / 2 - graphBounds.minX * scale),
+      y: Math.max(18, 52 - graphBounds.minY * scale),
     });
-  }, [board.height, board.width]);
+  }, [graphBounds.maxX, graphBounds.maxY, graphBounds.minX, graphBounds.minY]);
 
   useEffect(() => {
     fitView();
@@ -379,10 +382,8 @@ export function OmsCanvas({
                 >
                   <Icon size={18} />
                   <span>{shortModuleLabel(module.label)}</span>
-                  <small>
-                    {providers.length} {providers.length === 1 ? "provider" : "providers"}
-                    {viewMode === "Cost" && annualCost > 0 ? ` · ${formatMoney(annualCost)}/yr` : ""}
-                  </small>
+                  <small>{providers.length} {providers.length === 1 ? "provider" : "providers"}</small>
+                  {viewMode === "Cost" && annualCost > 0 && <small className="moduleCost">{formatMoney(annualCost)}/yr</small>}
                   {providers.slice(0, 2).map((provider) => (
                     <b key={provider.id}>{provider.name}</b>
                   ))}
@@ -482,6 +483,18 @@ function nodeStyle(rect: Rect) {
   };
 }
 
+function getGraphBounds(rects: Rect[]) {
+  return rects.reduce(
+    (bounds, rect) => ({
+      minX: Math.min(bounds.minX, rect.x),
+      minY: Math.min(bounds.minY, rect.y),
+      maxX: Math.max(bounds.maxX, rect.x + rect.width),
+      maxY: Math.max(bounds.maxY, rect.y + rect.height),
+    }),
+    { minX: Number.POSITIVE_INFINITY, minY: Number.POSITIVE_INFINITY, maxX: 0, maxY: 0 },
+  );
+}
+
 function buildEdgePaths({
   currentRect,
   coreRect,
@@ -497,8 +510,8 @@ function buildEdgePaths({
   moduleRects: Array<{ id: string; rect: Rect }>;
   providerCount: number;
 }) {
-  const coreIn = { x: coreRect.x, y: coreRect.y + 54 };
-  const currentOut = { x: currentRect.x + currentRect.width, y: currentRect.y + 242 };
+  const coreIn = { x: coreRect.x, y: coreRect.y + coreRect.height * 0.44 };
+  const currentOut = { x: currentRect.x + currentRect.width, y: currentRect.y + currentRect.height * 0.46 };
   const paths = [
     {
       id: "current-core",
@@ -507,17 +520,17 @@ function buildEdgePaths({
     },
   ];
 
-  for (let index = 0; index < Math.min(providerCount, 8); index += 1) {
+  for (let index = 0; index < Math.min(providerCount, 6); index += 1) {
     paths.push({
       id: `provider-${index}`,
       className: "dashedEdge",
       d: curve(
         {
           x: currentRect.x + currentRect.width,
-          y: currentRect.y + 72 + index * 46,
+          y: currentRect.y + 86 + index * 54,
         },
         coreIn,
-        0.62,
+        0.54,
       ),
     });
   }

@@ -1507,7 +1507,7 @@ a {
   min-height: 0;
   overflow: hidden;
   cursor: grab;
-  background-image: radial-gradient(circle, rgba(80, 111, 175, 0.18) 1px, transparent 1.2px);
+  background-image: radial-gradient(circle, rgba(80, 111, 175, 0.15) 1px, transparent 1.2px);
   background-size: 20px 20px;
   touch-action: none;
   user-select: none;
@@ -1541,19 +1541,22 @@ a {
 .canvasEdges path {
   fill: none;
   stroke-linecap: round;
-  stroke-width: 1.5;
+  stroke-width: 1.35;
 }
 
 .primaryEdge {
   stroke: var(--purple);
+  stroke-opacity: 0.82;
 }
 
 .softEdge {
   stroke: #9eabd0;
+  stroke-opacity: 0.48;
 }
 
 .dashedEdge {
   stroke: #9eabd0;
+  stroke-opacity: 0.48;
   stroke-dasharray: 4 5;
 }
 
@@ -1564,8 +1567,8 @@ a {
   position: absolute;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 12px 28px rgba(28, 42, 76, 0.07);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 14px 28px rgba(28, 42, 76, 0.055);
 }
 
 .draggableNode {
@@ -1584,7 +1587,7 @@ a {
   left: 42px;
   top: 148px;
   width: 188px;
-  padding: 14px;
+  padding: 13px;
 }
 
 .nodeKicker {
@@ -1601,8 +1604,8 @@ a {
 
 .stackProviderList {
   display: grid;
-  gap: 8px;
-  margin-top: 14px;
+  gap: 7px;
+  margin-top: 13px;
 }
 
 .stackProviderList span,
@@ -1618,7 +1621,7 @@ a {
   padding: 0 10px;
   color: #26324a;
   background: #fff;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 650;
 }
 
@@ -1633,11 +1636,11 @@ a {
 .moduleStackNode {
   top: 98px;
   width: 152px;
-  min-height: 170px;
+  min-height: 162px;
   display: grid;
   align-content: start;
-  gap: 8px;
-  padding: 16px 14px;
+  gap: 7px;
+  padding: 14px 13px;
 }
 
 .moduleStackNode > svg {
@@ -1647,26 +1650,41 @@ a {
 .moduleStackNode > span {
   color: #566682;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11.5px;
   font-weight: 850;
   line-height: 1.2;
   text-transform: uppercase;
 }
 
 .moduleStackNode b {
-  min-height: 34px;
-  font-size: 11px;
+  min-height: 32px;
+  font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.moduleStackNode .moduleCost {
+  width: fit-content;
+  margin-top: -3px;
+  border-radius: 999px;
+  padding: 3px 7px;
+  color: #5533d8;
+  background: #f4f0ff;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 850;
+  line-height: 1;
 }
 
 .omsCoreNode {
   left: 436px;
   top: 374px;
   width: 430px;
-  padding: 25px;
+  min-height: 250px;
+  padding: 28px;
   border-color: var(--purple);
+  box-shadow: 0 18px 42px rgba(95, 59, 236, 0.09);
 }
 
 .omsCoreTitle {
@@ -1675,15 +1693,20 @@ a {
   text-transform: uppercase;
 }
 
+.omsCoreTitle .miniMark {
+  width: 20px;
+  height: 20px;
+}
+
 .omsCoreTitle strong {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .omsCoreGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 26px;
+  gap: 11px;
+  margin-top: 24px;
 }
 
 .polygonStackStrip {
@@ -1722,14 +1745,15 @@ a {
   left: 416px;
   top: 640px;
   width: 470px;
-  padding: 18px;
+  min-height: 150px;
+  padding: 16px;
 }
 
 .controlsNode div {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 14px;
+  gap: 9px;
+  margin-top: 13px;
 }
 
 .controlsNode span:not(.nodeKicker) {
@@ -1741,14 +1765,14 @@ a {
   left: 918px;
   top: 388px;
   width: 200px;
-  padding: 18px;
+  padding: 17px;
 }
 
 .outcomesNode p {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 16px 0 0;
+  gap: 9px;
+  margin: 13px 0 0;
   color: #52607a;
   font-size: 12px;
   line-height: 1.25;
@@ -1760,9 +1784,9 @@ a {
 
 .canvasZoom {
   position: absolute;
-  left: 28px;
-  bottom: 28px;
-  gap: 10px;
+  left: 24px;
+  bottom: 24px;
+  gap: 8px;
   z-index: 8;
 }
 
