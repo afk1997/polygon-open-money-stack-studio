@@ -57,7 +57,6 @@ export function ProviderSelector({
         {modules.map((module) => {
           const competitorProviders = module.providers.filter((provider) => !provider.polygonOwned);
           const selectedCount = competitorProviders.filter((provider) => selectedSet.has(provider.id)).length;
-          const polygonStackCount = module.providers.filter((provider) => provider.polygonOwned).length;
           const moduleLabel = shortModuleLabel(module.id, module.label);
           const selectedProviderNames = competitorProviders
             .filter((provider) => selectedSet.has(provider.id))
@@ -73,14 +72,11 @@ export function ProviderSelector({
                   <small>
                     {selectedCount > 0
                       ? selectedProviderNames.join(" + ")
-                      : polygonStackCount > 0
-                        ? "Covered by Polygon OMS"
-                        : "Not required for this use case"}
+                      : "Not required for this use case"}
                   </small>
                 </div>
                 <span className="providerStaticMeta">
                   <b>{selectedCount}</b>
-                  {polygonStackCount > 0 && <em>{polygonStackCount} OMS</em>}
                 </span>
               </article>
             );
@@ -95,7 +91,6 @@ export function ProviderSelector({
                 </span>
                 <span className="providerSummaryMeta">
                   <strong>{selectedCount}</strong>
-                  {polygonStackCount > 0 && <em>{polygonStackCount} OMS</em>}
                   <ChevronDown size={15} />
                 </span>
               </summary>

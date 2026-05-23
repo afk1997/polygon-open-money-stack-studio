@@ -306,8 +306,8 @@ a {
   height: calc(100dvh - 104px);
   min-height: 760px;
   display: grid;
-  grid-template-columns: 280px minmax(640px, 1fr) 395px;
-  grid-template-rows: 418px minmax(0, 1fr) auto;
+  grid-template-columns: 280px minmax(0, 1fr) 395px;
+  grid-template-rows: minmax(388px, auto) minmax(0, 1fr) auto;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.92);
@@ -409,10 +409,10 @@ a {
   min-width: 0;
   display: grid;
   align-content: start;
-  gap: 16px;
-  min-height: 418px;
-  padding: 32px 42px 18px 52px;
-  overflow: auto;
+  gap: 14px;
+  min-height: 388px;
+  padding: 30px 34px 16px 44px;
+  overflow: hidden;
 }
 
 .intakeStep h1 {
@@ -424,21 +424,22 @@ a {
 }
 
 .stepCopy {
-  margin: 9px 0 27px;
+  margin: 9px 0 23px;
   font-size: 13px;
   font-weight: 400;
 }
 
 .productGrid {
   display: grid;
-  grid-template-columns: 0.9fr 1.2fr;
-  gap: 42px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
+  gap: 34px;
 }
 
 .selectInput,
 .textInput,
 .textAreaInput,
 .numberInput {
+  min-width: 0;
   display: grid;
   align-content: start;
   gap: 7px;
@@ -458,7 +459,8 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  white-space: nowrap;
+  min-height: 26px;
+  white-space: normal;
 }
 
 .numberInput > span::after {
@@ -498,7 +500,7 @@ a {
 }
 
 .textAreaInput textarea {
-  min-height: 120px;
+  min-height: 108px;
   resize: vertical;
   padding: 16px;
   color: #172036;
@@ -534,8 +536,8 @@ a {
 
 .assumptionGrid {
   display: grid;
-  grid-template-columns: 155px 145px 150px 140px 126px;
-  gap: 31px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 20px;
   margin-top: 15px;
 }
 
@@ -591,7 +593,7 @@ a {
   grid-column: 1 / 3;
   grid-row: 2;
   min-width: 0;
-  padding: 16px 20px 15px;
+  padding: 14px 20px 12px;
   border-top: 1px solid var(--line);
   overflow: hidden;
 }
@@ -599,7 +601,7 @@ a {
 .sectionHeader {
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .sectionHeader p {
@@ -611,14 +613,14 @@ a {
 .flowCardGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  gap: 9px;
 }
 
 .flowCard {
-  min-height: 210px;
+  min-height: 0;
   border: 1px solid var(--line);
   border-radius: 7px;
-  padding: 16px 12px 14px;
+  padding: 12px 10px;
   background: #fff;
 }
 
@@ -629,8 +631,8 @@ a {
 }
 
 .flowCardTop span {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   display: grid;
   place-items: center;
   border-radius: 10px;
@@ -661,26 +663,28 @@ a {
 }
 
 .flowCard h4 {
-  margin: -34px 0 0 54px;
-  font-size: 14px;
+  margin: -31px 0 0 48px;
+  padding-right: 24px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .flowCard p {
-  min-height: 34px;
-  margin: 6px 0 14px 54px;
-  font-size: 12px;
+  min-height: 30px;
+  margin: 5px 0 10px 48px;
+  font-size: 11.5px;
   font-weight: 400;
+  line-height: 1.32;
 }
 
 .flowChecks {
   display: grid;
-  gap: 6px;
+  gap: 4px;
   margin-top: 6px;
 }
 
 .flowChecks button {
-  min-height: 20px;
+  min-height: 17px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -688,14 +692,14 @@ a {
   padding: 0;
   color: #566177;
   background: transparent;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   text-align: left;
 }
 
 .flowChecks button > .checkBox {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   display: inline-grid;
   place-items: center;
   border: 1px solid var(--line-strong);
@@ -772,7 +776,7 @@ a {
 .providerSelector {
   display: grid;
   gap: 14px;
-  min-height: 692px;
+  min-height: 0;
   align-content: start;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -858,21 +862,8 @@ a {
 .providerSummaryMeta {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   color: #556179;
-}
-
-.providerSummaryMeta em {
-  height: 22px;
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  padding: 0 8px;
-  color: #5b35d5;
-  background: #f2edff;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 800;
 }
 
 .providerRows {
@@ -973,8 +964,7 @@ a {
   gap: 8px;
 }
 
-.providerStaticMeta b,
-.providerStaticMeta em {
+.providerStaticMeta b {
   min-width: 28px;
   height: 26px;
   display: grid;
@@ -985,12 +975,6 @@ a {
   font-size: 12px;
   font-style: normal;
   font-weight: 850;
-}
-
-.providerStaticMeta em {
-  min-width: 58px;
-  padding: 0 8px;
-  border-radius: 999px;
 }
 
 .providerSelector .modelNote {
@@ -1006,7 +990,7 @@ a {
   grid-column: 1 / -1;
   justify-content: space-between;
   gap: 20px;
-  min-height: 80px;
+  min-height: 72px;
   padding: 0 22px;
   border-top: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.92);
