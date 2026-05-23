@@ -23,7 +23,7 @@ export function StudioTopbar({
   ];
 
   return (
-    <header className={`studioTopbar ${stage === "building" ? "buildingTopbar" : ""}`}>
+    <header className={`studioTopbar ${stage === "building" ? "buildingTopbar" : ""} ${stage === "lab" ? "labTopbar" : ""}`}>
       <div className="brandCluster">
         <img className="brandMark" src="/polygon-icon-primary-purple.svg" alt="" aria-hidden="true" />
         <div>

@@ -300,6 +300,58 @@ a {
   font-weight: 800 !important;
 }
 
+.labTopbar {
+  min-height: 76px;
+  padding: 0 24px;
+}
+
+.labTopbar .brandCluster {
+  min-width: 300px;
+  gap: 12px;
+}
+
+.labTopbar .brandMark {
+  width: 30px;
+  height: 28px;
+}
+
+.labTopbar .brandCluster div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.labTopbar .brandCluster strong,
+.labTopbar .brandCluster span:not(.brandMark) {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.labTopbar .brandCluster span:not(.brandMark) {
+  color: #111827;
+}
+
+.labTopbar .stageIndicator {
+  gap: 24px;
+  font-size: 13px;
+}
+
+.labTopbar .stageIndicator span {
+  min-height: 76px;
+}
+
+.labTopbar .topbarActions button {
+  min-height: 40px;
+  padding: 0 17px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.labTopbar .topbarActions .iconButton {
+  width: 40px;
+  padding: 0;
+}
+
 .topbarActions button:first-child {
   color: #4d5870;
 }
@@ -1269,10 +1321,10 @@ a {
 }
 
 .labStage {
-  height: calc(100dvh - 104px);
-  min-height: 820px;
+  height: calc(100dvh - 76px);
+  min-height: 0;
   display: grid;
-  grid-template-columns: 336px minmax(820px, 1fr) 420px;
+  grid-template-columns: 300px minmax(0, 1fr) 420px;
   background: #fff;
 }
 
@@ -1280,12 +1332,12 @@ a {
 .businessPanel {
   min-height: 0;
   overflow: auto;
-  background: rgba(255, 255, 255, 0.9);
+  background: #fff;
 }
 
 .commandPanel {
   border-right: 1px solid var(--line);
-  padding: 28px;
+  padding: 24px 22px;
 }
 
 .businessPanel {
@@ -1296,15 +1348,15 @@ a {
 
 .commandHeader {
   display: grid;
-  grid-template-columns: 48px 1fr 46px;
+  grid-template-columns: 42px minmax(0, 1fr) 42px;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 26px;
+  gap: 10px;
+  margin-bottom: 22px;
 }
 
 .commandHeader > span {
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
   border-radius: 12px;
@@ -1313,7 +1365,8 @@ a {
 }
 
 .commandHeader strong {
-  font-size: 18px;
+  font-size: 16px;
+  line-height: 1.08;
 }
 
 .commandHeader div {
@@ -1324,16 +1377,16 @@ a {
 
 .commandHeader small {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .miniMetrics {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 18px;
-  margin-bottom: 28px;
+  padding: 16px;
+  margin-bottom: 22px;
   background: #fff;
 }
 
@@ -1363,25 +1416,36 @@ a {
 .canvasShell {
   min-width: 0;
   min-height: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
   display: grid;
-  grid-template-rows: 68px 1fr;
+  grid-template-rows: 62px 1fr;
 }
 
 .canvasToolbar {
   justify-content: space-between;
   gap: 16px;
   padding: 0 22px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
   border-bottom: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.92);
+  background: #fff;
 }
 
 .canvasCrumb {
+  min-width: 0;
   gap: 12px;
   font-size: 13px;
 }
 
 .canvasCrumb strong,
 .canvasCrumb small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -1408,6 +1472,7 @@ a {
 }
 
 .canvasTools {
+  flex: 0 0 auto;
   gap: 8px;
   color: var(--muted);
   font-size: 12px;
@@ -1422,6 +1487,9 @@ a {
 
 .canvasViewport {
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
   cursor: grab;
@@ -1710,9 +1778,9 @@ a {
   top: 0;
   z-index: 2;
   gap: 28px;
-  min-height: 68px;
+  min-height: 62px;
   border-bottom: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.94);
+  background: #fff;
   color: #6b758d;
   font-size: 12px;
   font-weight: 850;
@@ -1720,7 +1788,7 @@ a {
 }
 
 .businessTabs button {
-  height: 68px;
+  height: 62px;
   display: grid;
   place-items: center;
   border: 0;

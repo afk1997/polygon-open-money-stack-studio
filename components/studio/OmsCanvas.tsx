@@ -139,7 +139,7 @@ export function OmsCanvas({
     setView({
       scale: Math.max(0.48, scale),
       x: Math.max(28, (bounds.width - board.width * scale) / 2),
-      y: Math.max(28, (bounds.height - board.height * scale) / 2),
+      y: 28,
     });
   }, [board.height, board.width]);
 
@@ -295,8 +295,7 @@ export function OmsCanvas({
           <span className="miniMark" />
           <strong>Polygon OMS</strong>
           <em>Draft</em>
-          <small>{providerCount} provider inputs priced</small>
-          <small>{environmentMode} environment</small>
+          <small>Last saved 2 min ago</small>
         </div>
         <div className="canvasTools">
           <span>View</span>
@@ -434,16 +433,6 @@ export function OmsCanvas({
                 <span><GitBranch size={15} />Counterparty mgmt</span>
                 <span><Boxes size={15} />Workflow engine</span>
               </div>
-              {polygonStackItems.length > 0 && (
-                <div className="polygonStackStrip">
-                  <small>Integrated Polygon stack</small>
-                  <div>
-                    {polygonStackItems.map((provider) => (
-                      <span key={provider.id}>{provider.name}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
             </motion.article>
 
             <motion.article
