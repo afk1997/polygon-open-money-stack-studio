@@ -432,7 +432,7 @@ a {
 
 .productGrid {
   display: grid;
-  grid-template-columns: 0.9fr 1.2fr;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
   gap: 42px;
 }
 
@@ -440,6 +440,7 @@ a {
 .textInput,
 .textAreaInput,
 .numberInput {
+  min-width: 0;
   display: grid;
   align-content: start;
   gap: 7px;
@@ -481,6 +482,7 @@ a {
 .textAreaInput textarea,
 .numberInput div {
   width: 100%;
+  min-width: 0;
   border: 1px solid var(--line);
   border-radius: 7px;
   color: #1b2436;
@@ -534,6 +536,8 @@ a {
 }
 
 .assumptionGrid {
+  max-width: 100%;
+  min-width: 0;
   display: grid;
   grid-template-columns: 155px 145px 150px 140px 126px;
   gap: 31px;
@@ -2128,12 +2132,28 @@ a {
   line-height: 1.35;
 }
 
-@media (max-width: 1500px) {
+@media (max-width: 1600px) {
   .intakeFrame {
     height: auto;
     grid-template-rows: auto minmax(0, 1fr) auto;
   }
 
+  .intakeAside,
+  .intakeMain {
+    min-height: 0;
+  }
+
+  .assumptionGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px 22px;
+  }
+
+  .intakeFlowPanel {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 1500px) {
   .labStage {
     grid-template-columns: 300px minmax(620px, 1fr) 360px;
   }
@@ -2155,24 +2175,11 @@ a {
     display: none;
   }
 
-  .intakeAside,
-  .intakeMain {
-    min-height: 0;
-  }
-
-  .assumptionGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px 22px;
-  }
-
-  .intakeFlowPanel {
-    overflow: visible;
-  }
 }
 
 @media (max-width: 1280px) {
   .intakeFrame {
-    grid-template-columns: 240px minmax(520px, 1fr) 360px;
+    grid-template-columns: 240px minmax(520px, 1fr) 320px;
   }
 
   .flowCardGrid {
