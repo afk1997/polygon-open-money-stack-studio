@@ -758,9 +758,9 @@ function buildExportSvg({
 }) {
   const node = (rect: Rect, title: string, lines: string[]) => `
     <rect x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" rx="10" fill="#ffffff" stroke="#dce4f1"/>
-    <text x="${rect.x + 16}" y="${rect.y + 26}" font-family="Arial" font-size="12" font-weight="700" fill="#64708a">${escapeXml(title)}</text>
+    <text x="${rect.x + 16}" y="${rect.y + 26}" font-family="Satoshi, Arial, sans-serif" font-size="12" font-weight="700" fill="#66728a">${escapeXml(title)}</text>
     ${lines.slice(0, 8).map((line, index) => `
-      <text x="${rect.x + 16}" y="${rect.y + 54 + index * 22}" font-family="Arial" font-size="13" fill="#172036">${escapeXml(line)}</text>
+      <text x="${rect.x + 16}" y="${rect.y + 54 + index * 22}" font-family="Satoshi, Arial, sans-serif" font-size="13" font-weight="500" fill="#151b2d">${escapeXml(line)}</text>
     `).join("")}
   `;
   return `

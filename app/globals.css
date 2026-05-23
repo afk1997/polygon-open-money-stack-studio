@@ -34,9 +34,9 @@
   --font-sans: "Satoshi", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --bg: #f9fbff;
   --paper: #ffffff;
-  --ink: #080b16;
-  --muted: #5f6980;
-  --faint: #9fa9bc;
+  --ink: #151b2d;
+  --muted: #66728a;
+  --faint: #a7b0c2;
   --line: #dce4f1;
   --line-strong: #ccd8ea;
   --purple: #6840f2;
@@ -182,7 +182,7 @@ a {
 
 .stageIndicator b {
   color: #52607a;
-  font-weight: 750;
+  font-weight: 700;
 }
 
 .stageIndicator span.active {
@@ -277,7 +277,7 @@ a {
 }
 
 .buildingTopbar .brandCluster span:not(.brandMark) {
-  color: #111827;
+  color: #1b2436;
 }
 
 .buildingTopbar .topbarActions button {
@@ -297,7 +297,7 @@ a {
   gap: 6px;
   padding: 0 10px;
   color: var(--purple) !important;
-  font-weight: 800 !important;
+  font-weight: 700 !important;
 }
 
 .labTopbar {
@@ -328,7 +328,7 @@ a {
 }
 
 .labTopbar .brandCluster span:not(.brandMark) {
-  color: #111827;
+  color: #1b2436;
 }
 
 .labTopbar .stageIndicator {
@@ -394,7 +394,7 @@ a {
   color: var(--faint);
   font-family: var(--mono);
   font-size: 11px;
-  font-weight: 850;
+  font-weight: 700;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -521,7 +521,7 @@ a {
 .intakeStep h1 {
   margin: 0;
   font-size: 29px;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1.08;
   letter-spacing: 0;
 }
@@ -575,7 +575,7 @@ a {
   border-radius: 999px;
   color: #7f8aa1;
   font-size: 8px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -698,7 +698,7 @@ a {
   grid-column: 1 / 3;
   grid-row: 2;
   min-width: 0;
-  padding: 14px 20px 0;
+  padding: 22px 22px 0;
   border-top: 1px solid var(--line);
   overflow: visible;
 }
@@ -710,22 +710,22 @@ a {
 }
 
 .sectionHeader p {
-  margin: 6px 0 0;
-  font-size: 13px;
+  margin: 8px 0 0;
+  font-size: 14px;
   font-weight: 400;
 }
 
 .flowCardGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 9px;
+  gap: 14px;
 }
 
 .flowCard {
-  min-height: 0;
+  min-height: 210px;
   border: 1px solid var(--line);
   border-radius: 7px;
-  padding: 12px 10px;
+  padding: 18px 16px;
   background: #fff;
 }
 
@@ -736,11 +736,11 @@ a {
 }
 
 .flowCardTop span {
-  width: 34px;
-  height: 34px;
+  width: 46px;
+  height: 46px;
   display: grid;
   place-items: center;
-  border-radius: 10px;
+  border-radius: 12px;
   color: var(--purple);
   background: var(--purple-soft);
 }
@@ -761,50 +761,53 @@ a {
 }
 
 .flowCardTop i {
-  width: 15px;
-  height: 15px;
+  width: 18px;
+  height: 18px;
   border: 1px solid var(--line-strong);
   border-radius: 3px;
 }
 
 .flowCard h4 {
-  margin: -31px 0 0 48px;
+  margin: -41px 0 0 60px;
   padding-right: 24px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
+  line-height: 1.15;
 }
 
 .flowCard p {
-  min-height: 30px;
-  margin: 5px 0 10px 48px;
-  font-size: 11.5px;
+  min-height: 40px;
+  margin: 7px 0 16px 60px;
+  font-size: 14px;
   font-weight: 400;
-  line-height: 1.32;
+  line-height: 1.36;
 }
 
 .flowChecks {
   display: grid;
-  gap: 4px;
-  margin-top: 6px;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .flowChecks button {
-  min-height: 17px;
+  min-height: 20px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   border: 0;
   padding: 0;
   color: #566177;
   background: transparent;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
+  line-height: 1.15;
   text-align: left;
 }
 
 .flowChecks button > .checkBox {
-  width: 14px;
-  height: 14px;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
   display: inline-grid;
   place-items: center;
   border: 1px solid var(--line-strong);
@@ -900,7 +903,7 @@ a {
   min-height: 52px;
   padding: 0 12px;
   list-style: none;
-  color: #111827;
+  color: #1b2436;
   font-size: 13px;
   font-weight: 700;
 }
@@ -913,14 +916,14 @@ a {
   width: 28px;
   display: grid;
   place-items: center;
-  color: #111827;
+  color: #25304a;
 }
 
 .providerSummaryLabel {
   min-width: 0;
-  color: #111827;
+  color: #1b2436;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.14;
 }
 
@@ -934,7 +937,7 @@ a {
   color: var(--purple);
   background: var(--purple-soft);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .providerSummaryChevron {
@@ -1008,7 +1011,7 @@ a {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 12px;
-  color: #111827;
+  color: #1b2436;
   background: #fff;
 }
 
@@ -1026,7 +1029,7 @@ a {
 
 .providerStaticCard strong {
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.15;
 }
 
@@ -1055,7 +1058,7 @@ a {
   background: var(--purple-soft);
   font-size: 12px;
   font-style: normal;
-  font-weight: 850;
+  font-weight: 700;
 }
 
 .providerSelector .modelNote {
@@ -1115,7 +1118,7 @@ a {
   gap: 18px;
   color: #7f8aa3;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .buildProgressRail span {
@@ -1152,7 +1155,7 @@ a {
 .buildProgressRail b {
   color: inherit;
   font-size: 13px;
-  font-weight: 850;
+  font-weight: 700;
 }
 
 .buildIntakeCard {
@@ -1173,7 +1176,7 @@ a {
   justify-content: space-between;
   color: #78849b;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .buildIntakeHeader span {
@@ -1198,7 +1201,7 @@ a {
   color: #b2bacb;
   font-family: var(--mono);
   font-size: 11px;
-  font-weight: 850;
+  font-weight: 700;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -1266,7 +1269,7 @@ a {
   margin: 0;
   text-align: center;
   font-size: 32px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0;
 }
 
@@ -1311,7 +1314,7 @@ a {
   flex: 1;
   color: var(--ink);
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .buildRows em {
@@ -1416,14 +1419,14 @@ a {
   color: #47536c;
   font-family: inherit;
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 500;
   text-transform: none;
 }
 
 .metricTile strong {
   color: var(--ink);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   text-align: right;
 }
 
@@ -1622,7 +1625,7 @@ a {
   color: #26324a;
   background: #fff;
   font-size: 12.5px;
-  font-weight: 650;
+  font-weight: 500;
 }
 
 .stackProviderList .stackMore,
@@ -1651,7 +1654,7 @@ a {
   color: #566682;
   font-family: var(--mono);
   font-size: 11.5px;
-  font-weight: 850;
+  font-weight: 700;
   line-height: 1.2;
   text-transform: uppercase;
 }
@@ -1673,7 +1676,7 @@ a {
   background: #f4f0ff;
   font-family: var(--mono);
   font-size: 9.5px;
-  font-weight: 850;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -1719,7 +1722,7 @@ a {
   color: #6f5de7;
   font-family: var(--mono);
   font-size: 10px;
-  font-weight: 850;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
@@ -1737,7 +1740,7 @@ a {
   color: #4d2ed1;
   background: #f6f2ff;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -1821,7 +1824,7 @@ a {
   background: #fff;
   color: #6b758d;
   font-size: 12px;
-  font-weight: 850;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
@@ -1862,7 +1865,7 @@ a {
   color: var(--faint);
   font-family: var(--mono);
   font-size: 11px;
-  font-weight: 850;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
@@ -1957,7 +1960,7 @@ a {
 .breakdownMath i {
   color: var(--purple);
   font-style: normal;
-  font-weight: 850;
+  font-weight: 700;
   display: none;
 }
 
@@ -1966,7 +1969,7 @@ a {
   color: var(--green);
   font-style: normal;
   font-size: 15px;
-  font-weight: 850;
+  font-weight: 700;
 }
 
 .waterfallBars {
@@ -2300,7 +2303,7 @@ a {
   background: var(--purple-soft);
   font-family: var(--mono);
   font-size: 11px;
-  font-weight: 850;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
