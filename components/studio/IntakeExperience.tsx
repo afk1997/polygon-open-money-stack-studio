@@ -7,7 +7,6 @@ import {
   Factory,
   Landmark,
   LockKeyhole,
-  Plus,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
@@ -130,9 +129,7 @@ export function IntakeExperience({
 
         <section className="intakeFlowPanel">
           <FlowStep
-            workflow={workflow}
             choices={choices}
-            onWorkflowChange={onWorkflowChange}
             onToggleRequirement={onToggleRequirement}
             onToggleCompliance={onToggleCompliance}
           />
@@ -252,15 +249,11 @@ function CorridorField({
 }
 
 function FlowStep({
-  workflow,
   choices,
-  onWorkflowChange,
   onToggleRequirement,
   onToggleCompliance,
 }: {
-  workflow: string;
   choices: StudioChoices;
-  onWorkflowChange: (value: string) => void;
   onToggleRequirement: (requirement: RequirementId) => void;
   onToggleCompliance: (compliance: ComplianceId) => void;
 }) {
@@ -325,20 +318,6 @@ function FlowStep({
           ]}
         />
       </div>
-
-      <details className="specificRequirement">
-        <summary className="addRequirement">
-          <Plus size={16} />
-          Add specific requirement
-          <ChevronDown size={15} />
-        </summary>
-        <textarea
-          value={workflow}
-          maxLength={500}
-          placeholder="Add a corridor, partner constraint, licensing assumption, payout edge case, or provider preference..."
-          onChange={(event) => onWorkflowChange(event.target.value)}
-        />
-      </details>
     </div>
   );
 }

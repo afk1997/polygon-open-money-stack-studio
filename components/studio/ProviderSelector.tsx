@@ -49,7 +49,7 @@ export function ProviderSelector({
             <h3>{isLaunchBenchmark ? "Benchmark stack" : "Current providers"}</h3>
             {!isLaunchBenchmark && <small>Optional</small>}
           </div>
-          {!isLaunchBenchmark && <p>Select if you are Modernizing Existing. This helps us calculate savings and create your migration plan.</p>}
+          {!isLaunchBenchmark && <p>This helps us calculate savings and create your migration plan.</p>}
         </div>
       </div>
 
