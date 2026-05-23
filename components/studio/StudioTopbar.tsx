@@ -18,8 +18,6 @@ export function StudioTopbar({
     ["01", "Read workflow"],
     ["02", "Draft stack"],
     ["03", "Canvas"],
-    ["04", "Demo trace"],
-    ["05", "Eval plan"],
   ];
 
   return (
