@@ -893,9 +893,11 @@ a {
 }
 
 .providerAccordion summary {
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 44px;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 34px 18px;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
   padding: 0 12px;
   list-style: none;
   color: #111827;
@@ -907,30 +909,42 @@ a {
   display: none;
 }
 
-.providerAccordion summary span {
-  min-width: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.providerAccordion summary strong {
-  min-width: 22px;
-  height: 22px;
+.providerSummaryIcon {
+  width: 28px;
   display: grid;
   place-items: center;
+  color: #111827;
+}
+
+.providerSummaryLabel {
+  min-width: 0;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.14;
+}
+
+.providerSummaryCount {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  justify-self: center;
   border-radius: 7px;
   color: var(--purple);
   background: var(--purple-soft);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 800;
 }
 
-.providerSummaryMeta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+.providerSummaryChevron {
+  justify-self: end;
   color: #556179;
+  transition: transform 0.16s ease;
+}
+
+.providerAccordion details[open] .providerSummaryChevron {
+  transform: rotate(180deg);
 }
 
 .providerRows {

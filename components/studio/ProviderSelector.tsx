@@ -85,14 +85,10 @@ export function ProviderSelector({
           return (
             <details key={module.id}>
               <summary>
-                <span>
-                  {moduleIcon(module.id)}
-                  {moduleLabel}
-                </span>
-                <span className="providerSummaryMeta">
-                  <strong>{selectedCount}</strong>
-                  <ChevronDown size={15} />
-                </span>
+                <span className="providerSummaryIcon">{moduleIcon(module.id)}</span>
+                <span className="providerSummaryLabel">{moduleLabel}</span>
+                <strong className="providerSummaryCount">{selectedCount}</strong>
+                <ChevronDown className="providerSummaryChevron" size={16} />
               </summary>
               <div className="providerRows">
                 {module.providers.map((provider) => {
