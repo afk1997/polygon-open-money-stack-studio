@@ -137,6 +137,16 @@ export const defaultCompliance: ComplianceId[] = [
   "audit-logs",
 ];
 
+export const complianceControlIdsByChoice: Record<ComplianceId, string[]> = {
+  "kyc-kyb": ["kyc"],
+  sanctions: ["sanctions"],
+  kyt: ["wallet-risk"],
+  "travel-rule": ["travel-rule"],
+  "velocity-limits": ["velocity"],
+  "audit-logs": ["ledger", "webhooks"],
+  "freeze-controls": ["incident-freeze"],
+};
+
 const benchmarkByModule: Record<string, string[]> = {
   "wallet-infra": ["circle-wallets", "coinbase-cdp"],
   crosschain: ["chainlink-ccip"],
@@ -155,6 +165,12 @@ const benchmarkByModule: Record<string, string[]> = {
 export function buildBenchmarkProviderIds(moduleIds: string[]) {
   return Array.from(
     new Set(moduleIds.flatMap((moduleId) => benchmarkByModule[moduleId] ?? [])),
+  );
+}
+
+export function complianceControlIdsFromChoices(compliance: ComplianceId[]) {
+  return Array.from(
+    new Set(compliance.flatMap((choice) => complianceControlIdsByChoice[choice] ?? [])),
   );
 }
 

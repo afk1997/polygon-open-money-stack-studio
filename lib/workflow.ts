@@ -1,5 +1,10 @@
 import { getUseCase } from "./data";
 import { defaultInput, formatMoney, generateRecommendation, normalizeInput } from "./engine";
+import {
+  complianceControlIdsFromContext,
+  mergeUniqueIds,
+  moduleIdsFromContext,
+} from "./input-context";
 import type {
   DemoTrace,
   DraftRun,
@@ -36,9 +41,18 @@ export function buildDraftRun(rawInput: WorkflowDraftInput, provider: DraftRun["
 }
 
 export function normalizeDraftInput(rawInput: WorkflowDraftInput): StudioInput {
+  const workflowContext = rawInput.workflowContext ?? rawInput.workflow ?? "";
+  const contextModuleIds = moduleIdsFromContext(workflowContext);
+  const contextComplianceIds = complianceControlIdsFromContext(workflowContext);
   const base = normalizeInput({
     ...defaultInput,
     ...rawInput,
+    workflowContext,
+    requiredModuleIds: mergeUniqueIds(rawInput.requiredModuleIds, contextModuleIds),
+    complianceControlIds:
+      (rawInput.complianceControlIds || contextComplianceIds.length > 0)
+        ? mergeUniqueIds(rawInput.complianceControlIds, contextComplianceIds)
+        : undefined,
     selectedProviderIds:
       rawInput.mode === "launch"
         ? rawInput.selectedProviderIds ?? []
@@ -210,7 +224,9 @@ function buildCanvasEdges(input: StudioInput): StackCanvasEdge[] {
     { id: "settlement-eval", source: "settlement", target: "eval", label: "measure" },
   ];
 
-  const requiredModules = getUseCase(input.useCaseId).requiredModules;
+  const requiredModules = input.requiredModuleIds?.length
+    ? input.requiredModuleIds
+    : getUseCase(input.useCaseId).requiredModules;
 
   requiredModules.forEach((moduleId) => {
     edges.push({

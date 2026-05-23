@@ -45,7 +45,7 @@ export function Studio() {
   const [reportOpen, setReportOpen] = useState(false);
   const [draftSaved, setDraftSaved] = useState(false);
 
-  const model = useStudioModel(input, choices);
+  const model = useStudioModel(input, choices, workflow);
   const visibleStepCount = input.mode === "launch" ? 3 : 4;
 
   useEffect(() => {

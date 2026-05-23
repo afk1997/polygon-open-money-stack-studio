@@ -1,4 +1,9 @@
 import { controls, getUseCase, modules, playbooks, pricing } from "./data";
+import {
+  complianceControlIdsFromContext,
+  mergeUniqueIds,
+  moduleIdsFromContext,
+} from "./input-context";
 import type {
   ArchitectureEdge,
   ArchitectureNode,
@@ -619,6 +624,30 @@ export const defaultInput: StudioInput = {
 
 export function normalizeInput(input: Partial<StudioInput>): StudioInput {
   const useCase = getUseCase(input.useCaseId ?? defaultInput.useCaseId);
+  const workflowContext = input.workflowContext?.replace(/\s+/g, " ").trim();
+  const contextModuleIds = moduleIdsFromContext(workflowContext ?? "");
+  const contextComplianceControlIds = complianceControlIdsFromContext(workflowContext ?? "");
+  const rawRequiredModuleIds = input.requiredModuleIds !== undefined
+    ? mergeUniqueIds(input.requiredModuleIds, contextModuleIds)
+    : contextModuleIds.length > 0
+      ? contextModuleIds
+      : undefined;
+  const rawComplianceControlIds = input.complianceControlIds !== undefined
+    ? mergeUniqueIds(input.complianceControlIds, contextComplianceControlIds)
+    : contextComplianceControlIds.length > 0
+      ? contextComplianceControlIds
+      : undefined;
+  const requiredModuleIds = rawRequiredModuleIds
+    ? uniqueKnownIds(rawRequiredModuleIds, modules.map((module) => module.id))
+    : undefined;
+  const complianceControlIds = rawComplianceControlIds
+    ? uniqueKnownIds(rawComplianceControlIds, controls.map((control) => control.id))
+    : undefined;
+  const complianceHandoffs = input.complianceHandoffs !== undefined
+    ? Math.max(input.complianceHandoffs, complianceControlIds?.length ?? 0)
+    : complianceControlIds !== undefined
+      ? complianceControlIds.length
+      : defaultInput.complianceHandoffs;
 
   return {
     ...defaultInput,
@@ -628,6 +657,10 @@ export function normalizeInput(input: Partial<StudioInput>): StudioInput {
     activeWallets: input.activeWallets ?? useCase.defaultWallets,
     corridors: input.corridors ?? useCase.defaultCorridors,
     ...input,
+    complianceHandoffs,
+    requiredModuleIds,
+    complianceControlIds,
+    workflowContext: workflowContext || undefined,
   };
 }
 
@@ -734,12 +767,14 @@ export function calculateCostModel(rawInput: Partial<StudioInput>): CostModel {
 export function generateRecommendation(rawInput: Partial<StudioInput>): Recommendation {
   const input = normalizeInput(rawInput);
   const useCase = getUseCase(input.useCaseId);
-  const selectedModules = modules.filter((module) =>
-    useCase.requiredModules.includes(module.id),
-  );
+  const selectedModules = selectModulesForInput(input, useCase.requiredModules);
+  const selectedComplianceControls = selectComplianceControls(input);
   const costModel = calculateCostModel(input);
   const effectiveVendorCount = costModel.selectedProviderCount || input.vendorCount;
   const playbook = selectPlaybook(input.useCaseId, input.mode);
+  const contextSentence = input.workflowContext
+    ? ` Context applied: ${truncate(input.workflowContext, 180)}`
+    : "";
 
   return {
     title:
@@ -748,8 +783,8 @@ export function generateRecommendation(rawInput: Partial<StudioInput>): Recommen
         : `Modernize ${useCase.name} with Polygon OMS`,
     narrative:
       input.mode === "launch"
-        ? `${useCase.headline} The studio packages wallets, ramps, compliance, stablecoin settlement, and chain operations as a launch blueprint instead of a vendor scavenger hunt.`
-        : `${useCase.headline} The studio maps the existing vendor mesh into a phased Polygon OMS architecture while keeping regulated partners and ledgers that should stay in place.`,
+        ? `${useCase.headline} The studio packages wallets, ramps, compliance, stablecoin settlement, and chain operations as a launch blueprint instead of a vendor scavenger hunt.${contextSentence}`
+        : `${useCase.headline} The studio maps the existing vendor mesh into a phased Polygon OMS architecture while keeping regulated partners and ledgers that should stay in place.${contextSentence}`,
     depthMoment:
       input.mode === "launch"
         ? `A new team avoids stitching ${Math.max(effectiveVendorCount - 4, 5)} point providers before product-market fit and can pitch a launch path with controls, cost ranges, and corridor assumptions already attached.`
@@ -757,7 +792,7 @@ export function generateRecommendation(rawInput: Partial<StudioInput>): Recommen
     modules: selectedModules,
     architecture: buildArchitecture(input, selectedModules),
     costModel,
-    compliance: controls,
+    compliance: selectedComplianceControls,
     playbook,
     battlecards: buildBattlecards(selectedModules),
   };
@@ -782,6 +817,7 @@ export function buildExportPitch(rawInput: Partial<StudioInput>) {
     "",
     recommendation.narrative,
     "",
+    input.workflowContext ? `## User Context\n${input.workflowContext}\n` : "",
     `## Depth Moment`,
     recommendation.depthMoment,
     "",
@@ -909,6 +945,29 @@ function buildProviderCostLines(input: StudioInput): ProviderCostLine[] {
         .join(" "),
     };
   });
+}
+
+function uniqueKnownIds(ids: string[], knownIds: string[]) {
+  const known = new Set(knownIds);
+  return Array.from(new Set(ids.filter((id) => known.has(id))));
+}
+
+function selectModulesForInput(input: StudioInput, fallbackModuleIds: string[]) {
+  const moduleIds = input.requiredModuleIds?.length ? input.requiredModuleIds : fallbackModuleIds;
+  const selected = modules.filter((module) => moduleIds.includes(module.id));
+  return selected.length > 0
+    ? selected
+    : modules.filter((module) => fallbackModuleIds.includes(module.id));
+}
+
+function selectComplianceControls(input: StudioInput) {
+  if (!input.complianceControlIds) return controls;
+  const selected = controls.filter((control) => input.complianceControlIds?.includes(control.id));
+  return selected;
+}
+
+function truncate(value: string, maxLength: number) {
+  return value.length > maxLength ? `${value.slice(0, maxLength - 3)}...` : value;
 }
 
 function getSelectedPolygonStackItems(providerIds: string[]): Provider[] {
@@ -1073,6 +1132,10 @@ function buildArchitecture(
   const useCase = getUseCase(input.useCaseId);
   const selectedProviderCount = input.selectedProviderIds.length;
   const effectiveVendorCount = selectedProviderCount || input.vendorCount;
+  const selectedControlLabels = selectComplianceControls(input).map((control) => control.label);
+  const controlDetail = selectedControlLabels.length > 0
+    ? selectedControlLabels.slice(0, 5).join(", ")
+    : "No explicit compliance controls selected; add controls before production launch.";
   const nodes: ArchitectureNode[] = [
     {
       id: "customer",
@@ -1084,7 +1147,7 @@ function buildArchitecture(
       id: "identity",
       label: "KYC/KYB and sanctions gate",
       group: "control",
-      detail: "Identity, PEP, adverse media, and policy checks before money movement.",
+      detail: controlDetail,
     },
     {
       id: "oms-core",
@@ -1108,7 +1171,7 @@ function buildArchitecture(
       id: "audit",
       label: "Audit, controls, and incident freeze",
       group: "control",
-      detail: "Velocity limits, wallet risk, Travel Rule, ledger links, webhook retries, and freeze controls.",
+      detail: controlDetail,
     },
   ];
 

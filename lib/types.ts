@@ -81,6 +81,9 @@ export type StudioInput = {
   complianceHandoffs: number;
   selectedProviderIds: string[];
   corridors: string;
+  requiredModuleIds?: string[];
+  complianceControlIds?: string[];
+  workflowContext?: string;
 };
 
 export type CostModel = {

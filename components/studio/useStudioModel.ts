@@ -1,27 +1,59 @@
 import { useMemo } from "react";
 import { modules, templates } from "@/lib/data";
 import { generateRecommendation, normalizeInput } from "@/lib/engine";
+import {
+  complianceControlIdsFromContext,
+  mergeUniqueIds,
+  moduleIdsFromContext,
+} from "@/lib/input-context";
 import type { OMSModule, Provider, StudioInput } from "@/lib/types";
 import {
   buildBenchmarkProviderIds,
+  complianceControlIdsFromChoices,
   requiredModulesFromChoices,
 } from "./config";
 import type { StudioChoices } from "./types";
 
-export function useStudioModel(input: StudioInput, choices: StudioChoices) {
+export function useStudioModel(input: StudioInput, choices: StudioChoices, workflowContext = "") {
+  const cleanWorkflowContext = workflowContext.trim();
   const useCase = useMemo(
     () => templates.find((template) => template.id === input.useCaseId) ?? templates[0]!,
     [input.useCaseId],
   );
 
-  const requiredModuleIds = useMemo(
+  const contextModuleIds = useMemo(
+    () => moduleIdsFromContext(cleanWorkflowContext),
+    [cleanWorkflowContext],
+  );
+
+  const contextComplianceControlIds = useMemo(
+    () => complianceControlIdsFromContext(cleanWorkflowContext),
+    [cleanWorkflowContext],
+  );
+
+  const chosenModuleIds = useMemo(
     () => requiredModulesFromChoices(useCase.requiredModules, choices.requirements, choices.compliance),
     [choices.compliance, choices.requirements, useCase.requiredModules],
+  );
+
+  const requiredModuleIds = useMemo(
+    () =>
+      mergeUniqueIds(
+        chosenModuleIds,
+        contextModuleIds,
+        contextComplianceControlIds.length > 0 ? ["compliance-security"] : [],
+      ),
+    [chosenModuleIds, contextComplianceControlIds.length, contextModuleIds],
   );
 
   const benchmarkProviderIds = useMemo(
     () => buildBenchmarkProviderIds(requiredModuleIds),
     [requiredModuleIds],
+  );
+
+  const complianceControlIds = useMemo(
+    () => mergeUniqueIds(complianceControlIdsFromChoices(choices.compliance), contextComplianceControlIds),
+    [choices.compliance, contextComplianceControlIds],
   );
 
   const effectiveInput = useMemo(() => {
@@ -32,9 +64,12 @@ export function useStudioModel(input: StudioInput, choices: StudioChoices) {
       selectedProviderIds,
       vendorCount:
         selectedProviderIds.length > 0 ? selectedProviderIds.length : input.vendorCount,
-      complianceHandoffs: Math.max(input.complianceHandoffs, choices.compliance.length || 1),
+      complianceHandoffs: complianceControlIds.length,
+      requiredModuleIds,
+      complianceControlIds,
+      workflowContext: cleanWorkflowContext,
     });
-  }, [benchmarkProviderIds, choices.compliance.length, input]);
+  }, [benchmarkProviderIds, complianceControlIds, input, requiredModuleIds, cleanWorkflowContext]);
 
   const recommendation = useMemo(() => generateRecommendation(effectiveInput), [effectiveInput]);
 
