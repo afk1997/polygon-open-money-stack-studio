@@ -274,6 +274,7 @@ function FlowStep({
           rows={[
             ["Domestic transfers", choices.requirements.includes("wallet-balances"), () => onToggleRequirement("wallet-balances")],
             ["Cross-border payouts", choices.requirements.includes("cross-border"), () => onToggleRequirement("cross-border")],
+            ["Multi-currency support", choices.requirements.includes("multi-currency"), () => onToggleRequirement("multi-currency")],
             ["Settlement chain comparison", choices.requirements.includes("settlement-chain"), () => onToggleRequirement("settlement-chain")],
             ["Dedicated chain", choices.requirements.includes("dedicated-chain"), () => onToggleRequirement("dedicated-chain")],
           ]}

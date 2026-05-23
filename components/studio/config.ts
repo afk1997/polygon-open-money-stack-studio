@@ -5,6 +5,7 @@ export type RequirementId =
   | "cash-in"
   | "cash-out"
   | "cross-border"
+  | "multi-currency"
   | "merchant-settlement"
   | "agent-payments"
   | "dedicated-chain"
@@ -60,6 +61,12 @@ export const requirementOptions: Array<{
     label: "Cross-border payout",
     detail: "Corridor routing, settlement timing, and payout state.",
     modules: ["cross-border", "stablecoin-orchestration"],
+  },
+  {
+    id: "multi-currency",
+    label: "Multi-currency support",
+    detail: "Multiple settlement currencies, corridor FX, and payout balance handling.",
+    modules: ["stablecoin-orchestration", "cross-border"],
   },
   {
     id: "merchant-settlement",
