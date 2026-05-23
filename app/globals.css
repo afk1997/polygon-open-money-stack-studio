@@ -1858,32 +1858,34 @@ a {
 
 .businessHero {
   margin-top: 22px;
-  padding: 18px 16px;
+  padding: 24px 22px;
 }
 
 .businessHero > span {
   color: var(--faint);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
 }
 
 .businessHero h2 {
-  margin: 6px 0 24px;
+  margin: 8px 0 30px;
   color: var(--green);
-  font-size: 30px;
+  font-size: 40px;
+  line-height: 1;
 }
 
 .businessHero p {
-  margin: 8px 0 0;
-  font-size: 13px;
+  margin: 10px 0 0;
+  font-size: 16px;
+  line-height: 1.38;
 }
 
 .savingsFormula {
   display: grid;
-  gap: 5px;
-  padding: 14px;
+  gap: 8px;
+  padding: 18px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fbfdff;
@@ -1893,27 +1895,27 @@ a {
 .breakdownCopy small,
 .breakdownMath small {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .savingsFormula strong {
   color: #25304a;
-  font-size: 12px;
-  line-height: 1.35;
+  font-size: 15px;
+  line-height: 1.42;
 }
 
 .savingsBreakdown {
   display: grid;
-  gap: 12px;
-  padding-top: 18px;
-  margin-top: 18px;
+  gap: 18px;
+  padding-top: 22px;
+  margin-top: 22px;
   border-top: 1px solid var(--line);
 }
 
 .breakdownRow {
   display: grid;
-  gap: 12px;
-  padding-bottom: 12px;
+  gap: 15px;
+  padding-bottom: 18px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -1924,37 +1926,39 @@ a {
 
 .breakdownCopy {
   display: grid;
-  gap: 4px;
+  gap: 7px;
 }
 
 .breakdownCopy strong {
   color: var(--ink);
-  font-size: 13px;
+  font-size: 17px;
+  line-height: 1.18;
 }
 
 .breakdownCopy small {
-  line-height: 1.35;
+  line-height: 1.42;
 }
 
 .breakdownMath {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 8px;
+  gap: 10px;
 }
 
 .breakdownMath span {
   min-width: 0;
   display: grid;
-  gap: 4px;
+  gap: 6px;
   border: 1px solid var(--line);
   border-radius: 7px;
-  padding: 9px;
+  padding: 12px 14px;
   background: #fff;
 }
 
 .breakdownMath b {
   color: #172036;
-  font-size: 12px;
+  font-size: 16px;
+  line-height: 1.1;
 }
 
 .breakdownMath i {
@@ -1968,8 +1972,9 @@ a {
   justify-self: end;
   color: var(--green);
   font-style: normal;
-  font-size: 15px;
+  font-size: 22px;
   font-weight: 700;
+  line-height: 1;
 }
 
 .waterfallBars {
@@ -2037,7 +2042,7 @@ a {
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 14px;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .costSummary span {
@@ -2064,12 +2069,12 @@ a {
 
 .costLine strong,
 .costLine b {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .costLine small {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .sourceCaveat {
@@ -2085,7 +2090,8 @@ a {
 
 .sourceCaveat p {
   margin: 12px 0 0;
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.42;
 }
 
 .sourceCaveatPanel h3 {
