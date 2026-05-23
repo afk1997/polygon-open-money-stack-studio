@@ -30,6 +30,8 @@ const intakeDefaultInput: StudioInput = {
   corridors: "",
 };
 
+const DRAFT_STORAGE_KEY = "polygon-oms-stack-studio:draft";
+
 export function Studio() {
   const [stage, setStage] = useState<LabStage>("intake");
   const [input, setInput] = useState<StudioInput>(intakeDefaultInput);
@@ -41,9 +43,14 @@ export function Studio() {
   const [stepIndex, setStepIndex] = useState(0);
   const [buildIndex, setBuildIndex] = useState(0);
   const [reportOpen, setReportOpen] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(false);
 
   const model = useStudioModel(input, choices);
   const visibleStepCount = input.mode === "launch" ? 3 : 4;
+
+  useEffect(() => {
+    persistDraft(input, workflow, choices, setDraftSaved);
+  }, [input, workflow, choices]);
 
   useEffect(() => {
     if (stepIndex >= visibleStepCount) setStepIndex(visibleStepCount - 1);
@@ -140,6 +147,7 @@ export function Studio() {
   }
 
   async function draftStack() {
+    persistDraft(input, workflow, choices, setDraftSaved);
     setStage("building");
     setBuildIndex(0);
     for (let index = 0; index < 5; index += 1) {
@@ -158,6 +166,7 @@ export function Studio() {
     <main className="studioApp">
       <StudioTopbar
         stage={stage}
+        draftSaved={draftSaved}
         onReset={() => setStage("intake")}
         onReport={() => setReportOpen(true)}
       />
@@ -179,6 +188,8 @@ export function Studio() {
             onToggleCompliance={toggleCompliance}
             onToggleProvider={toggleProvider}
             onStepChange={setStepIndex}
+            onSaveDraft={() => persistDraft(input, workflow, choices, setDraftSaved)}
+            draftSaved={draftSaved}
             onDraft={draftStack}
           />
         )}
@@ -218,4 +229,26 @@ export function Studio() {
 
 function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function persistDraft(
+  input: StudioInput,
+  workflow: string,
+  choices: StudioChoices,
+  setDraftSaved: (saved: boolean) => void,
+) {
+  try {
+    window.localStorage.setItem(
+      DRAFT_STORAGE_KEY,
+      JSON.stringify({
+        input,
+        workflow,
+        choices,
+        savedAt: new Date().toISOString(),
+      }),
+    );
+    setDraftSaved(true);
+  } catch {
+    setDraftSaved(false);
+  }
 }

@@ -40,6 +40,8 @@ export function IntakeExperience({
   onToggleCompliance,
   onToggleProvider,
   onStepChange,
+  onSaveDraft,
+  draftSaved,
   onDraft,
 }: {
   input: StudioInput;
@@ -55,6 +57,8 @@ export function IntakeExperience({
   onToggleCompliance: (compliance: ComplianceId) => void;
   onToggleProvider: (providerId: string) => void;
   onStepChange: (index: number) => void;
+  onSaveDraft: () => void;
+  draftSaved: boolean;
   onDraft: () => void;
 }) {
   void currentStepIndex;
@@ -126,7 +130,9 @@ export function IntakeExperience({
 
         <section className="intakeFlowPanel">
           <FlowStep
+            workflow={workflow}
             choices={choices}
+            onWorkflowChange={onWorkflowChange}
             onToggleRequirement={onToggleRequirement}
             onToggleCompliance={onToggleCompliance}
           />
@@ -138,7 +144,7 @@ export function IntakeExperience({
             Your inputs are secure and never shared.
           </p>
           <div>
-            <button type="button">Save draft</button>
+            <button type="button" onClick={onSaveDraft}>{draftSaved ? "Saved draft" : "Save draft"}</button>
             <button className="primaryButton" type="button" onClick={onDraft}>
               Draft OMS stack
               <ArrowRight size={16} />
@@ -246,11 +252,15 @@ function CorridorField({
 }
 
 function FlowStep({
+  workflow,
   choices,
+  onWorkflowChange,
   onToggleRequirement,
   onToggleCompliance,
 }: {
+  workflow: string;
   choices: StudioChoices;
+  onWorkflowChange: (value: string) => void;
   onToggleRequirement: (requirement: RequirementId) => void;
   onToggleCompliance: (compliance: ComplianceId) => void;
 }) {
@@ -316,11 +326,19 @@ function FlowStep({
         />
       </div>
 
-      <button className="addRequirement" type="button">
-        <Plus size={16} />
-        Add specific requirement
-        <ChevronDown size={15} />
-      </button>
+      <details className="specificRequirement">
+        <summary className="addRequirement">
+          <Plus size={16} />
+          Add specific requirement
+          <ChevronDown size={15} />
+        </summary>
+        <textarea
+          value={workflow}
+          maxLength={500}
+          placeholder="Add a corridor, partner constraint, licensing assumption, payout edge case, or provider preference..."
+          onChange={(event) => onWorkflowChange(event.target.value)}
+        />
+      </details>
     </div>
   );
 }

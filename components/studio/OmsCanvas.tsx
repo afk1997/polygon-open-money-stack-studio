@@ -84,6 +84,8 @@ export function OmsCanvas({
   const dragRef = useRef<{ id: string; start: Point; offset: Point } | null>(null);
   const [view, setView] = useState<ViewState>({ x: 0, y: 0, scale: 1 });
   const [locked, setLocked] = useState(false);
+  const [viewMode, setViewMode] = useState<"Logical" | "Cost">("Logical");
+  const [environmentMode, setEnvironmentMode] = useState<"Production" | "Sandbox">("Production");
   const [nodeOffsets, setNodeOffsets] = useState<Record<string, Point>>({});
 
   const baseRects = useMemo<Record<string, Rect>>(() => {
@@ -294,12 +296,25 @@ export function OmsCanvas({
           <strong>Polygon OMS</strong>
           <em>Draft</em>
           <small>{providerCount} provider inputs priced</small>
+          <small>{environmentMode} environment</small>
         </div>
         <div className="canvasTools">
           <span>View</span>
-          <button type="button">Logical <ChevronDown size={14} /></button>
+          <button
+            type="button"
+            onClick={() => setViewMode((current) => (current === "Logical" ? "Cost" : "Logical"))}
+            aria-label="Toggle canvas view"
+          >
+            {viewMode} <ChevronDown size={14} />
+          </button>
           <span>Environment</span>
-          <button type="button">Production <ChevronDown size={14} /></button>
+          <button
+            type="button"
+            onClick={() => setEnvironmentMode((current) => (current === "Production" ? "Sandbox" : "Production"))}
+            aria-label="Toggle environment"
+          >
+            {environmentMode} <ChevronDown size={14} />
+          </button>
           <button className="squareTool" type="button" onClick={fitView} aria-label="Fit view"><Expand size={15} /></button>
           <button className="squareTool" type="button" onClick={() => centerRect(coreRect, 1.08)} aria-label="Focus OMS core"><Search size={15} /></button>
           <button
@@ -383,7 +398,10 @@ export function OmsCanvas({
                 >
                   <Icon size={18} />
                   <span>{shortModuleLabel(module.label)}</span>
-                  <small>{providers.length} {providers.length === 1 ? "provider" : "providers"}{annualCost > 0 ? ` · ${formatMoney(annualCost)}/yr` : ""}</small>
+                  <small>
+                    {providers.length} {providers.length === 1 ? "provider" : "providers"}
+                    {viewMode === "Cost" && annualCost > 0 ? ` · ${formatMoney(annualCost)}/yr` : ""}
+                  </small>
                   {providers.slice(0, 2).map((provider) => (
                     <b key={provider.id}>{provider.name}</b>
                   ))}

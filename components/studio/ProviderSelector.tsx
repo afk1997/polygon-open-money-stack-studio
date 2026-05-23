@@ -58,12 +58,40 @@ export function ProviderSelector({
           const competitorProviders = module.providers.filter((provider) => !provider.polygonOwned);
           const selectedCount = competitorProviders.filter((provider) => selectedSet.has(provider.id)).length;
           const polygonStackCount = module.providers.filter((provider) => provider.polygonOwned).length;
+          const moduleLabel = shortModuleLabel(module.id, module.label);
+          const selectedProviderNames = competitorProviders
+            .filter((provider) => selectedSet.has(provider.id))
+            .slice(0, 2)
+            .map((provider) => provider.name);
+
+          if (isLaunchBenchmark) {
+            return (
+              <article key={module.id} className="providerStaticCard">
+                <span className="providerStaticIcon">{moduleIcon(module.id)}</span>
+                <div>
+                  <strong>{moduleLabel}</strong>
+                  <small>
+                    {selectedCount > 0
+                      ? selectedProviderNames.join(" + ")
+                      : polygonStackCount > 0
+                        ? "Covered by Polygon OMS"
+                        : "Not required for this use case"}
+                  </small>
+                </div>
+                <span className="providerStaticMeta">
+                  <b>{selectedCount}</b>
+                  {polygonStackCount > 0 && <em>{polygonStackCount} OMS</em>}
+                </span>
+              </article>
+            );
+          }
+
           return (
             <details key={module.id}>
               <summary>
                 <span>
                   {moduleIcon(module.id)}
-                  {shortModuleLabel(module.id, module.label)}
+                  {moduleLabel}
                 </span>
                 <span className="providerSummaryMeta">
                   <strong>{selectedCount}</strong>
@@ -99,12 +127,6 @@ export function ProviderSelector({
           );
         })}
       </div>
-
-      {!isLaunchBenchmark && (
-        <button className="addProviderButton" type="button">
-          + Add other provider
-        </button>
-      )}
 
       {showNote && (
         <p className="modelNote">

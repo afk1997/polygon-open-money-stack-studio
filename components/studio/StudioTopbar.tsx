@@ -1,14 +1,16 @@
 "use client";
 
-import { CheckCircle2, Download, Ellipsis, Expand, Share2 } from "lucide-react";
+import { CheckCircle2, Download, Edit3, Ellipsis, Share2 } from "lucide-react";
 import type { LabStage } from "./types";
 
 export function StudioTopbar({
   stage,
+  draftSaved,
   onReset,
   onReport,
 }: {
   stage: LabStage;
+  draftSaved: boolean;
   onReset: () => void;
   onReport: () => void;
 }) {
@@ -50,30 +52,16 @@ export function StudioTopbar({
 
       <div className="topbarActions">
         {stage === "intake" && (
-          <>
-            <button type="button">
-              Saved draft
-              <CheckCircle2 size={15} />
-            </button>
-            <button className="iconButton" type="button" aria-label="More actions">
-              <Ellipsis size={17} />
-            </button>
-          </>
+          <span className="draftStatus">
+            {draftSaved ? "Saved draft" : "Unsaved draft"}
+            {draftSaved && <CheckCircle2 size={15} />}
+          </span>
         )}
         {stage === "building" && (
-          <>
-            <button type="button" onClick={onReset}>
-              <Expand size={15} />
-              Lab
-            </button>
-            <button type="button" onClick={requestCanvasExport}>
-              <Download size={15} />
-              Export
-            </button>
-            <button className="avatarButton" type="button" aria-label="Account">
-              K
-            </button>
-          </>
+          <button type="button" onClick={onReset}>
+            <Edit3 size={15} />
+            Edit intake
+          </button>
         )}
         {stage === "lab" && (
           <>
