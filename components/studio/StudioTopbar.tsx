@@ -26,7 +26,7 @@ export function StudioTopbar({
         <img className="brandMark" src="/polygon-icon-primary-purple.svg" alt="" aria-hidden="true" />
         <div>
           <strong>Polygon OMS</strong>
-          <span>Stack Studio</span>
+          <span>Orchestration Studio</span>
         </div>
       </div>
 
@@ -101,8 +101,8 @@ function requestCanvasExport() {
 
 async function shareStudio() {
   const shareData = {
-    title: "Polygon OMS Stack Studio",
-    text: "Polygon OMS Stack Studio switch report",
+    title: "Polygon OMS Orchestration Studio",
+    text: "Polygon OMS Orchestration Studio switch report",
     url: window.location.href,
   };
   try {
