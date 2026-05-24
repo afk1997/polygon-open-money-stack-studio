@@ -14,7 +14,7 @@ Open `http://localhost:3000`.
 ## What It Covers
 
 - Launch New mode for founders building a fintech, payment, remittance, payroll, agent-payment, gaming, or CDK product from zero.
-- Modernize Existing mode for neobanks, PSPs, payroll platforms, marketplaces, and remittance apps consolidating fragmented vendors.
+- Optimize Existing mode for neobanks, PSPs, payroll platforms, marketplaces, and remittance apps consolidating fragmented vendors.
 - OMS module map for wallet infrastructure, crosschain interoperability, stablecoin orchestration, blockchain integration, cash ramps, on/off-ramp, cross-border payments, CDK, and compliance/security.
 - Competitor research packs with pricing evidence labels: published, public signal, or custom.
 - Scenario savings model, architecture canvas, compliance controls, migration playbook, and switch report export.

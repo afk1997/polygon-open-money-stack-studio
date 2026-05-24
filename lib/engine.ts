@@ -780,7 +780,7 @@ export function generateRecommendation(rawInput: Partial<StudioInput>): Recommen
     title:
       input.mode === "launch"
         ? `Launch ${useCase.name} on Polygon OMS`
-        : `Modernize ${useCase.name} with Polygon OMS`,
+        : `Optimize ${useCase.name} with Polygon OMS`,
     narrative:
       input.mode === "launch"
         ? `${useCase.headline} The studio packages wallets, ramps, compliance, stablecoin settlement, and chain operations as a launch blueprint instead of a vendor scavenger hunt.${contextSentence}`

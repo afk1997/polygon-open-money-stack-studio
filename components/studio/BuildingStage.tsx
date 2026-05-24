@@ -41,7 +41,7 @@ export function BuildingStage({
           <strong>Your intake</strong>
           <span>Will collapse</span>
         </div>
-        <BuildFact icon={<WalletCards size={17} />} label="Mode" value={input.mode === "launch" ? "Launch New" : "Modernize Existing"} />
+        <BuildFact icon={<WalletCards size={17} />} label="Mode" value={input.mode === "launch" ? "Launch New" : "Optimize Existing"} />
         <BuildFact icon={<Route size={17} />} label="Use case" value={useCaseName} />
         <BuildFact icon={<Globe2 size={17} />} label="Corridors" value={input.corridors} />
         <hr />

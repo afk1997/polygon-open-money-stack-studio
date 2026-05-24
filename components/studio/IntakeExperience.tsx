@@ -87,7 +87,7 @@ export function IntakeExperience({
               type="button"
               onClick={() => onModeChange("migration")}
             >
-              Modernize Existing
+              Optimize Existing
               <span />
             </button>
           </div>

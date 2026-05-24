@@ -123,7 +123,7 @@ export function ProviderSelector({
         <p className="modelNote">
           {isLaunchBenchmark
             ? "Benchmark stack: priced point solutions a new build would otherwise stitch together without OMS."
-            : "Modernize Existing selections update the savings model immediately."}
+            : "Optimize Existing selections update the savings model immediately."}
         </p>
       )}
     </section>

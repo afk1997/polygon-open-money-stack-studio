@@ -323,7 +323,7 @@ function buildEvalFindings(
       detail:
         input.mode === "launch"
           ? "Launch mode focuses on retained/non-Polygon partners instead of asking founders to select infra Polygon OMS already covers."
-          : "Modernize mode treats selected providers as the current stack and computes replacement/consolidation economics.",
+          : "Optimize Existing treats selected providers as the current stack and computes replacement/consolidation economics.",
     },
   ];
 }

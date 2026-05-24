@@ -196,5 +196,5 @@ export function requiredModulesFromChoices(
 }
 
 export function modeLabel(mode: StudioMode) {
-  return mode === "launch" ? "Launch New" : "Modernize Existing";
+  return mode === "launch" ? "Launch New" : "Optimize Existing";
 }
