@@ -1,16 +1,14 @@
 "use client";
 
-import { CheckCircle2, ChevronDown, Download, Ellipsis, Maximize2, Share2 } from "lucide-react";
+import { ChevronDown, Download, Ellipsis, Maximize2, Share2 } from "lucide-react";
 import type { LabStage } from "./types";
 
 export function StudioTopbar({
   stage,
-  draftSaved,
   onGoLab,
   onReport,
 }: {
   stage: LabStage;
-  draftSaved: boolean;
   onGoLab: () => void;
   onReport: () => void;
 }) {
@@ -50,10 +48,7 @@ export function StudioTopbar({
 
       <div className="topbarActions">
         {stage === "intake" && (
-          <span className="draftStatus">
-            {draftSaved ? "Saved draft" : "Unsaved draft"}
-            {draftSaved && <CheckCircle2 size={15} />}
-          </span>
+          <span className="draftStatus">Unofficial path towards Polygon OMS</span>
         )}
         {stage === "building" && (
           <>

@@ -232,17 +232,17 @@ a {
 }
 
 .topbarActions .draftStatus {
-  min-height: 38px;
-  gap: 8px;
-  padding: 0 13px;
-  color: #4d5870;
+  min-height: auto;
+  gap: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  color: #66728a;
+  background: transparent;
   font-size: 13px;
   font-weight: 500;
   box-shadow: none;
-}
-
-.topbarActions .draftStatus svg {
-  color: #36bd82;
+  white-space: nowrap;
 }
 
 .topbarActions .iconButton {

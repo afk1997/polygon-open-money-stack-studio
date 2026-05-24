@@ -168,7 +168,6 @@ export function Studio() {
     <main className="studioApp">
       <StudioTopbar
         stage={stage}
-        draftSaved={draftSaved}
         onGoLab={() => {
           scrollToTop();
           setStage("lab");
