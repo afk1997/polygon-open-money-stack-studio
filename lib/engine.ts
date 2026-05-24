@@ -691,22 +691,16 @@ export function calculateCostModel(rawInput: Partial<StudioInput>): CostModel {
     input.monthlyVolume * 12 * (modeledOrchestrationBps / 10000);
   const publicNetworkSignal =
     input.monthlyTransactions * 12 * POLYGON_NETWORK_TX_COST_USD;
-  const operationalOverheadAnnualCost =
-    input.apiSurfaceCount * 4500 +
-    input.reconciliationFeeds * 12000 +
-    input.complianceHandoffs * 6000;
+  const operationalOverheadAnnualCost = 0;
   const fallbackCurrentAnnualFixed =
-    Math.max(input.vendorCount, 1) * 3250 * 12 +
-    input.apiSurfaceCount * 7400 +
-    input.reconciliationFeeds * 18200;
+    Math.max(input.vendorCount, 1) * 3250 * 12;
   const currentAnnualVariable = usesProviderModel
     ? selectedProviderVariableCost
     : fallbackCurrentAnnualVariable;
   const currentAnnualFixed = usesProviderModel
     ? selectedProviderFixedCost + operationalOverheadAnnualCost
     : fallbackCurrentAnnualFixed;
-  const modeledOmsAnnualFixed =
-    148000 + Math.max(input.complianceHandoffs - 2, 0) * 9200;
+  const modeledOmsAnnualFixed = 148000;
   const currentAnnualCost = currentAnnualVariable + currentAnnualFixed;
   const modeledOmsAnnualCost =
     modeledOmsVariable + modeledOmsAnnualFixed + publicNetworkSignal;
@@ -717,7 +711,6 @@ export function calculateCostModel(rawInput: Partial<StudioInput>): CostModel {
   const currentComplexityScore =
     effectiveVendorCount * 3 +
     input.apiSurfaceCount * 2 +
-    input.reconciliationFeeds * 4 +
     input.complianceHandoffs * 3;
   const modeledOmsComplexityScore = 12 + Math.max(input.complianceHandoffs - 2, 0) * 2;
   const integrationComplexityReduction = Math.round(
@@ -737,7 +730,7 @@ export function calculateCostModel(rawInput: Partial<StudioInput>): CostModel {
     providerCostLines,
     polygonStackAnnualCost: 0,
     polygonStackItemsPriced,
-    operationalOverheadAnnualCost: usesProviderModel ? operationalOverheadAnnualCost : 0,
+    operationalOverheadAnnualCost,
     feeDelta,
     fixedVendorSavings,
     workingCapitalRelease,
@@ -753,10 +746,10 @@ export function calculateCostModel(rawInput: Partial<StudioInput>): CostModel {
       "Polygon OMS platform pricing is not public; OMS cost is modeled as an orchestration placeholder plus public Polygon network transaction cost signal.",
       usesProviderModel
         ? "Current stack fees are computed from selected point-solution providers. Provider volumes are allocated by OMS area so selecting multiple vendors in one area shares that route volume instead of double-counting full volume."
-        : "Current stack fees use a blended point-solution model based on published competitor fee signals and corridor variability.",
+        : "Current stack fees use a blended point-solution model based on published competitor fee signals and route variability.",
       "Provider pricing lines are directional: published prices use public tables, public-signal lines use public ranges or fee structures, and custom-priced vendors use conservative scenario estimates.",
       "Working-capital release assumes stablecoin settlement reduces liquidity drag versus multi-day fiat settlement.",
-      "No salary, headcount, or developer-cost savings are included by default because team costs vary heavily by market and hiring model.",
+      "No engineering, ops, implementation, migration, salary, headcount, or developer-cost savings are included.",
       "Sequence, Coinme, Agglayer, Sequence Trails, Vaultbridge, Polygon ID, Polygon PoS, and Polygon CDK are rendered as Polygon OMS-side capabilities, not point-solution competitors.",
       "Polygon-owned/integrated components are excluded from current-stack competitor cost lines. External regulated partners such as KYC, banking, issuing, and local payout providers remain priced when selected.",
       "Yield and treasury protocols are treated as strategic upside or yield-share mechanisms, not direct money-movement cost lines.",
@@ -787,8 +780,8 @@ export function generateRecommendation(rawInput: Partial<StudioInput>): Recommen
         : `${useCase.headline} The studio maps the existing vendor mesh into a phased Polygon OMS architecture while keeping regulated partners and ledgers that should stay in place.${contextSentence}`,
     depthMoment:
       input.mode === "launch"
-        ? `A new team avoids stitching ${Math.max(effectiveVendorCount - 4, 5)} point providers before product-market fit and can pitch a launch path with controls, cost ranges, and corridor assumptions already attached.`
-        : `Your current selected stack has ${effectiveVendorCount} providers, ${input.apiSurfaceCount} API surfaces, ${input.reconciliationFeeds} reconciliation feeds, and ${input.complianceHandoffs} compliance handoffs. Polygon OMS reduces this to one orchestration layer plus retained regulated partners.`,
+        ? `A new team avoids stitching ${Math.max(effectiveVendorCount - 4, 5)} point providers before product-market fit and can pitch a launch path with controls and cost ranges already attached.`
+        : `Your current selected stack has ${effectiveVendorCount} providers. Polygon OMS reduces point-solution sprawl to one orchestration layer plus retained regulated partners.`,
     modules: selectedModules,
     architecture: buildArchitecture(input, selectedModules),
     costModel,
@@ -828,9 +821,9 @@ export function buildExportPitch(rawInput: Partial<StudioInput>) {
     `Modeled first-year net savings: ${formatMoney(savings)}.`,
     `Steady-state annual savings: ${formatMoney(recommendation.costModel.steadyStateAnnualSavings)}.`,
     recommendation.costModel.selectedProviderCount > 0
-      ? `Current stack cost is computed from ${recommendation.costModel.selectedProviderCount} selected point-solution providers: ${formatMoney(recommendation.costModel.selectedProviderAnnualCost)} provider cost plus ${formatMoney(recommendation.costModel.operationalOverheadAnnualCost)} integration/reconciliation overhead.`
+      ? `Current stack cost is computed only from ${recommendation.costModel.selectedProviderCount} selected point-solution providers: ${formatMoney(recommendation.costModel.selectedProviderAnnualCost)} in modeled provider fixed and variable cost.`
       : `Current stack cost uses the blended scenario model because no point-solution providers were selected.`,
-    `The model excludes salary, headcount, and developer-cost savings by default; integration complexity is shown separately as a non-monetary reduction.`,
+    `The model excludes engineering, ops, implementation, migration, salary, headcount, and developer-cost savings; integration complexity is shown separately as a non-monetary signal.`,
     `Polygon-owned/integrated pieces such as Sequence, Coinme, Agglayer, Polygon ID, Vaultbridge, Polygon PoS, and Polygon CDK are treated as OMS-side capabilities, not competitor cost lines.`,
     "",
     `## Selected Provider Cost Lines`,
@@ -1029,7 +1022,7 @@ function fallbackProfile(moduleId: string, provider: Provider): ProviderPricingP
         volumeBps: 55,
         confidence: customConfidence,
         basis: "cross-border payout blend",
-        note: "Fallback payout model uses a corridor-weighted bps estimate.",
+        note: "Fallback payout model uses a route-weighted bps estimate.",
       };
     case "blockchain-integration":
       return {
@@ -1103,10 +1096,10 @@ function selectPlaybook(useCaseId: string, mode: string): MigrationPlaybook {
       replaced: ["Vendor discovery cycles", "Manual stablecoin treasury operations"],
       wrapped: ["Identity vendor", "Local payout partner", "Fraud/risk provider"],
       phases: [
-        "Pick corridors, assets, wallet policy, and risk controls.",
+        "Pick assets, wallet policy, and risk controls.",
         "Prototype OMS settlement with sandbox wallets, mocked KYC, and test payouts.",
         "Pilot a limited geography with capped wallet and payout limits.",
-        "Scale corridors once reconciliation, support, and compliance evidence are proven.",
+        "Scale rollout once support and compliance evidence are proven.",
       ],
     };
   }
@@ -1165,7 +1158,7 @@ function buildArchitecture(
       id: "payout",
       label: "Local fiat payout or wallet balance",
       group: "outcome",
-      detail: input.corridors,
+      detail: useCase.headline,
     },
     {
       id: "audit",
@@ -1180,7 +1173,7 @@ function buildArchitecture(
       id: "fragmented-stack",
       label: `${effectiveVendorCount} point providers`,
       group: "current",
-      detail: `${input.apiSurfaceCount} APIs, ${input.reconciliationFeeds} reconciliation feeds, ${input.complianceHandoffs} compliance handoffs.`,
+      detail: "Selected current providers and retained regulated partner assumptions.",
     });
   }
 

@@ -41,7 +41,6 @@ export function CommandPanel({
         <Metric label="Active wallets" value={input.activeWallets.toLocaleString()} />
         <Metric label={input.mode === "launch" ? "Benchmark providers" : "Current providers"} value={String(providerCount)} />
         <Metric label="Settlement days" value={`${input.settlementDays}`} />
-        <Metric label="Corridors" value={String(input.reconciliationFeeds)} />
       </div>
 
       <ProviderSelector

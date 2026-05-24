@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Circle, Globe2, Loader2, Pencil, Route, ShieldCheck, WalletCards } from "lucide-react";
+import { CheckCircle2, Circle, Loader2, Pencil, Route, ShieldCheck, WalletCards } from "lucide-react";
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 import type { StudioInput } from "@/lib/types";
@@ -43,7 +43,6 @@ export function BuildingStage({
         </div>
         <BuildFact icon={<WalletCards size={17} />} label="Mode" value={input.mode === "launch" ? "Launch New" : "Optimize Existing"} />
         <BuildFact icon={<Route size={17} />} label="Use case" value={useCaseName} />
-        <BuildFact icon={<Globe2 size={17} />} label="Corridors" value={input.corridors} />
         <hr />
         <BuildFact icon={<ShieldCheck size={17} />} label="Monthly volume" value={formatMoney(input.monthlyVolume)} />
         <BuildFact icon={<Circle size={17} />} label="Monthly transactions" value={input.monthlyTransactions.toLocaleString()} />

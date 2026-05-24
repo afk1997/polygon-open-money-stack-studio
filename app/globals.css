@@ -641,7 +641,7 @@ a {
   max-width: 100%;
   min-width: 0;
   display: grid;
-  grid-template-columns: 155px 145px 150px 140px 126px;
+  grid-template-columns: 155px 145px 150px 140px;
   gap: 31px;
   margin-top: 15px;
 }

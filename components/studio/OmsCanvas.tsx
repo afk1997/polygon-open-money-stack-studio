@@ -677,18 +677,8 @@ function buildOutcomes(input: StudioInput, recommendation: Recommendation) {
     settlementText,
     `${formatMoney(cost.feeDelta)} provider fee reduction`,
     `${cost.integrationComplexityReduction}% complexity reduction`,
-    `${input.reconciliationFeeds} reconciliation feeds unified`,
-    input.corridors ? `${compactCorridors(input.corridors)} corridors` : "Selected corridors covered",
+    "Provider cost lines isolated",
   ];
-}
-
-function compactCorridors(corridors: string) {
-  const parts = corridors
-    .split(/,|→|->| to /i)
-    .map((item) => item.trim())
-    .filter(Boolean);
-  if (parts.length <= 3) return corridors;
-  return `${parts.slice(0, 3).join(", ")} +${parts.length - 3}`;
 }
 
 function shortModuleLabel(label: string) {

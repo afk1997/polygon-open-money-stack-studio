@@ -143,7 +143,7 @@ function buildCanvasNodes(
       title: "Founder workflow",
       eyebrow: "input",
       body: workflow,
-      chips: [input.mode === "launch" ? "launch" : "migration", input.corridors],
+      chips: [input.mode === "launch" ? "launch" : "migration", getUseCase(input.useCaseId).name],
       x: 48,
       y: 120,
     },
@@ -155,7 +155,7 @@ function buildCanvasNodes(
       body:
         input.mode === "launch"
           ? "Defined retained regulated partners, payout paths, compliance gates, and settlement targets before adding any non-OMS vendor."
-          : `${input.selectedProviderIds.length || input.vendorCount} selected providers, ${input.apiSurfaceCount} APIs, ${input.reconciliationFeeds} reconciliation feeds.`,
+          : `${input.selectedProviderIds.length || input.vendorCount} selected providers modeled as the current stack.`,
       chips:
         input.mode === "launch"
           ? retained.slice(0, 3)
@@ -198,7 +198,7 @@ function buildCanvasNodes(
       lane: "output",
       title: "Stablecoin settlement",
       eyebrow: "output",
-      body: `${input.corridors}. Reconciliation events, fee evidence, wallet movements, and local payout state are exposed to the product ledger.`,
+      body: "Fee evidence, wallet movements, settlement events, and local payout state are exposed to the product ledger.",
       chips: ["USDC", "local payout", "ledger"],
       x: 780,
       y: 250,
@@ -250,7 +250,6 @@ function buildDemoTrace(workflow: string, input: StudioInput): DemoTrace {
     title: input.mode === "launch" ? "Launch flow mini-demo" : "Migration flow mini-demo",
     prompt: [
       workflow,
-      `Corridors: ${input.corridors}`,
       `Volume: ${formatMoney(input.monthlyVolume)} monthly, ${input.monthlyTransactions.toLocaleString()} tx/mo`,
     ],
     transcript: [
@@ -285,7 +284,6 @@ function buildDemoTrace(workflow: string, input: StudioInput): DemoTrace {
     structuredOutput: {
       mode: input.mode,
       use_case: input.useCaseId,
-      corridors: input.corridors,
       monthly_volume: input.monthlyVolume,
       selected_providers: input.selectedProviderIds,
       settlement_days: input.settlementDays,

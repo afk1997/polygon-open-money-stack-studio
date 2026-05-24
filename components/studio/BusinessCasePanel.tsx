@@ -18,11 +18,15 @@ export function BusinessCasePanel({
 }) {
   const cost = recommendation.costModel;
   const currentVariableFees =
-    cost.selectedProviderVariableCost ||
-    Math.max(cost.currentAnnualCost - cost.selectedProviderFixedCost - cost.operationalOverheadAnnualCost, 0);
+    cost.selectedProviderCount > 0
+      ? cost.selectedProviderVariableCost
+      : Math.max(cost.currentAnnualCost - cost.selectedProviderFixedCost, 0);
   const modeledMovementCost = Math.max(currentVariableFees - cost.feeDelta, 0);
-  const currentFixedOps = cost.selectedProviderFixedCost + cost.operationalOverheadAnnualCost;
-  const modeledFixedOps = Math.max(currentFixedOps - cost.fixedVendorSavings, 0);
+  const currentFixedVendorCost =
+    cost.selectedProviderCount > 0
+      ? cost.selectedProviderFixedCost
+      : Math.max(cost.currentAnnualCost - currentVariableFees, 0);
+  const modeledFixedBaseline = Math.max(currentFixedVendorCost - cost.fixedVendorSavings, 0);
   const annualVolume = input.monthlyVolume * 12;
   const topProviderLines = cost.providerCostLines
     .slice()
@@ -64,7 +68,7 @@ export function BusinessCasePanel({
           <h2>{formatMoney(cost.firstYearNetSavings)}</h2>
           <div className="savingsFormula">
             <span>Modeled as</span>
-            <strong>provider fee reduction + vendor and ops reduction + settlement liquidity value</strong>
+            <strong>provider fee reduction + vendor fixed-cost reduction + settlement liquidity value</strong>
           </div>
           <div className="savingsBreakdown">
             <BreakdownRow
@@ -77,12 +81,12 @@ export function BusinessCasePanel({
               savings={cost.feeDelta}
             />
             <BreakdownRow
-              title="Vendor and ops reduction"
-              detail="Fixed vendor costs plus API, reconciliation, and compliance handoff overhead."
-              beforeLabel="Current fixed + ops"
-              beforeValue={currentFixedOps}
-              afterLabel="Modeled OMS fixed"
-              afterValue={modeledFixedOps}
+              title="Vendor fixed-cost reduction"
+              detail="Selected vendors' annual platform and minimum costs only. Ops, engineering, and migration costs are excluded."
+              beforeLabel="Current vendor fixed"
+              beforeValue={currentFixedVendorCost}
+              afterLabel="Modeled fixed baseline"
+              afterValue={modeledFixedBaseline}
               savings={cost.fixedVendorSavings}
             />
             <BreakdownRow
@@ -186,7 +190,7 @@ export function BusinessCasePanel({
           </summary>
           <p>
             Costs are modeled from selected point-solution providers and may vary by contract,
-            corridor, volume, and compliance scope. Polygon OMS pricing is early-access/custom.
+            route, volume, and compliance scope. Polygon OMS pricing is early-access/custom.
             Polygon-owned OMS components are shown as integrated stack layers, not as competitor
             cost lines.
           </p>

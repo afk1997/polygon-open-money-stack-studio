@@ -92,8 +92,8 @@ export function ProviderSelector({
               </summary>
               <div className="providerRows">
                 {module.providers.map((provider) => {
-                  const checked = selectedSet.has(provider.id);
                   const isPolygonStack = Boolean(provider.polygonOwned);
+                  const checked = !isPolygonStack && selectedSet.has(provider.id);
                   return (
                     <button
                       key={provider.id}
@@ -105,10 +105,10 @@ export function ProviderSelector({
                       disabled={mode === "launch" || isPolygonStack}
                       onClick={() => onToggleProvider(provider.id)}
                     >
-                      {isPolygonStack ? <CheckCircle2 size={16} /> : checked ? <CheckCircle2 size={16} /> : <Circle size={16} />}
+                      {checked ? <CheckCircle2 size={16} /> : <Circle size={16} />}
                       <span>
                         <strong>{provider.name}</strong>
-                        <small>{isPolygonStack ? "Polygon OMS integrated layer" : provider.pricingSignal}</small>
+                        <small>{isPolygonStack ? "Polygon OMS layer, not a current vendor" : provider.pricingSignal}</small>
                       </span>
                     </button>
                   );
